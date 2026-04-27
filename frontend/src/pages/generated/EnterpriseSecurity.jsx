@@ -4,9 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 const EnterpriseSecurity = () => {
   const navigate = useNavigate();
   return (
-const EnterpriseSecurity = () => {
-  const navigate = useNavigate();
-  return (
     <div className="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 py-12 pb-24 md:pb-12 h-full flex flex-col">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-10 mb-20">

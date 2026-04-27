@@ -4,9 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 const ViewsGallery = () => {
   const navigate = useNavigate();
   return (
-const ViewsGallery = () => {
-  const navigate = useNavigate();
-  return (
     <div className="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 py-12 pb-24 md:pb-12">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20">

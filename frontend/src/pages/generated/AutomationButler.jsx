@@ -12,23 +12,6 @@ const AutomationButler = () => {
     setRules(prev => prev.map(r => r.id === id ? { ...r, enabled: !r.enabled } : r));
   };
 
-  const deleteRule = (id) => {
-    if (window.confirm('Are you sure you want to delete this rule?')) {
-      setRules(prev => prev.filter(r => r.id !== id));
-    }
-  };
-
-const AutomationButler = () => {
-  const navigate = useNavigate();
-  const [rules, setRules] = React.useState([
-    { id: 1, title: 'Archive Completed Tasks', type: 'Movement', enabled: true, usage: 142, lastRun: '2h ago' },
-    { id: 2, title: 'Auto-Assign Urgent Tasks', type: 'Card Added', enabled: true, usage: 892, lastRun: '12m ago' }
-  ]);
-
-  const toggleRule = (id) => {
-    setRules(prev => prev.map(r => r.id === id ? { ...r, enabled: !r.enabled } : r));
-  };
-
   return (
     <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-12">
       {/* Automation Header */}

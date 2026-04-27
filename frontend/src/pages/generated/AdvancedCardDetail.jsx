@@ -4,9 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 const AdvancedCardDetail = () => {
   const navigate = useNavigate();
   return (
-const AdvancedCardDetail = () => {
-  const navigate = useNavigate();
-  return (
     <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 py-12 pb-24 md:pb-12">
       {/* Back Action */}
       <button 
