@@ -1,174 +1,94 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const InviteToWorkspace = () => {
   const navigate = useNavigate();
-  return (
-    <>
-      
-{/*  TopAppBar  */}
-<header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-12 bg-[#091E42] dark:bg-slate-950 border-b border-white/10 shadow-sm">
-<div className="flex items-center gap-3">
-<button className="text-white hover:bg-white/10 transition-colors p-1 rounded">
-<span className="material-symbols-outlined" data-icon="menu">menu</span>
-</button>
-<span className="text-lg font-black text-white tracking-tight">Workspace</span>
-</div>
-<div className="flex items-center gap-4">
-<nav className="hidden md:flex items-center gap-6 text-sm font-sans font-medium">
-<a className="text-white font-bold border-b-2 border-white pb-1"  onClick={(e) => { e.preventDefault(); navigate('/boards-dashboard'); }}>Boards</a>
-<a className="text-slate-300 hover:text-white transition-colors"  onClick={(e) => { e.preventDefault(); navigate('/workspace-members'); }}>Members</a>
-<a className="text-slate-300 hover:text-white transition-colors"  onClick={(e) => { e.preventDefault(); navigate('/workspace-settings'); }}>Settings</a>
-</nav>
-<div className="w-8 h-8 rounded-full overflow-hidden border border-white/20">
-<img alt="Profile" data-alt="close-up portrait of a professional man in a business setting with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0KotK2j6FlwXg-Kw8HRMRDGFCq02YXgpJmnwfCm5x5eJeB7ucSwune5vYFGgWxUkunQvY7gy-5ERSyY_st5wFCVHVzDzaWrMkUKq_IMf9iG_I-DcdSvGvxs03S9zs5UcXesxEQfXdtxnu_5Cio5YJS1uXC9ZJIl7a2Z7wvfbOFuIMaG94aNGET60fOvfsYohwvRNzlzR5AUOkuLthxSfZCgrqn0eoRElOB4Av6Gn2FvpPjWnMOP_YXvjvx4M6KLmPY7JI5yCh28sg"/>
-</div>
-</div>
-</header>
-<div className="flex pt-12 min-h-screen">
-{/*  NavigationDrawer (Desktop)  */}
-<aside className="hidden md:flex flex-col h-[calc(100vh-48px)] w-64 border-r border-slate-200 bg-slate-50 p-4 gap-2 sticky top-12">
-<div className="mb-4 px-2">
-<span className="text-blue-600 font-bold font-sans text-sm">Productive Flow</span>
-</div>
-<nav className="flex flex-col gap-1">
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 transition-all font-sans text-sm rounded-md" href="#">
-<span className="material-symbols-outlined text-slate-500" data-icon="dashboard">dashboard</span>
-                    Boards
-                </a>
-<a className="flex items-center gap-3 px-3 py-2 bg-blue-50 text-blue-700 font-semibold rounded-md font-sans text-sm" href="#">
-<span className="material-symbols-outlined text-blue-700" data-icon="group">group</span>
-                    Members
-                </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 transition-all font-sans text-sm rounded-md" href="#">
-<span className="material-symbols-outlined text-slate-500" data-icon="settings">settings</span>
-                    Workspace Settings
-                </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 transition-all font-sans text-sm rounded-md" href="#">
-<span className="material-symbols-outlined text-slate-500" data-icon="calendar_today">calendar_today</span>
-                    Calendar
-                </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 transition-all font-sans text-sm rounded-md" href="#">
-<span className="material-symbols-outlined text-slate-500" data-icon="timeline">timeline</span>
-                    Timeline
-                </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 transition-all font-sans text-sm rounded-md" href="#">
-<span className="material-symbols-outlined text-slate-500" data-icon="analytics">analytics</span>
-                    Dashboard
-                </a>
-</nav>
-</aside>
-{/*  Main Content (Canvas)  */}
-<main className="flex-1 p-4 md:p-8 flex items-center justify-center bg-[#F7F8F9]">
-{/*  Invite Modal Container  */}
-<div className="w-full max-w-xl bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden animate-in fade-in zoom-in duration-300">
-{/*  Modal Header  */}
-<div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
-<div className="flex items-center gap-3">
-<div className="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-white">
-<span className="material-symbols-outlined" data-icon="person_add">person_add</span>
-</div>
-<div>
-<h1 className="font-headline-md text-on-surface">Invite to Workspace</h1>
-<p className="font-label-sm text-outline">Collaborate with your team members</p>
-</div>
-</div>
-<button className="text-outline hover:text-on-surface transition-colors">
-<span className="material-symbols-outlined" data-icon="close">close</span>
-</button>
-</div>
-{/*  Modal Body  */}
-<div className="p-6 space-y-6">
-{/*  Email Input Section  */}
-<div className="space-y-3">
-<label className="block font-label-bold text-on-surface-variant">Email addresses or names</label>
-<div className="relative">
-<textarea className="w-full min-h-[100px] p-4 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-body-md placeholder:text-outline" placeholder="e.g. sarah@company.com, mike@agency.io..."></textarea>
-<div className="absolute bottom-3 right-3 flex gap-2">
-<span className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-[11px] font-bold border border-blue-100 uppercase tracking-wider">3 addresses</span>
-</div>
-</div>
-</div>
-{/*  Role Selection  */}
-<div className="space-y-3">
-<label className="block font-label-bold text-on-surface-variant">Select workspace role</label>
-<div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-{/*  Admin Role  */}
-<label className="relative flex flex-col p-3 border border-outline-variant rounded-lg cursor-pointer hover:bg-slate-50 transition-colors group">
-<input className="sr-only peer" name="role" type="radio" value="admin"/>
-<div className="peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary absolute inset-0 rounded-lg pointer-events-none"></div>
-<span className="font-label-bold text-on-surface mb-1">Admin</span>
-<span className="text-[11px] text-outline leading-tight">Full control over settings and members.</span>
-</label>
-{/*  Member Role (Default)  */}
-<label className="relative flex flex-col p-3 border border-primary ring-1 ring-primary rounded-lg cursor-pointer bg-blue-50/30 transition-colors group">
-<input checked="" className="sr-only peer" name="role" type="radio" value="member"/>
-<div className="peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary absolute inset-0 rounded-lg pointer-events-none"></div>
-<span className="font-label-bold text-primary mb-1">Member</span>
-<span className="text-[11px] text-on-secondary-container leading-tight">Can create boards and edit tasks.</span>
-</label>
-{/*  Observer Role  */}
-<label className="relative flex flex-col p-3 border border-outline-variant rounded-lg cursor-pointer hover:bg-slate-50 transition-colors group">
-<input className="sr-only peer" name="role" type="radio" value="observer"/>
-<div className="peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary absolute inset-0 rounded-lg pointer-events-none"></div>
-<span className="font-label-bold text-on-surface mb-1">Observer</span>
-<span className="text-[11px] text-outline leading-tight">View-only access to boards and activity.</span>
-</label>
-</div>
-</div>
-{/*  Share Link Section  */}
-<div className="p-4 bg-surface-container rounded-xl space-y-3">
-<div className="flex items-center justify-between">
-<div className="flex items-center gap-2">
-<span className="material-symbols-outlined text-primary text-lg" data-icon="link">link</span>
-<span className="font-label-bold text-on-surface">Share with a link</span>
-</div>
-<span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">Active</span>
-</div>
-<p className="text-[11px] text-outline px-1">Anyone with the link can join as a Member. You can disable this anytime.</p>
-<div className="flex gap-2">
-<input className="flex-1 bg-white border border-outline-variant rounded-lg px-3 py-2 text-sm font-mono text-on-surface-variant overflow-ellipsis" readOnly="" type="text" value="https://flow.workspace.com/join/7a2-f92k-l0p"/>
-<button className="bg-white border border-outline-variant hover:bg-slate-50 text-on-surface px-4 py-2 rounded-lg transition-colors font-label-bold flex items-center gap-2">
-<span className="material-symbols-outlined text-lg" data-icon="content_copy">content_copy</span>
-<span>Copy</span>
-</button>
-</div>
-</div>
-</div>
-{/*  Modal Footer  */}
-<div className="px-6 py-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-<button className="text-on-surface-variant font-label-bold hover:text-on-surface transition-colors px-4 py-2">
-                        Cancel
-                    </button>
-<button className="bg-primary hover:bg-primary/90 text-white font-label-bold px-8 py-2.5 rounded-lg shadow-sm active:scale-95 transition-all flex items-center gap-2">
-                        Send Invitations
-                        <span className="material-symbols-outlined text-lg" data-icon="send">send</span>
-</button>
-</div>
-</div>
-</main>
-</div>
-{/*  BottomNavBar (Mobile)  */}
-<nav className="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-white dark:bg-slate-900 border-t border-slate-200 shadow-[0_-1px_3px_rgba(0,0,0,0.05)] pb-safe">
-<a className="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-colors" href="#">
-<span className="material-symbols-outlined" data-icon="home">home</span>
-<span className="text-[10px] font-medium font-sans">Home</span>
-</a>
-<a className="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-colors" href="#">
-<span className="material-symbols-outlined" data-icon="search">search</span>
-<span className="text-[10px] font-medium font-sans">Search</span>
-</a>
-<a className="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400" href="#">
-<span className="material-symbols-outlined" data-icon="add_box" style={{"fontVariationSettings":"'FILL' 1"}}>add_box</span>
-<span className="text-[10px] font-medium font-sans">Create</span>
-</a>
-<a className="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-colors" href="#">
-<span className="material-symbols-outlined" data-icon="notifications">notifications</span>
-<span className="text-[10px] font-medium font-sans">Notifications</span>
-</a>
-</nav>
+  const [role, setRole] = React.useState('member');
 
-    </>
+  return (
+    <div className="max-w-[800px] mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-12">
+      {/* Screen Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16">
+        <div>
+          <h1 className="font-headline-xl text-5xl font-black text-slate-900 dark:text-white mb-2 tracking-tighter">Invite</h1>
+          <p className="font-label-sm text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">Deploy new nodes to the cluster</p>
+        </div>
+      </div>
+
+      <div className="bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+        {/* Form Body */}
+        <div className="p-10 space-y-12">
+          {/* Email Input Section */}
+          <div className="space-y-4">
+            <label className="font-black text-[10px] text-slate-400 uppercase tracking-widest block px-2">Associates [Email or Handles]</label>
+            <div className="relative group">
+              <textarea 
+                className="w-full min-h-[160px] p-8 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-[2rem] focus:ring-4 focus:ring-blue-600/10 focus:border-blue-600 transition-all font-bold text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700 resize-none" 
+                placeholder="e.g. sarah@cluster.io, dev-ops@nexus.com..."
+              ></textarea>
+              <div className="absolute bottom-6 right-6 flex gap-2">
+                <span className="bg-blue-600/10 text-blue-600 px-4 py-2 rounded-xl text-[10px] font-black border border-blue-600/10 uppercase tracking-widest shadow-sm">3 targets identified</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Role Selection */}
+          <div className="space-y-6">
+            <label className="font-black text-[10px] text-slate-400 uppercase tracking-widest block px-2">Protocol Access Level</label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                { id: 'admin', label: 'Admin', desc: 'Full root access to all nodes.' },
+                { id: 'member', label: 'Member', desc: 'Read/Write access for operations.' },
+                { id: 'observer', label: 'Observer', desc: 'Read-only telemetry access.' }
+              ].map(r => (
+                <label key={r.id} onClick={() => setRole(r.id)} className={`relative flex flex-col p-8 rounded-[2rem] cursor-pointer transition-all border-2 ${role === r.id ? 'bg-blue-600/5 border-blue-600 shadow-2xl shadow-blue-600/10' : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 hover:border-blue-600/30'} group`}>
+                  <input className="sr-only" name="role" type="radio" value={r.id} checked={role === r.id} readOnly />
+                  <span className={`font-headline-md text-sm font-black uppercase tracking-tight mb-2 ${role === r.id ? 'text-blue-600' : 'text-slate-900 dark:text-white'}`}>{r.label}</span>
+                  <span className="text-[10px] font-bold text-slate-400 leading-relaxed">{r.desc}</span>
+                  {role === r.id && <div className="absolute top-6 right-6 w-2 h-2 rounded-full bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.8)]"></div>}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Share Link Section */}
+          <div className="p-8 bg-slate-50 dark:bg-slate-950 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 space-y-6 relative overflow-hidden group">
+            <div className="absolute left-0 top-0 bottom-0 w-2 bg-emerald-500"></div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-emerald-500" style={{ fontVariationSettings: "'FILL' 1" }}>link</span>
+                <span className="font-headline-md text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">External Access Link</span>
+              </div>
+              <span className="bg-emerald-500 text-white text-[8px] px-3 py-1 rounded-full font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20">Active</span>
+            </div>
+            <p className="text-[10px] font-bold text-slate-400 px-1 leading-relaxed">Anyone with this protocol link can join as a Member. You can revoke access anytime.</p>
+            <div className="flex gap-4">
+              <input 
+                className="flex-1 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl px-6 py-4 text-[11px] font-mono font-black text-slate-900 dark:text-white overflow-ellipsis" 
+                readOnly 
+                type="text" 
+                value="https://productive.flow/join/7a2-f92k-l0p" 
+              />
+              <button className="bg-slate-900 dark:bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl active:scale-95 transition-all flex items-center gap-3">
+                <span className="material-symbols-outlined text-sm">content_copy</span>
+                Copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-10 py-8 bg-slate-50 dark:bg-slate-950/50 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <button onClick={() => navigate(-1)} className="font-black text-[10px] text-slate-400 uppercase tracking-widest hover:text-slate-900 dark:hover:text-white transition-all px-6 py-4 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800">
+            Cancel
+          </button>
+          <button className="bg-slate-900 dark:bg-blue-600 text-white px-10 py-4 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest shadow-2xl active:scale-95 transition-all flex items-center gap-3">
+            Dispatch Invitations
+            <span className="material-symbols-outlined text-sm">send</span>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -1,217 +1,124 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const ArchivedItems = () => {
   const navigate = useNavigate();
-  return (
-    <>
-      
-{/*  TopAppBar  */}
-<header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm docked full-width top-0 z-40 fixed left-0 right-0">
-<div className="flex justify-between items-center w-full px-4 h-12">
-<div className="flex items-center gap-3">
-<span className="material-symbols-outlined text-blue-600 dark:text-blue-400" data-icon="grid_view">grid_view</span>
-<h1 className="font-sans text-sm font-semibold tracking-tight text-blue-600 dark:text-blue-400">Workspace Settings</h1>
-</div>
-<div className="flex items-center gap-4">
-<button className="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors p-1 rounded" data-icon="search">search</button>
-<div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container text-xs font-bold" title="User Profile">
-                    UP
-                </div>
-</div>
-</div>
-</header>
-{/*  NavigationDrawer  */}
-<aside className="fixed left-0 top-12 h-[calc(100vh-3rem)] flex flex-col py-4 bg-slate-50 dark:bg-slate-950 docked h-full w-64 border-r border-slate-200 dark:border-slate-800 hidden md:flex">
-<div className="px-4 mb-6">
-<span className="text-lg font-bold text-slate-900 dark:text-slate-100">Admin Console</span>
-</div>
-<nav className="flex-1 space-y-1">
-<a className="flex items-center px-4 py-2 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
-<span className="material-symbols-outlined mr-3" data-icon="payments">payments</span>
-                Pricing
-            </a>
-<a className="flex items-center px-4 py-2 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
-<span className="material-symbols-outlined mr-3" data-icon="receipt_long">receipt_long</span>
-                Billing
-            </a>
-<a className="flex items-center px-4 py-2 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
-<span className="material-symbols-outlined mr-3" data-icon="group">group</span>
-                Members
-            </a>
-<a className="flex items-center px-4 py-2 text-sm font-medium Inter bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-semibold border-r-4 border-blue-600 transition-all duration-200 ease-in-out" href="#">
-<span className="material-symbols-outlined mr-3" data-icon="archive">archive</span>
-                Archive
-            </a>
-<a className="flex items-center px-4 py-2 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
-<span className="material-symbols-outlined mr-3" data-icon="settings">settings</span>
-                Settings
-            </a>
-</nav>
-</aside>
-{/*  Main Content Canvas  */}
-<main className="md:ml-64 mt-12 pb-20 md:pb-8 p-gutter lg:p-container-padding min-h-screen">
-<div className="max-w-6xl mx-auto">
-{/*  Screen Header  */}
-<div className="mb-8">
-<h2 className="font-headline-xl text-headline-xl text-on-surface mb-2">Archive Management</h2>
-<p className="font-body-md text-body-md text-on-surface-variant">Manage and restore your archived boards and individual task cards.</p>
-</div>
-{/*  Custom Tabs  */}
-<div className="flex items-center space-x-1 border-b border-outline-variant mb-6 overflow-x-auto whitespace-nowrap">
-<button className="px-6 py-3 font-label-bold text-label-bold text-primary border-b-2 border-primary">
-                    Archived Boards
-                </button>
-<button className="px-6 py-3 font-label-bold text-label-bold text-on-surface-variant hover:bg-surface-container-high transition-colors">
-                    Archived Cards
-                </button>
-</div>
-{/*  Bento Grid - Boards Section  */}
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
-{/*  Board Card 1  */}
-<div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow group overflow-hidden">
-<div className="h-24 bg-gradient-to-r from-blue-500 to-indigo-600 relative overflow-hidden" data-alt="abstract geometric pattern with blue and indigo gradients and subtle light flares">
-<div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-</div>
-<div className="p-md">
-<div className="flex justify-between items-start mb-2">
-<h3 className="font-headline-md text-headline-md text-on-surface">Product Roadmap Q1</h3>
-<span className="px-2 py-0.5 rounded bg-surface-container-high text-label-sm font-label-sm text-on-surface-variant">Board</span>
-</div>
-<p className="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2">Legacy product goals and milestone tracking for the initial launch phase.</p>
-<div className="flex items-center gap-2 mb-6 text-label-sm text-on-surface-variant">
-<span className="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span>
-                            Archived 12 days ago
-                        </div>
-<div className="flex items-center gap-2">
-<button className="flex-1 bg-primary text-on-primary font-label-bold text-label-bold py-2 rounded transition-all active:scale-95 hover:bg-on-primary-fixed-variant flex items-center justify-center gap-2">
-<span className="material-symbols-outlined text-[18px]" data-icon="unarchive">unarchive</span>
-                                Send to Board
-                            </button>
-<button className="w-10 h-10 flex items-center justify-center rounded border border-error text-error hover:bg-error-container transition-colors">
-<span className="material-symbols-outlined" data-icon="delete">delete</span>
-</button>
-</div>
-</div>
-</div>
-{/*  Board Card 2  */}
-<div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow group overflow-hidden">
-<div className="h-24 bg-gradient-to-r from-tertiary-container to-on-tertiary-fixed-variant relative overflow-hidden" data-alt="minimalist architectural shadows on a smooth concrete wall with cool morning light">
-<div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-</div>
-<div className="p-md">
-<div className="flex justify-between items-start mb-2">
-<h3 className="font-headline-md text-headline-md text-on-surface">Marketing Assets</h3>
-<span className="px-2 py-0.5 rounded bg-surface-container-high text-label-sm font-label-sm text-on-surface-variant">Board</span>
-</div>
-<p className="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2">Old branding materials, logos, and high-resolution campaign imagery.</p>
-<div className="flex items-center gap-2 mb-6 text-label-sm text-on-surface-variant">
-<span className="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span>
-                            Archived 3 weeks ago
-                        </div>
-<div className="flex items-center gap-2">
-<button className="flex-1 bg-primary text-on-primary font-label-bold text-label-bold py-2 rounded transition-all active:scale-95 hover:bg-on-primary-fixed-variant flex items-center justify-center gap-2">
-<span className="material-symbols-outlined text-[18px]" data-icon="unarchive">unarchive</span>
-                                Send to Board
-                            </button>
-<button className="w-10 h-10 flex items-center justify-center rounded border border-error text-error hover:bg-error-container transition-colors">
-<span className="material-symbols-outlined" data-icon="delete">delete</span>
-</button>
-</div>
-</div>
-</div>
-{/*  Card Style Item 1  */}
-<div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow p-md flex flex-col justify-between">
-<div>
-<div className="flex justify-between items-start mb-2">
-<h3 className="font-headline-md text-headline-md text-on-surface">User Feedback Logs</h3>
-<span className="px-2 py-0.5 rounded bg-surface-container text-label-sm font-label-sm text-on-surface-variant">Card</span>
-</div>
-<p className="font-body-md text-body-md text-on-surface-variant mb-4">Initial interviews from the beta testing group regarding the navigation overhaul.</p>
-<div className="flex flex-wrap gap-2 mb-4">
-<span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800">Feedback</span>
-<span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800">Q4 2023</span>
-</div>
-</div>
-<div className="flex items-center gap-2 pt-4 border-t border-outline-variant">
-<button className="flex-1 bg-primary text-on-primary font-label-bold text-label-bold py-2 rounded transition-all active:scale-95 hover:bg-on-primary-fixed-variant flex items-center justify-center gap-2">
-<span className="material-symbols-outlined text-[18px]" data-icon="unarchive">unarchive</span>
-                            Send to Board
-                        </button>
-<button className="w-10 h-10 flex items-center justify-center rounded border border-error text-error hover:bg-error-container transition-colors">
-<span className="material-symbols-outlined" data-icon="delete">delete</span>
-</button>
-</div>
-</div>
-{/*  Card Style Item 2  */}
-<div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow p-md flex flex-col justify-between">
-<div>
-<div className="flex justify-between items-start mb-2">
-<h3 className="font-headline-md text-headline-md text-on-surface">Design System V1.0</h3>
-<span className="px-2 py-0.5 rounded bg-surface-container text-label-sm font-label-sm text-on-surface-variant">Card</span>
-</div>
-<p className="font-body-md text-body-md text-on-surface-variant mb-4">Archive of the original component library before the Material 3 migration.</p>
-<div className="flex items-center gap-3 mb-4">
-<div className="flex -space-x-2">
-<div className="w-6 h-6 rounded-full bg-secondary text-[8px] flex items-center justify-center text-white border border-white">JD</div>
-<div className="w-6 h-6 rounded-full bg-primary-container text-[8px] flex items-center justify-center text-on-primary-container border border-white">AS</div>
-</div>
-<span className="text-label-sm text-on-surface-variant italic">+2 more</span>
-</div>
-</div>
-<div className="flex items-center gap-2 pt-4 border-t border-outline-variant">
-<button className="flex-1 bg-primary text-on-primary font-label-bold text-label-bold py-2 rounded transition-all active:scale-95 hover:bg-on-primary-fixed-variant flex items-center justify-center gap-2">
-<span className="material-symbols-outlined text-[18px]" data-icon="unarchive">unarchive</span>
-                            Send to Board
-                        </button>
-<button className="w-10 h-10 flex items-center justify-center rounded border border-error text-error hover:bg-error-container transition-colors">
-<span className="material-symbols-outlined" data-icon="delete">delete</span>
-</button>
-</div>
-</div>
-{/*  Async Layout Filler - Stats Card  */}
-<div className="bg-blue-600 rounded-xl p-md flex flex-col justify-center text-on-primary lg:col-span-1 shadow-lg relative overflow-hidden">
-<div className="absolute -right-8 -bottom-8 opacity-10">
-<span className="material-symbols-outlined text-[120px]" data-icon="inventory_2">inventory_2</span>
-</div>
-<h4 className="font-label-bold text-label-bold mb-1 opacity-80 uppercase tracking-widest">Storage Status</h4>
-<div className="text-4xl font-black mb-4">84% Full</div>
-<p className="font-body-md text-body-md opacity-90 mb-4">You have 4.2GB of archived content. Items older than 90 days are flagged for permanent deletion.</p>
-<div className="w-full bg-white/20 h-2 rounded-full overflow-hidden">
-<div className="w-[84%] bg-white h-full"></div>
-</div>
-</div>
-{/*  Empty State Helper (Hidden by default, shown for concept)  */}
-<div className="hidden lg:flex bg-surface-container rounded-xl border border-dashed border-outline border-2 items-center justify-center p-xl opacity-60">
-<div className="text-center">
-<span className="material-symbols-outlined text-4xl text-outline mb-2" data-icon="auto_delete">auto_delete</span>
-<p className="font-label-bold text-label-bold text-on-surface-variant">Scheduled cleanup active</p>
-</div>
-</div>
-</div>
-</div>
-</main>
-{/*  BottomNavBar (Mobile only)  */}
-<nav className="fixed bottom-0 w-full flex justify-around items-center h-16 px-2 pb-safe bg-white dark:bg-slate-900 md:hidden z-50 rounded-t-lg border-t border-slate-200 dark:border-slate-800 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-<a className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 tap-highlight-transparent active:opacity-70" href="#">
-<span className="material-symbols-outlined" data-icon="sell">sell</span>
-<span className="text-[10px] font-medium tracking-wide uppercase">Pricing</span>
-</a>
-<a className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 tap-highlight-transparent active:opacity-70" href="#">
-<span className="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
-<span className="text-[10px] font-medium tracking-wide uppercase">Billing</span>
-</a>
-<a className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 tap-highlight-transparent active:opacity-70" href="#">
-<span className="material-symbols-outlined" data-icon="people">people</span>
-<span className="text-[10px] font-medium tracking-wide uppercase">Members</span>
-</a>
-<a className="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 scale-110 tap-highlight-transparent active:opacity-70" href="#">
-<span className="material-symbols-outlined" data-icon="more_horiz" style={{"fontVariationSettings":"'FILL' 1"}}>more_horiz</span>
-<span className="text-[10px] font-medium tracking-wide uppercase">More</span>
-</a>
-</nav>
+  const [activeTab, setActiveTab] = React.useState('boards');
+  const [archivedBoards, setArchivedBoards] = React.useState([
+    { id: 1, title: 'Product Roadmap Q1', description: 'Legacy product goals and milestone tracking.', archivedAt: '12 days ago', color: 'blue' },
+    { id: 2, title: 'Marketing Assets', description: 'Old branding materials, logos, and high-res imagery.', archivedAt: '3 weeks ago', color: 'emerald' }
+  ]);
 
-    </>
+  const handleRestore = (id) => {
+    setArchivedBoards(prev => prev.filter(b => b.id !== id));
+  };
+
+  return (
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-12">
+      {/* Screen Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16">
+        <div>
+          <h1 className="font-headline-xl text-5xl font-black text-slate-900 dark:text-white mb-2 tracking-tighter">Vault</h1>
+          <p className="font-label-sm text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">Archived resources management</p>
+        </div>
+        <div className="flex items-center gap-6">
+          <div className="flex bg-slate-100 dark:bg-slate-800 rounded-2xl p-1.5 shadow-inner">
+            {['boards', 'cards'].map((tab) => (
+              <button 
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-8 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${activeTab === tab ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-xl' : 'text-slate-500'}`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+          <button className="bg-rose-50 dark:bg-rose-900/20 text-rose-600 px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 active:scale-95 transition-all">
+            <span className="material-symbols-outlined text-lg">delete_sweep</span>
+            Purge All
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-12 gap-8">
+        {/* Main Content List */}
+        <div className="col-span-12 lg:col-span-8 space-y-6">
+          {archivedBoards.map(board => (
+            <div key={board.id} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group flex items-center gap-8">
+              <div className={`h-24 w-24 rounded-3xl bg-${board.color}-500/10 flex items-center justify-center shrink-0`}>
+                <span className={`material-symbols-outlined text-3xl text-${board.color}-600`}>inventory_2</span>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h3 className="font-headline-md text-2xl font-black text-slate-900 dark:text-white tracking-tight">{board.title}</h3>
+                  <span className="font-black text-[9px] text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-800 px-2 py-0.5 rounded-lg">Board</span>
+                </div>
+                <p className="font-bold text-[11px] text-slate-400 mb-6">{board.description}</p>
+                <div className="flex items-center gap-6">
+                  <button 
+                    onClick={() => handleRestore(board.id)}
+                    className="flex items-center gap-2 font-black text-[10px] text-blue-600 uppercase tracking-widest hover:underline"
+                  >
+                    <span className="material-symbols-outlined text-sm">unarchive</span>
+                    Restore to active
+                  </button>
+                  <span className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest">Archived {board.archivedAt}</span>
+                </div>
+              </div>
+              <button className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors">
+                <span className="material-symbols-outlined">delete</span>
+              </button>
+            </div>
+          ))}
+
+          {archivedBoards.length === 0 && (
+            <div className="bg-slate-50 dark:bg-slate-950 rounded-[3rem] border-4 border-dashed border-slate-100 dark:border-slate-900 p-20 flex flex-col items-center justify-center text-center">
+              <div className="w-20 h-20 rounded-3xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center mb-6">
+                <span className="material-symbols-outlined text-4xl text-slate-300">auto_delete</span>
+              </div>
+              <h3 className="font-headline-md text-2xl font-black text-slate-400 mb-2">Clean Slate</h3>
+              <p className="font-bold text-xs text-slate-300 uppercase tracking-widest">No archived items found in this category</p>
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar Status */}
+        <div className="col-span-12 lg:col-span-4 space-y-8">
+          <div className="bg-slate-900 dark:bg-blue-600 p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden group text-white">
+            <div className="absolute -right-10 -bottom-10 opacity-10 group-hover:scale-110 transition-transform duration-1000">
+                <span className="material-symbols-outlined text-[200px] text-white">cloud_queue</span>
+            </div>
+            <div className="relative z-10">
+              <span className="font-black text-[10px] text-white/50 uppercase tracking-[0.2em] mb-4 block">Vault Capacity</span>
+              <div className="text-6xl font-black tracking-tighter mb-6">84<span className="text-2xl opacity-40">%</span></div>
+              <p className="font-bold text-[11px] text-white/70 leading-relaxed mb-10">You have 4.2GB of archived content. Automated purge policies are active for items older than 180 days.</p>
+              <div className="w-full bg-white/10 h-3 rounded-full overflow-hidden">
+                <div className="w-[84%] bg-white h-full rounded-full transition-all duration-1000"></div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm">
+            <h4 className="font-black text-[11px] text-slate-900 dark:text-white uppercase tracking-widest mb-6">Policies</h4>
+            <div className="space-y-6">
+              {[
+                { label: 'Auto-Purge', val: '90 Days', icon: 'schedule' },
+                { label: 'Compression', val: 'Enabled', icon: 'compress' },
+                { label: 'Encryption', val: 'AES-256', icon: 'verified_user' }
+              ].map(stat => (
+                <div key={stat.label} className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-sm text-slate-400">{stat.icon}</span>
+                    <span className="font-black text-[10px] text-slate-400 uppercase tracking-widest">{stat.label}</span>
+                  </div>
+                  <span className="font-black text-[10px] text-slate-900 dark:text-white uppercase">{stat.val}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

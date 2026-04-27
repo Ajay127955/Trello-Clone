@@ -1,152 +1,122 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const OnboardingWelcome = () => {
   const navigate = useNavigate();
+  const [step, setStep] = React.useState(1);
+
+  const stepsContent = [
+    {
+      title: "Strategic Boards",
+      description: "Your project's command center. Orchestrate complex workflows, track velocity, and align your team in a unified high-fidelity space.",
+      icon: "grid_view",
+      colorClass: "bg-blue-600",
+      tags: ["Team Alignment", "Real-time Sync"]
+    },
+    {
+      title: "Fluid Workflows",
+      description: "Visualize progress across intelligent lists. Transition cards through custom stages designed for maximum operational efficiency.",
+      icon: "sync_alt",
+      colorClass: "bg-emerald-600",
+      tags: ["Automation", "Dynamic Lists"]
+    },
+    {
+      title: "Contextual Cards",
+      description: "The building blocks of execution. Embed assets, set deadlines, and maintain context-aware conversations within every task.",
+      icon: "layers",
+      colorClass: "bg-indigo-600",
+      tags: ["Asset Management", "Deep Collaboration"]
+    }
+  ];
 
   const handleNext = () => {
-    // Since there's only one onboarding page implemented, we'll go to the dashboard
-    navigate('/boards-dashboard');
+    if (step < stepsContent.length) {
+      setStep(step + 1);
+    } else {
+      navigate('/boards-dashboard');
+    }
   };
 
   const handleBack = () => {
-    navigate(-1);
+    if (step > 1) {
+      setStep(step - 1);
+    } else {
+      navigate(-1);
+    }
   };
 
-  const handleSkip = () => {
-    navigate('/boards-dashboard');
-  };
+  const current = stepsContent[step - 1];
 
   return (
-    <>
-      
-{/*  Top Bar for Branding (Context: Onboarding)  */}
-<header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-white border-b border-surface-container-highest">
-<div className="flex items-center gap-sm">
-<div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-<span className="material-symbols-outlined text-white" style={{"fontVariationSettings":"'FILL' 1"}}>dashboard</span>
-</div>
-<span className="font-headline-md text-primary tracking-tight">Productive Flow</span>
-</div>
-<button 
-  onClick={handleSkip}
-  className="font-label-sm text-on-surface-variant hover:text-primary transition-colors"
->
-  Skip intro
-</button>
-</header>
-<main className="flex-grow flex items-center justify-center pt-16 px-gutter">
-<div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-xl bg-white rounded-xl shadow-sm border border-surface-container-high overflow-hidden">
-{/*  Left Side: Visual Content  */}
-<div className="bg-surface-container-low p-xl flex flex-col items-center justify-center relative overflow-hidden min-h-[400px]">
-<div className="absolute inset-0 opacity-10 pointer-events-none">
-<div className="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary-container via-transparent to-transparent"></div>
-</div>
-{/*  Illustration Frame  */}
-<div className="relative z-10 w-full aspect-video rounded-lg shadow-xl bg-white border border-surface-container p-sm flex flex-col gap-sm">
-{/*  Boards Illustration  */}
-<div className="flex flex-col h-full gap-gutter" id="step-visual-1">
-<div className="h-6 w-1/3 bg-surface-container-highest rounded"></div>
-<div className="flex gap-gutter h-full">
-<div className="flex-1 bg-surface-container-low rounded-lg p-sm border border-dashed border-outline-variant flex flex-col gap-xs">
-<div className="h-4 w-full bg-white rounded shadow-sm"></div>
-<div className="h-4 w-4/5 bg-white rounded shadow-sm"></div>
-</div>
-<div className="flex-1 bg-surface-container-low rounded-lg p-sm border border-dashed border-outline-variant flex flex-col gap-xs">
-<div className="h-4 w-full bg-white rounded shadow-sm"></div>
-</div>
-</div>
-</div>
-<img className="hidden absolute inset-0 w-full h-full object-cover" data-alt="Modern workspace dashboard layout with organized project boards and colorful task management cards in a clean minimalist interface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIti2S-UBcEl6kWKV5uHz9kh7EE_Ez3crQWU10kgXMgpt0s9r152ZUxWRW0tqXIz_ZCLHpln4l7gaXdu5KuJ960tcd8zRMmLULzovalwPRVRsn818XVsb2UxnOIXxAvUwGpgSKGYLQTfQWeh8LpccqKOsOr65hDbcxCOYV_R8rmgh209vnRslURhhx9I1ycN0icAuahtcx5Inq37c79ofe4ZAFKAFHHQv55bHgfOSxsOP0htEgCJZN2VheG3gWLREBN2TZbzTDz6mu"/>
-</div>
-{/*  Floating Decor Elements  */}
-<div className="mt-lg flex gap-md">
-<span className="material-symbols-outlined text-primary-container text-4xl opacity-50">view_kanban</span>
-<span className="material-symbols-outlined text-secondary-container text-4xl opacity-50">checklist</span>
-<span className="material-symbols-outlined text-tertiary-fixed-dim text-4xl opacity-50">sticky_note_2</span>
-</div>
-</div>
-{/*  Right Side: Content & Stepper  */}
-<div className="p-xl flex flex-col justify-between h-full">
-<div>
-{/*  Stepper Indicators  */}
-<div className="flex gap-sm mb-xl">
-<div className="h-1 flex-1 bg-primary rounded-full"></div>
-<div className="h-1 flex-1 bg-surface-container-highest rounded-full"></div>
-<div className="h-1 flex-1 bg-surface-container-highest rounded-full"></div>
-</div>
-<div className="space-y-md">
-<span className="font-label-bold text-primary uppercase tracking-widest text-[10px]">Step 1 of 3</span>
-<h1 className="font-headline-xl text-on-surface">Start with a Board</h1>
-<p className="font-body-lg text-on-surface-variant leading-relaxed">
-                            A board is where the magic happens. It's your project's command center. Organize tasks, track progress, and collaborate with your team all in one place.
-                        </p>
-</div>
-{/*  Feature Tags  */}
-<div className="mt-xl flex flex-wrap gap-sm">
-<div className="flex items-center gap-xs px-sm py-xs bg-secondary-fixed text-on-secondary-fixed rounded-full text-xs font-medium">
-<span className="material-symbols-outlined text-sm">groups</span>
-                            Team Sync
-                        </div>
-<div className="flex items-center gap-xs px-sm py-xs bg-tertiary-fixed text-on-tertiary-fixed rounded-full text-xs font-medium">
-<span className="material-symbols-outlined text-sm">auto_awesome</span>
-                            Smart Filters
-                        </div>
-</div>
-</div>
-{/*  Navigation Controls  */}
-<div className="mt-xl flex items-center justify-between">
-<button 
-  onClick={handleBack}
-  className="font-label-bold text-on-surface-variant flex items-center gap-xs hover:text-on-surface transition-colors"
->
-<span className="material-symbols-outlined">arrow_back</span>
-                        Back
-                    </button>
-<button 
-  onClick={handleNext}
-  className="bg-primary hover:bg-on-primary-fixed-variant text-white px-xl py-md rounded-xl font-label-bold flex items-center gap-sm transition-all shadow-md active:scale-95"
->
-                        Continue
-                        <span className="material-symbols-outlined">arrow_forward</span>
-</button>
-</div>
-</div>
-</div>
-</main>
-{/*  Detailed Feature Section (Introductory Grid)  */}
-<section className="max-w-5xl mx-auto py-xl px-gutter grid grid-cols-1 md:grid-cols-3 gap-lg mb-xl">
-<div className="bg-white p-lg rounded-xl border border-surface-container-high shadow-sm hover:shadow-md transition-shadow">
-<div className="w-10 h-10 bg-primary-fixed rounded-lg flex items-center justify-center mb-md">
-<span className="material-symbols-outlined text-on-primary-fixed">view_column</span>
-</div>
-<h3 className="font-headline-md mb-sm">Lists</h3>
-<p className="font-body-md text-on-surface-variant">The stages of your workflow. Drag tasks from 'To Do' to 'Done' seamlessly.</p>
-</div>
-<div className="bg-white p-lg rounded-xl border border-surface-container-high shadow-sm hover:shadow-md transition-shadow">
-<div className="w-10 h-10 bg-secondary-fixed rounded-lg flex items-center justify-center mb-md">
-<span className="material-symbols-outlined text-on-secondary-fixed">description</span>
-</div>
-<h3 className="font-headline-md mb-sm">Cards</h3>
-<p className="font-body-md text-on-surface-variant">Your building blocks. Each card holds descriptions, comments, and files.</p>
-</div>
-<div className="bg-white p-lg rounded-xl border border-surface-container-high shadow-sm hover:shadow-md transition-shadow">
-<div className="w-10 h-10 bg-tertiary-fixed rounded-lg flex items-center justify-center mb-md">
-<span className="material-symbols-outlined text-on-tertiary-fixed">speed</span>
-</div>
-<h3 className="font-headline-md mb-sm">Velocity</h3>
-<p className="font-body-md text-on-surface-variant">Track your team's momentum with built-in analytics and reports.</p>
-</div>
-</section>
-{/*  Footer Action  */}
-<footer className="mt-auto py-lg text-center bg-surface-container-lowest border-t border-surface-container-high">
-<p className="font-label-sm text-on-surface-variant">Already have an account? <Link className="text-primary font-bold hover:underline" to="/login">Log in here</Link></p>
-</footer>
-{/*  FAB (Suppressed for Onboarding as per instructions, but placeholder logic if needed for later screens)  */}
-{/*  Onboarding screens should prioritize the center flow  */}
+    <div className="min-h-screen flex items-center justify-center p-6 sm:p-12">
+      <div className="w-full max-w-6xl bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+        
+        {/* Visual Showcase */}
+        <div className="bg-slate-50 dark:bg-slate-950 p-12 sm:p-24 flex flex-col items-center justify-center relative group overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-50"></div>
+          
+          <div className="relative z-10 w-full aspect-square max-w-[320px] bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl border-4 border-slate-50 dark:border-slate-800 p-12 flex flex-col justify-center items-center transition-all duration-1000 group-hover:scale-110">
+            <div className={`w-24 h-24 rounded-[2rem] ${current.colorClass} flex items-center justify-center shadow-2xl mb-10 transform transition-all duration-700`}>
+                <span className="material-symbols-outlined text-5xl text-white">{current.icon}</span>
+            </div>
+            <div className="space-y-4 w-full">
+                <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full mx-auto opacity-50"></div>
+                <div className="h-2 w-2/3 bg-slate-100 dark:bg-slate-800 rounded-full mx-auto opacity-30"></div>
+            </div>
+            {/* Floating elements */}
+            <div className="absolute -top-6 -right-6 w-16 h-16 bg-amber-400 rounded-3xl shadow-2xl flex items-center justify-center -rotate-12 border-4 border-white dark:border-slate-900">
+                <span className="material-symbols-outlined text-white text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+            </div>
+            <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-blue-600 rounded-2xl shadow-2xl flex items-center justify-center rotate-12 border-4 border-white dark:border-slate-900">
+                <span className="material-symbols-outlined text-white text-xl">bolt</span>
+            </div>
+          </div>
+        </div>
 
-    </>
+        {/* Content Section */}
+        <div className="p-12 sm:p-24 flex flex-col justify-between bg-white dark:bg-slate-900">
+          <div className="space-y-12">
+            {/* Stepper */}
+            <div className="flex gap-4">
+              {[1, 2, 3].map((s) => (
+                <div key={s} className={`h-2 flex-1 rounded-full transition-all duration-700 ${step >= s ? 'bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-slate-100 dark:bg-slate-800'}`}></div>
+              ))}
+            </div>
+
+            <div className="space-y-8">
+              <span className="font-black text-[10px] text-blue-600 uppercase tracking-[0.4em] bg-blue-600/5 px-4 py-2 rounded-lg border border-blue-600/10 inline-block">Node {step} of 3</span>
+              <h1 className="font-headline-xl text-5xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tighter leading-none">{current.title}</h1>
+              <p className="font-body-lg text-slate-500 dark:text-slate-400 font-bold leading-relaxed text-lg">{current.description}</p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              {current.tags.map(tag => (
+                <span key={tag} className="px-5 py-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] border border-slate-100 dark:border-slate-800">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-16">
+            <button 
+              onClick={handleBack}
+              className="font-black text-[10px] text-slate-400 uppercase tracking-widest hover:text-slate-900 dark:hover:text-white transition-all flex items-center gap-3 px-6 py-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800"
+            >
+              <span className="material-symbols-outlined text-lg">west</span>
+              Previous
+            </button>
+            <button 
+              onClick={handleNext}
+              className="bg-slate-900 dark:bg-blue-600 text-white px-12 py-5 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest shadow-2xl active:scale-95 transition-all flex items-center gap-4 hover:translate-x-1"
+            >
+              {step === 3 ? 'Get Started' : 'Continue'}
+              <span className="material-symbols-outlined text-lg">east</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
   );
 };
-
-export default OnboardingWelcome;

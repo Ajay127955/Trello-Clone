@@ -11,6 +11,31 @@ from .serializers import (
 from .utils import send_productive_flow_email
 from .ai_service import generate_board_structure, analyze_card_content, chat_with_assistant
 from django.contrib.auth.models import User
+from django.db.models import Count
+
+class SearchViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def list(self, request):
+        query = request.query_params.get('q', '')
+        if not query:
+            return Response({"boards": [], "cards": []})
+
+        user = request.user
+        boards = Board.objects.filter(
+            (models.Q(owner=user) | models.Q(members=user)) &
+            models.Q(title__icontains=query)
+        ).distinct()
+
+        cards = Card.objects.filter(
+            (models.Q(list__board__owner=user) | models.Q(list__board__members=user)) &
+            (models.Q(title__icontains=query) | models.Q(description__icontains=query))
+        ).distinct()
+
+        return Response({
+            "boards": BoardSerializer(boards, many=True).data,
+            "cards": CardSerializer(cards, many=True).data
+        })
 
 class AIViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
@@ -295,10 +320,22 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
+        user = request.user
+        # Get Stats
+        board_count = Board.objects.filter(models.Q(owner=user) | models.Q(members=user)).distinct().count()
+        card_count = Card.objects.filter(models.Q(list__board__owner=user) | models.Q(list__board__members=user)).count()
+        
         return Response({
-            "id": request.user.id,
-            "username": request.user.username,
-            "email": request.user.email
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "stats": {
+                "boards": board_count,
+                "cards": card_count,
+                "activity": 42 # Mock for now
+            }
         })
 
     @action(detail=False, methods=['post'])

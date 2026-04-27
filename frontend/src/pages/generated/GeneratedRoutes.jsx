@@ -1,9 +1,9 @@
 import React, { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
-// ─── Lazy-load ALL pages — only downloaded when first visited ───────────────
-// This eliminates the massive upfront bundle parse time and makes navigation instant.
+// ─── Lazy-load ALL pages ───────────────
 const LandingPage               = lazy(() => import('./LandingPage'));
 const BoardsDashboard           = lazy(() => import('./BoardsDashboard'));
 const BoardView                 = lazy(() => import('./BoardView'));
@@ -47,94 +47,98 @@ const SentimentAnalysis         = lazy(() => import('./SentimentAnalysis'));
 const StrategicRoadmap          = lazy(() => import('./StrategicRoadmap'));
 const EnterpriseSecurity        = lazy(() => import('./EnterpriseSecurity'));
 
-// ─── Minimal full-screen spinner shown during lazy chunk loading ──────────────
+// ─── Subtle top-level loader ──────────────
 const PageSpinner = () => (
-  <div
-    style={{
-      position: 'fixed', inset: 0,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: '#fff', zIndex: 9999,
-    }}
-  >
-    <div style={{ textAlign: 'center' }}>
-      <svg
-        style={{ width: 40, height: 40, animation: 'spin 0.75s linear infinite', color: '#0052CC' }}
-        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-      >
-        <circle style={{ opacity: 0.2 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-        <path style={{ opacity: 0.9 }} fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-      </svg>
-      <p style={{ marginTop: 12, fontSize: 13, color: '#5E6C84', fontFamily: 'Inter, sans-serif' }}>
-        Loading...
-      </p>
-    </div>
-    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+  <div className="fixed top-0 left-0 w-full h-1 z-[10000]">
+    <motion.div 
+      initial={{ width: "0%", opacity: 1 }}
+      animate={{ width: "100%", opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className="h-full bg-blue-600 shadow-[0_0_10px_#2563eb]"
+    />
   </div>
+);
+
+// ─── Page Transition Wrapper ──────────────
+const PageTransition = ({ children }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10, scale: 0.99 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    exit={{ opacity: 0, y: -10, scale: 1.01 }}
+    transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+    className="h-full w-full"
+  >
+    {children}
+  </motion.div>
 );
 
 const MainLayout = lazy(() => import('../../components/MainLayout'));
 
-// ─── Protected Route ──────────────────────────────────────────────────────────
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  // Show spinner while auth state is being resolved (localStorage check)
-  if (loading) return <PageSpinner />;
+  if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
   return children;
 };
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
-export const GeneratedRoutes = () => (
-  <Suspense fallback={<PageSpinner />}>
-    <Routes>
-      <Route path="/"                         element={<LandingPage />} />
-      <Route path="/landing-page"             element={<LandingPage />} />
-      <Route path="/login"                    element={<Login />} />
-      <Route path="/sign-up"                  element={<SignUp />} />
-      <Route path="/invite/:token"            element={<InvitationResponse />} />
+export const GeneratedRoutes = () => {
+  const location = useLocation();
 
-      {/* Protected Layout Routes */}
-      <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
-        <Route path="/boards-dashboard"         element={<BoardsDashboard />} />
-        <Route path="/board-view/:id"           element={<BoardView />} />
-        <Route path="/card-detail-view/:id"     element={<CardDetailView />} />
-        <Route path="/workspace-settings/:id?"  element={<WorkspaceSettings />} />
-        <Route path="/notifications"            element={<Notifications />} />
-        <Route path="/search-results"           element={<SearchResults />} />
-        <Route path="/member-profile"           element={<MemberProfile />} />
-        <Route path="/template-library"         element={<TemplateLibrary />} />
-        <Route path="/create-board"             element={<CreateBoard />} />
-        <Route path="/activity-log"             element={<ActivityLog />} />
-        <Route path="/pricing-plans"            element={<PricingPlans />} />
-        <Route path="/billing-invoices"         element={<BillingInvoices />} />
-        <Route path="/workspace-members/:id"    element={<WorkspaceMembers />} />
-        <Route path="/archived-items"           element={<ArchivedItems />} />
-        <Route path="/automation-butler"        element={<AutomationButler />} />
-        <Route path="/power-ups-directory"      element={<PowerUpsDirectory />} />
-        <Route path="/help-center"              element={<HelpCenter />} />
-        <Route path="/workspace-table-view"     element={<WorkspaceTableView />} />
-        <Route path="/workspace-dashboard-stats" element={<WorkspaceDashboardStats />} />
-        <Route path="/board-calendar-view"      element={<BoardCalendarView />} />
-        <Route path="/board-timeline-view"      element={<BoardTimelineView />} />
-        <Route path="/board-map-view"           element={<BoardMapView />} />
-        <Route path="/workspace-switcher"       element={<WorkspaceSwitcher />} />
-        <Route path="/invite-to-workspace"      element={<InviteToWorkspace />} />
-        <Route path="/export-board-data"        element={<ExportBoardData />} />
-        <Route path="/keyboard-shortcuts"       element={<KeyboardShortcuts />} />
-        <Route path="/ai-command-center"        element={<AiCommandCenter />} />
-        <Route path="/enterprise-admin-dashboard" element={<EnterpriseAdminDashboard />} />
-        <Route path="/advanced-card-detail"     element={<AdvancedCardDetail />} />
-        <Route path="/smart-links-manager"      element={<SmartLinksManager />} />
-        <Route path="/team-workload-view"       element={<TeamWorkloadView />} />
-        <Route path="/views-gallery"            element={<ViewsGallery />} />
-        <Route path="/power-up-details"         element={<PowerUpDetails />} />
-        <Route path="/sentiment-analysis"       element={<SentimentAnalysis />} />
-        <Route path="/strategic-roadmap"        element={<StrategicRoadmap />} />
-        <Route path="/enterprise-security"      element={<EnterpriseSecurity />} />
-      </Route>
+  return (
+    <Suspense fallback={<PageSpinner />}>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/"                         element={<PageTransition><LandingPage /></PageTransition>} />
+          <Route path="/landing-page"             element={<PageTransition><LandingPage /></PageTransition>} />
+          <Route path="/login"                    element={<PageTransition><Login /></PageTransition>} />
+          <Route path="/sign-up"                  element={<PageTransition><SignUp /></PageTransition>} />
+          <Route path="/invite/:token"            element={<PageTransition><InvitationResponse /></PageTransition>} />
 
-      <Route path="/onboarding-welcome"       element={<ProtectedRoute><OnboardingWelcome /></ProtectedRoute>} />
-      <Route path="*"                         element={<PageNotFound404 />} />
-    </Routes>
-  </Suspense>
-);
+          <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+            <Route path="/boards-dashboard"         element={<PageTransition><BoardsDashboard /></PageTransition>} />
+            <Route path="/board-view/:id"           element={<PageTransition><BoardView /></PageTransition>} />
+            <Route path="/card-detail-view/:id"     element={<PageTransition><CardDetailView /></PageTransition>} />
+            <Route path="/workspace-settings/:id?"  element={<PageTransition><WorkspaceSettings /></PageTransition>} />
+            <Route path="/notifications"            element={<PageTransition><Notifications /></PageTransition>} />
+            <Route path="/search-results"           element={<PageTransition><SearchResults /></PageTransition>} />
+            <Route path="/member-profile"           element={<PageTransition><MemberProfile /></PageTransition>} />
+            <Route path="/template-library"         element={<PageTransition><TemplateLibrary /></PageTransition>} />
+            <Route path="/create-board"             element={<PageTransition><CreateBoard /></PageTransition>} />
+            <Route path="/activity-log"             element={<PageTransition><ActivityLog /></PageTransition>} />
+            <Route path="/pricing-plans"            element={<PageTransition><PricingPlans /></PageTransition>} />
+            <Route path="/billing-invoices"         element={<PageTransition><BillingInvoices /></PageTransition>} />
+            <Route path="/workspace-members/:id?"   element={<PageTransition><WorkspaceMembers /></PageTransition>} />
+            <Route path="/archived-items"           element={<PageTransition><ArchivedItems /></PageTransition>} />
+            <Route path="/automation-butler"        element={<PageTransition><AutomationButler /></PageTransition>} />
+            <Route path="/power-ups-directory"      element={<PageTransition><PowerUpsDirectory /></PageTransition>} />
+            <Route path="/help-center"              element={<PageTransition><HelpCenter /></PageTransition>} />
+            <Route path="/workspace-table-view"     element={<PageTransition><WorkspaceTableView /></PageTransition>} />
+            <Route path="/workspace-dashboard-stats" element={<PageTransition><WorkspaceDashboardStats /></PageTransition>} />
+            <Route path="/board-calendar-view"      element={<PageTransition><BoardCalendarView /></PageTransition>} />
+            <Route path="/board-timeline-view"      element={<PageTransition><BoardTimelineView /></PageTransition>} />
+            <Route path="/board-map-view"           element={<PageTransition><BoardMapView /></PageTransition>} />
+            <Route path="/workspace-switcher"       element={<PageTransition><WorkspaceSwitcher /></PageTransition>} />
+            <Route path="/invite-to-workspace"      element={<PageTransition><InviteToWorkspace /></PageTransition>} />
+            <Route path="/export-board-data"        element={<PageTransition><ExportBoardData /></PageTransition>} />
+            <Route path="/keyboard-shortcuts"       element={<PageTransition><KeyboardShortcuts /></PageTransition>} />
+            <Route path="/ai-command-center"        element={<PageTransition><AiCommandCenter /></PageTransition>} />
+            <Route path="/enterprise-admin-dashboard" element={<PageTransition><EnterpriseAdminDashboard /></PageTransition>} />
+            <Route path="/advanced-card-detail"     element={<PageTransition><AdvancedCardDetail /></PageTransition>} />
+            <Route path="/smart-links-manager"      element={<PageTransition><SmartLinksManager /></PageTransition>} />
+            <Route path="/team-workload-view"       element={<PageTransition><TeamWorkloadView /></PageTransition>} />
+            <Route path="/views-gallery"            element={<PageTransition><ViewsGallery /></PageTransition>} />
+            <Route path="/power-up-details"         element={<PageTransition><PowerUpDetails /></PageTransition>} />
+            <Route path="/sentiment-analysis"       element={<PageTransition><SentimentAnalysis /></PageTransition>} />
+            <Route path="/strategic-roadmap"        element={<PageTransition><StrategicRoadmap /></PageTransition>} />
+            <Route path="/enterprise-security"      element={<PageTransition><EnterpriseSecurity /></PageTransition>} />
+          </Route>
+
+          <Route path="/onboarding-welcome"       element={<ProtectedRoute><PageTransition><OnboardingWelcome /></PageTransition></ProtectedRoute>} />
+          <Route path="*"                         element={<PageTransition><PageNotFound404 /></PageTransition>} />
+        </Routes>
+      </AnimatePresence>
+    </Suspense>
+  );
+};
+

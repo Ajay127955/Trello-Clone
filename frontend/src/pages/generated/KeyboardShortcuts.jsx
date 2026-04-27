@@ -1,285 +1,134 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-
 const KeyboardShortcuts = () => {
   const navigate = useNavigate();
-  return (
-    <>
-      
-{/*  TopAppBar Shell  */}
-<header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-12 bg-[#091E42] dark:bg-slate-950 text-white dark:text-slate-100 border-b border-white/10 shadow-sm">
-<div className="flex items-center gap-4">
-<button className="material-symbols-outlined hover:bg-white/10 transition-colors p-1 rounded" data-icon="menu">menu</button>
-<h1 className="text-lg font-black text-white tracking-tight">Workspace</h1>
-</div>
-<div className="flex items-center gap-4">
-<span className="font-sans text-sm font-medium Inter hidden md:block">Productive Flow</span>
-<div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden border-2 border-white/20">
-<img className="w-full h-full object-cover" data-alt="Professional headshot of a user with a friendly expression in a brightly lit studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBe4uWDXmfX5CGUQTsXL7d5-uQluB_ycFqFsP8zPG83m-bkuJEKWZYAhhcjtFUYwtAvEsaGf4_SDlKG_PIVDpd2mjy3hgaJ3_kSCNAV-2sJACDVXqUSUf6VcD3ocrwyNZUo6igLGFSuQSZeU3lc8LtnY6lQWRa9usPhWPyKjn2tFUfK6hyY-zCf1yxWqwRcQvH_tYqsIzt_cn-YamilNNEj6N7J5z09duhIIHF6oUbBwt538_DanrCkWLD-Dj45mN6hx2rvC3INn_E8"/>
-</div>
-</div>
-</header>
-<div className="flex pt-12 min-h-screen">
-{/*  NavigationDrawer Shell  */}
-<aside className="hidden md:flex flex-col h-[calc(100vh-48px)] w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4 gap-2 sticky top-12">
-<div className="mb-4 px-2">
-<span className="text-blue-600 dark:text-blue-400 font-bold font-headline-md">Productive Flow</span>
-</div>
-<nav className="flex flex-col gap-1">
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined" data-icon="dashboard">dashboard</span> Boards
-                </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined" data-icon="group">group</span> Members
-                </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined" data-icon="settings">settings</span> Workspace Settings
-                </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined" data-icon="calendar_today">calendar_today</span> Calendar
-                </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined" data-icon="timeline">timeline</span> Timeline
-                </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined" data-icon="analytics">analytics</span> Dashboard
-                </a>
-</nav>
-<div className="mt-auto pt-4 border-t border-slate-200">
-<a className="flex items-center gap-3 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold rounded-md font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined" data-icon="help">help</span> Help &amp; Shortcuts
-                </a>
-</div>
-</aside>
-{/*  Main Content Canvas  */}
-<main className="flex-1 p-gutter md:p-lg lg:p-xl bg-background overflow-y-auto">
-<div className="max-w-5xl mx-auto">
-{/*  Header Section  */}
-<div className="mb-lg flex flex-col md:flex-row md:items-end justify-between gap-md">
-<div>
-<nav className="flex items-center gap-2 text-outline mb-2 font-label-sm text-label-sm">
-<span>Workspace</span>
-<span className="material-symbols-outlined text-[14px]">chevron_right</span>
-<span>Help Center</span>
-</nav>
-<h2 className="text-headline-xl font-headline-xl text-on-surface">Keyboard Shortcuts</h2>
-<p className="text-body-md font-body-md text-on-surface-variant max-w-2xl mt-2">
-                            Master your workflow with Productive Flow's rapid-access commands. Navigate, edit, and organize without ever leaving your keyboard.
-                        </p>
-</div>
-<div className="flex gap-sm">
-<button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white font-label-bold text-label-bold hover:opacity-90 transition-opacity">
-<span className="material-symbols-outlined text-[18px]">print</span>
-                            Print PDF
-                        </button>
-</div>
-</div>
-{/*  Bento Grid Layout for Shortcuts  */}
-<div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
-{/*  Navigation Category (Large Span)  */}
-<section className="md:col-span-8 bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm">
-<div className="flex items-center gap-2 mb-md">
-<span className="material-symbols-outlined text-primary" data-icon="explore">explore</span>
-<h3 className="text-headline-md font-headline-md">Navigation</h3>
-</div>
-<div className="grid grid-cols-1 sm:grid-cols-2 gap-x-lg gap-y-sm">
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Open Quick Search</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">⌘</span>
-<span className="kbd-capsule">K</span>
-</div>
-</div>
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Go to My Boards</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">G</span>
-<span className="kbd-capsule">B</span>
-</div>
-</div>
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Toggle Sidebar</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">[</span>
-</div>
-</div>
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Back to Home</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">G</span>
-<span className="kbd-capsule">H</span>
-</div>
-</div>
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Open Notifications</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">N</span>
-</div>
-</div>
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Previous Board</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">⌘</span>
-<span className="kbd-capsule">[</span>
-</div>
-</div>
-</div>
-</section>
-{/*  Quick Help (Narrow Span)  */}
-<section className="md:col-span-4 bg-[#E6FCFF] dark:bg-slate-800 rounded-xl border border-secondary-container p-md flex flex-col justify-between">
-<div>
-<div className="flex items-center gap-2 mb-sm">
-<span className="material-symbols-outlined text-[#0065FF]" data-icon="lightbulb">lightbulb</span>
-<h3 className="text-label-bold font-label-bold text-[#0065FF]">Pro Tip</h3>
-</div>
-<p className="text-body-md font-body-md text-[#485980] mb-4 leading-relaxed">
-                                You can press <span className="kbd-capsule font-bold">?</span> anywhere in the app to toggle this quick reference guide instantly.
-                            </p>
-</div>
-<div className="relative rounded-lg overflow-hidden h-32 w-full">
-<div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-transparent z-10"></div>
-<img className="w-full h-full object-cover" data-alt="Modern minimalist keyboard on a wooden desk with soft natural window lighting, clean aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_JtXQ9qq8QzJyWL8G1ok6IH4sWfygP7b_GeS_3mLqPVnhx2jpRQgTt0ZKXK19-8EiXO65taz1C97C4CUZU0x6ioZ8aR3pSe0yQ6mMTAQ8l0ACrp3CDT80h7CH7gNhIXp5iMjGJNVRBfRycdJrImpcvqRcDMuFXOdATZrJJTxZ3xtny1JJtPIsUWrABQUhctgjRTwSMK5Hpmwx7KZD-TR00FFjz8HS1oDC19vifYXErNgsHJfIaK9UzTDLNDhEKXdzPo3arpXqco91"/>
-</div>
-</section>
-{/*  Cards Actions  */}
-<section className="md:col-span-6 bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm">
-<div className="flex items-center gap-2 mb-md">
-<span className="material-symbols-outlined text-primary" data-icon="view_agenda">view_agenda</span>
-<h3 className="text-headline-md font-headline-md">Card Operations</h3>
-</div>
-<div className="space-y-sm">
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Create New Card</span>
-<span className="kbd-capsule">C</span>
-</div>
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Archive Selected Card</span>
-<span className="kbd-capsule">C</span>
-</div>
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Move Card Up/Down</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">⌘</span>
-<span className="kbd-capsule">↑/↓</span>
-</div>
-</div>
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Quick Edit Card Title</span>
-<span className="kbd-capsule">E</span>
-</div>
-</div>
-</section>
-{/*  Team & Collaboration  */}
-<section className="md:col-span-6 bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm">
-<div className="flex items-center gap-2 mb-md">
-<span className="material-symbols-outlined text-primary" data-icon="group_add">group_add</span>
-<h3 className="text-headline-md font-headline-md">Collaboration</h3>
-</div>
-<div className="space-y-sm">
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Assign Self to Card</span>
-<span className="kbd-capsule">Space</span>
-</div>
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Invite Member</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">⌘</span>
-<span className="kbd-capsule">I</span>
-</div>
-</div>
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Open Comments</span>
-<span className="kbd-capsule">M</span>
-</div>
-<div className="flex justify-between items-center py-2 border-b border-surface-container">
-<span className="text-body-md font-body-md">Toggle Labels View</span>
-<span className="kbd-capsule">L</span>
-</div>
-</div>
-</section>
-{/*  System Actions (Full Width Bottom)  */}
-<section className="md:col-span-12 bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm">
-<div className="flex items-center gap-2 mb-md">
-<span className="material-symbols-outlined text-primary" data-icon="terminal">terminal</span>
-<h3 className="text-headline-md font-headline-md">Global Actions</h3>
-</div>
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-lg gap-y-xs">
-<div className="flex justify-between items-center py-2 group hover:bg-surface-container-low px-2 rounded-lg transition-colors">
-<span className="text-body-md font-body-md">Undo Action</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">⌘</span>
-<span className="kbd-capsule">Z</span>
-</div>
-</div>
-<div className="flex justify-between items-center py-2 group hover:bg-surface-container-low px-2 rounded-lg transition-colors">
-<span className="text-body-md font-body-md">Redo Action</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">⌘</span>
-<span className="kbd-capsule">Shift</span>
-<span className="kbd-capsule">Z</span>
-</div>
-</div>
-<div className="flex justify-between items-center py-2 group hover:bg-surface-container-low px-2 rounded-lg transition-colors">
-<span className="text-body-md font-body-md">Save Changes</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">⌘</span>
-<span className="kbd-capsule">S</span>
-</div>
-</div>
-<div className="flex justify-between items-center py-2 group hover:bg-surface-container-low px-2 rounded-lg transition-colors">
-<span className="text-body-md font-body-md">Copy Link</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">⌘</span>
-<span className="kbd-capsule">L</span>
-</div>
-</div>
-<div className="flex justify-between items-center py-2 group hover:bg-surface-container-low px-2 rounded-lg transition-colors">
-<span className="text-body-md font-body-md">Escape / Cancel</span>
-<span className="kbd-capsule">Esc</span>
-</div>
-<div className="flex justify-between items-center py-2 group hover:bg-surface-container-low px-2 rounded-lg transition-colors">
-<span className="text-body-md font-body-md">Toggle Dark Mode</span>
-<div className="flex gap-1">
-<span className="kbd-capsule">⌘</span>
-<span className="kbd-capsule">D</span>
-</div>
-</div>
-</div>
-</section>
-</div>
-{/*  Footer Support  */}
-<div className="mt-xl p-lg bg-surface-container rounded-xl text-center">
-<h4 className="text-headline-md font-headline-md mb-2">Still need help?</h4>
-<p className="text-body-md font-body-md text-on-surface-variant mb-md">Our support team is available 24/7 for any questions about shortcuts or board management.</p>
-<div className="flex justify-center gap-md">
-<button className="px-gutter py-2 border border-outline rounded-lg font-label-bold text-label-bold hover:bg-surface-container-high transition-colors">Documentation</button>
-<button className="px-gutter py-2 bg-primary text-white rounded-lg font-label-bold text-label-bold hover:opacity-90 transition-opacity">Contact Support</button>
-</div>
-</div>
-</div>
-</main>
-</div>
-{/*  BottomNavBar for Mobile  */}
-<nav className="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-[0_-1px_3px_rgba(0,0,0,0.05)] pb-safe">
-<a className="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-colors" href="#">
-<span className="material-symbols-outlined" data-icon="home">home</span>
-<span className="text-[10px] font-medium Inter">Home</span>
-</a>
-<a className="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-colors" href="#">
-<span className="material-symbols-outlined" data-icon="search">search</span>
-<span className="text-[10px] font-medium Inter">Search</span>
-</a>
-<a className="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-colors" href="#">
-<span className="material-symbols-outlined" data-icon="add_box">add_box</span>
-<span className="text-[10px] font-medium Inter">Create</span>
-</a>
-<a className="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400" href="#">
-<span className="material-symbols-outlined" data-icon="help">help</span>
-<span className="text-[10px] font-medium Inter">Help</span>
-</a>
-</nav>
 
-    </>
+  return (
+    <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-12">
+      {/* Screen Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16">
+        <div>
+          <h1 className="font-headline-xl text-5xl font-black text-slate-900 dark:text-white mb-2 tracking-tighter">Velocity</h1>
+          <p className="font-label-sm text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">Master the interface through rapid commands</p>
+        </div>
+        <button className="flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest hover:border-blue-600 transition-all shadow-sm">
+          <span className="material-symbols-outlined text-sm">print</span>
+          Export Protocol
+        </button>
+      </div>
+
+      {/* Bento Grid Layout */}
+      <div className="grid grid-cols-12 gap-8">
+        {/* Navigation Category */}
+        <section className="col-span-12 lg:col-span-8 bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 p-10 shadow-sm">
+          <div className="flex items-center gap-4 mb-10">
+            <div className="w-12 h-12 rounded-2xl bg-blue-600/5 flex items-center justify-center">
+              <span className="material-symbols-outlined text-blue-600">explore</span>
+            </div>
+            <h3 className="font-headline-md text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Navigation</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2">
+            {[
+              { label: 'Global Command Palette', keys: ['⌘', 'K'] },
+              { label: 'Jump to My Boards', keys: ['G', 'B'] },
+              { label: 'Toggle Interface Sidebar', keys: ['['] },
+              { label: 'Return to Command Center', keys: ['G', 'H'] },
+              { label: 'Broadcast Notifications', keys: ['N'] },
+              { label: 'Iterate Previous View', keys: ['⌘', '['] }
+            ].map(item => (
+              <div key={item.label} className="flex justify-between items-center py-4 border-b border-slate-50 dark:border-slate-800 group hover:bg-slate-50 dark:hover:bg-slate-950 px-4 rounded-xl transition-all">
+                <span className="text-sm font-bold text-slate-500 dark:text-slate-400">{item.label}</span>
+                <div className="flex gap-2">
+                  {item.keys.map(key => (
+                    <span key={key} className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-[10px] font-black text-slate-900 dark:text-white shadow-sm">{key}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Pro Tip Card */}
+        <section className="col-span-12 lg:col-span-4 bg-slate-900 dark:bg-blue-600 rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden group">
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="material-symbols-outlined text-blue-400" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
+              <span className="font-black text-[10px] uppercase tracking-widest text-blue-200">Neural Shortcut</span>
+            </div>
+            <p className="text-lg font-bold leading-relaxed mb-10 text-blue-50">
+              Press <span className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-white mx-1">?</span> anywhere in the nexus to toggle this protocol guide instantly.
+            </p>
+            <div className="rounded-2xl overflow-hidden aspect-video relative">
+              <img className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000" src="https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&q=80&w=800" alt="Keyboard" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+            </div>
+          </div>
+        </section>
+
+        {/* Card Operations */}
+        <section className="col-span-12 md:col-span-6 bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 p-10 shadow-sm">
+          <div className="flex items-center gap-4 mb-10">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-600/5 flex items-center justify-center">
+              <span className="material-symbols-outlined text-emerald-600">grid_view</span>
+            </div>
+            <h3 className="font-headline-md text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Node Operations</h3>
+          </div>
+          <div className="space-y-2">
+            {[
+              { label: 'Initialize New Node', keys: ['C'] },
+              { label: 'Archive Active Node', keys: ['X'] },
+              { label: 'Shift Node Vertical', keys: ['⌘', '↑/↓'] },
+              { label: 'Edit Metadata Inline', keys: ['E'] }
+            ].map(item => (
+              <div key={item.label} className="flex justify-between items-center py-4 border-b border-slate-50 dark:border-slate-800 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-950 transition-all">
+                <span className="text-sm font-bold text-slate-500 dark:text-slate-400">{item.label}</span>
+                <div className="flex gap-2">
+                  {item.keys.map(key => (
+                    <span key={key} className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-[10px] font-black text-slate-900 dark:text-white shadow-sm">{key}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Collaboration */}
+        <section className="col-span-12 md:col-span-6 bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 p-10 shadow-sm">
+          <div className="flex items-center gap-4 mb-10">
+            <div className="w-12 h-12 rounded-2xl bg-purple-600/5 flex items-center justify-center">
+              <span className="material-symbols-outlined text-purple-600">hub</span>
+            </div>
+            <h3 className="font-headline-md text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Collaboration</h3>
+          </div>
+          <div className="space-y-2">
+            {[
+              { label: 'Synchronize Self to Node', keys: ['Space'] },
+              { label: 'Broadcast Invitation', keys: ['⌘', 'I'] },
+              { label: 'Open Comms Stream', keys: ['M'] },
+              { label: 'Toggle Classifiers', keys: ['L'] }
+            ].map(item => (
+              <div key={item.label} className="flex justify-between items-center py-4 border-b border-slate-50 dark:border-slate-800 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-950 transition-all">
+                <span className="text-sm font-bold text-slate-500 dark:text-slate-400">{item.label}</span>
+                <div className="flex gap-2">
+                  {item.keys.map(key => (
+                    <span key={key} className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-[10px] font-black text-slate-900 dark:text-white shadow-sm">{key}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Support Section */}
+        <div className="col-span-12 mt-12 bg-slate-50 dark:bg-slate-950 rounded-[3rem] border border-slate-100 dark:border-slate-800 p-12 text-center">
+          <h4 className="font-headline-xl text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">Need Advanced Protocol Support?</h4>
+          <p className="text-slate-500 dark:text-slate-400 font-bold mb-10 max-w-2xl mx-auto leading-relaxed">Our operational specialists are on standby 24/7 to help you optimize your neural workflow and master the interface.</p>
+          <div className="flex justify-center gap-6">
+            <button className="px-10 py-4 border border-slate-200 dark:border-slate-700 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest hover:bg-white dark:hover:bg-slate-800 transition-all">Documentation</button>
+            <button className="px-10 py-4 bg-slate-900 dark:bg-blue-600 text-white rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest shadow-2xl active:scale-95 transition-all">Contact Core Support</button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

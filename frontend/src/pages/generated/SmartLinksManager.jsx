@@ -4,351 +4,207 @@ import { Link, useNavigate } from 'react-router-dom';
 const SmartLinksManager = () => {
   const navigate = useNavigate();
   return (
-    <>
-      
-{/*  TopAppBar  */}
-<header className="bg-[#091E42] dark:bg-slate-950 text-white dark:text-blue-400 font-sans text-sm font-medium tracking-tight docked full-width top-0 z-50 border-b border-white/10 dark:border-slate-800 shadow-sm flex justify-between items-center w-full px-4 h-12 fixed">
-<div className="flex items-center gap-4">
-<span className="material-symbols-outlined p-1.5 hover:bg-white/20 transition-colors rounded cursor-pointer" data-icon="grid_view">grid_view</span>
-<h1 className="text-lg font-black text-white dark:text-blue-500">TaskFlow Enterprise</h1>
-</div>
-<nav className="hidden md:flex gap-2">
-<a className="text-slate-300 hover:text-white px-3 py-1.5 hover:bg-white/20 dark:hover:bg-slate-800 transition-colors rounded-md" href="#">Workspace Boards</a>
-<a className="text-white bg-white/10 rounded-md px-3 py-1.5 font-bold" href="#">Smart Links</a>
-<a className="text-slate-300 hover:text-white px-3 py-1.5 hover:bg-white/20 dark:hover:bg-slate-800 transition-colors rounded-md" href="#">Enterprise Admin</a>
-</nav>
-<div className="flex items-center gap-3">
-<button className="material-symbols-outlined p-1.5 hover:bg-white/20 transition-colors rounded-md" data-icon="search">search</button>
-<div className="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border border-white/20">
-<img alt="User Profile" data-alt="professional headshot of a smiling business executive with soft studio lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT3EvcV-xZfqWCi0R0f6NjU9wMscXMbPWWjXw2WPR1ty7Sx5Lhqz0OIZ_qRX9F75IJK97HRnQIYZoa11tPe9x-1-a9SZhs1JwhzT7e6uDDo9Ycxo_VXDUSWs-sZdwSj1I5zAUlWldE15kmgUdrNp2sVZdv_e4NcWjBibGhti-fl7d6mzuWrFxD5D9wZD3frEpER3S1wgn0y92OcX6qcT_lI7pIBl9YK2hFd3F6zjx81qg4IwzPllHwWbBVKfvu6CCVYu3zqVl9zEWx"/>
-</div>
-</div>
-</header>
-{/*  NavigationDrawer  */}
-<aside className="hidden md:flex flex-col h-screen pt-4 pb-20 bg-slate-50 dark:bg-slate-900 font-sans text-sm font-semibold h-full w-64 border-r fixed left-0 top-12 border-r border-slate-200 dark:border-slate-800 z-40">
-<div className="px-6 py-4 flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 mb-4">
-<div className="h-10 w-10 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center">
-<span className="material-symbols-outlined text-primary" data-icon="hub">hub</span>
-</div>
-<div>
-<p className="text-xl font-bold text-[#091E42] dark:text-white leading-tight">Enterprise Global</p>
-<p className="text-[11px] text-slate-500 font-medium">Admin Console</p>
-</div>
-</div>
-<nav className="flex-1 px-3 space-y-1">
-<div className="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all cursor-pointer">
-<span className="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span>Workspace Boards</span>
-</div>
-<div className="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all cursor-pointer">
-<span className="material-symbols-outlined" data-icon="psychology">psychology</span>
-<span>AI Command Center</span>
-</div>
-<div className="flex items-center gap-3 px-4 py-2.5 bg-[#E6FCFF] dark:bg-blue-900/30 text-[#0065FF] dark:text-blue-300 border-r-4 border-[#0065FF] rounded-l-lg transition-all cursor-pointer">
-<span className="material-symbols-outlined" data-icon="link">link</span>
-<span>Smart Links Manager</span>
-</div>
-<div className="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all cursor-pointer">
-<span className="material-symbols-outlined" data-icon="groups">groups</span>
-<span>Team Management</span>
-</div>
-<div className="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all cursor-pointer">
-<span className="material-symbols-outlined" data-icon="insights">insights</span>
-<span>Analytics</span>
-</div>
-<div className="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all cursor-pointer">
-<span className="material-symbols-outlined" data-icon="bolt">bolt</span>
-<span>Automation Settings</span>
-</div>
-</nav>
-<div className="p-4 mt-auto">
-<div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800">
-<p className="text-[12px] text-blue-800 dark:text-blue-300 font-bold mb-1">STORAGE QUOTA</p>
-<div className="w-full bg-blue-200 dark:bg-blue-800 h-1.5 rounded-full overflow-hidden">
-<div className="bg-primary h-full w-[72%]"></div>
-</div>
-<p className="text-[10px] text-blue-600 dark:text-blue-400 mt-2">72% of 500GB used</p>
-</div>
-</div>
-</aside>
-{/*  Main Content Canvas  */}
-<main className="md:pl-64 pt-12 min-h-screen">
-<div className="p-6 lg:p-8 max-w-7xl mx-auto">
-{/*  Header Section  */}
-<div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-<div>
-<nav className="flex items-center gap-2 text-slate-500 mb-2">
-<span className="text-label-sm font-font-label-sm">Integrations</span>
-<span className="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
-<span className="text-label-sm font-font-label-sm text-primary">Smart Links Manager</span>
-</nav>
-<h2 className="text-headline-xl font-font-headline-xl text-[#091E42]">Smart Links Manager</h2>
-<p className="text-body-md font-font-body-md text-slate-600 mt-1">Configure live previews and bi-directional syncing for external platforms.</p>
-</div>
-<div className="flex items-center gap-3">
-<button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-label-bold font-font-label-bold text-slate-700 hover:bg-slate-50 transition-colors">
-<span className="material-symbols-outlined" data-icon="history">history</span>
-                        Sync Logs
-                    </button>
-<button className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-label-bold font-font-label-bold hover:bg-blue-700 transition-colors shadow-sm">
-<span className="material-symbols-outlined" data-icon="add">add</span>
-                        Connect New Tool
-                    </button>
-</div>
-</div>
-{/*  Bento Grid Layout  */}
-<div className="bento-grid">
-{/*  Status & Active Connections (Large Hero Card)  */}
-<div className="col-span-12 lg:col-span-8 bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-<div className="flex items-center justify-between mb-6">
-<h3 className="text-headline-md font-font-headline-md text-[#091E42]">Active Board Connections</h3>
-<span className="px-2.5 py-1 bg-green-50 text-green-700 rounded-full text-[11px] font-bold border border-green-100 uppercase tracking-wider">All Systems Operational</span>
-</div>
-<div className="space-y-4">
-{/*  Jira Integration  */}
-<div className="flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group">
-<div className="h-12 w-12 bg-blue-600 rounded-lg flex items-center justify-center text-white shrink-0">
-<span className="material-symbols-outlined text-2xl" data-icon="developer_board">developer_board</span>
-</div>
-<div className="flex-1">
-<div className="flex items-center gap-2">
-<h4 className="font-bold text-slate-900">Jira Software</h4>
-<span className="h-2 w-2 rounded-full bg-green-500"></span>
-<span className="text-[11px] text-slate-500 font-medium">Synced 2m ago</span>
-</div>
-<p className="text-body-md font-font-body-md text-slate-500">Project: AT-FINANCE-OPS</p>
-</div>
-<div className="flex items-center gap-4">
-<div className="hidden sm:block text-right">
-<p className="text-label-bold font-font-label-bold text-slate-900">142 Live Cards</p>
-<p className="text-[11px] text-slate-500">Bi-directional enabled</p>
-</div>
-<button className="p-2 text-slate-400 hover:text-primary transition-colors">
-<span className="material-symbols-outlined" data-icon="settings">settings</span>
-</button>
-</div>
-</div>
-{/*  Confluence Integration  */}
-<div className="flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group">
-<div className="h-12 w-12 bg-blue-400 rounded-lg flex items-center justify-center text-white shrink-0">
-<span className="material-symbols-outlined text-2xl" data-icon="description">description</span>
-</div>
-<div className="flex-1">
-<div className="flex items-center gap-2">
-<h4 className="font-bold text-slate-900">Confluence Wiki</h4>
-<span className="h-2 w-2 rounded-full bg-green-500"></span>
-<span className="text-[11px] text-slate-500 font-medium">Synced 14m ago</span>
-</div>
-<p className="text-body-md font-font-body-md text-slate-500">Space: PRODUCT-SPECS</p>
-</div>
-<div className="flex items-center gap-4">
-<div className="hidden sm:block text-right">
-<p className="text-label-bold font-font-label-bold text-slate-900">38 Previews</p>
-<p className="text-[11px] text-slate-500">Rich embed active</p>
-</div>
-<button className="p-2 text-slate-400 hover:text-primary transition-colors">
-<span className="material-symbols-outlined" data-icon="settings">settings</span>
-</button>
-</div>
-</div>
-{/*  Slack Integration  */}
-<div className="flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group">
-<div className="h-12 w-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white shrink-0">
-<span className="material-symbols-outlined text-2xl" data-icon="forum">forum</span>
-</div>
-<div className="flex-1">
-<div className="flex items-center gap-2">
-<h4 className="font-bold text-slate-900">Slack Notifications</h4>
-<span className="h-2 w-2 rounded-full bg-green-500"></span>
-<span className="text-[11px] text-slate-500 font-medium">Streaming active</span>
-</div>
-<p className="text-body-md font-font-body-md text-slate-500">Channels: #ops-updates, #alerts</p>
-</div>
-<div className="flex items-center gap-4">
-<div className="hidden sm:block text-right">
-<p className="text-label-bold font-font-label-bold text-slate-900">Real-time</p>
-<p className="text-[11px] text-slate-500">Mirroring status</p>
-</div>
-<button className="p-2 text-slate-400 hover:text-primary transition-colors">
-<span className="material-symbols-outlined" data-icon="settings">settings</span>
-</button>
-</div>
-</div>
-</div>
-</div>
-{/*  Live Preview Settings (Sidebar Style Card)  */}
-<div className="col-span-12 lg:col-span-4 bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-<h3 className="text-headline-md font-font-headline-md text-[#091E42] mb-4">Preview Defaults</h3>
-<div className="space-y-6">
-<div>
-<label className="block text-label-bold font-font-label-bold text-slate-700 mb-2">Default View Type</label>
-<div className="grid grid-cols-2 gap-2">
-<button className="p-3 border-2 border-primary bg-blue-50 rounded-lg text-center">
-<span className="material-symbols-outlined block text-primary mb-1" data-icon="dock_to_right">dock_to_right</span>
-<span className="text-[11px] font-bold text-primary uppercase">Compact</span>
-</button>
-<button className="p-3 border border-slate-200 hover:border-slate-300 rounded-lg text-center transition-colors">
-<span className="material-symbols-outlined block text-slate-400 mb-1" data-icon="aspect_ratio">aspect_ratio</span>
-<span className="text-[11px] font-bold text-slate-600 uppercase">Expanded</span>
-</button>
-</div>
-</div>
-<div className="space-y-3">
-<div className="flex items-center justify-between">
-<span className="text-body-md font-font-body-md text-slate-700">Auto-preview links</span>
-<div className="w-10 h-5 bg-primary rounded-full relative">
-<div className="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
-</div>
-</div>
-<div className="flex items-center justify-between">
-<span className="text-body-md font-font-body-md text-slate-700">Show card metadata</span>
-<div className="w-10 h-5 bg-primary rounded-full relative">
-<div className="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
-</div>
-</div>
-<div className="flex items-center justify-between">
-<span className="text-body-md font-font-body-md text-slate-700">Allow link attachments</span>
-<div className="w-10 h-5 bg-slate-200 rounded-full relative">
-<div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full"></div>
-</div>
-</div>
-</div>
-<div className="pt-6 border-t border-slate-100">
-<h4 className="text-label-bold font-font-label-bold text-[#091E42] mb-2 uppercase tracking-wide">Security</h4>
-<p className="text-[12px] text-slate-500 mb-4 leading-relaxed">External data is proxied through our secure gateway. OAuth 2.0 tokens are encrypted.</p>
-<button className="w-full py-2 text-primary border border-primary rounded-lg text-label-bold font-font-label-bold hover:bg-blue-50 transition-colors">Manage Auth Tokens</button>
-</div>
-</div>
-</div>
-{/*  Sync Visualization (Glassmorphic)  */}
-<div className="col-span-12 lg:col-span-12 bg-gradient-to-r from-[#0065FF] to-[#004fcb] rounded-xl p-8 text-white relative overflow-hidden">
-{/*  Abstract Background Graphic  */}
-<div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
-<div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-400/20 rounded-full -ml-20 -mb-20 blur-2xl"></div>
-<div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-<div className="flex-1">
-<h3 className="text-2xl font-black mb-2">Bi-Directional Sync Engine</h3>
-<p className="text-blue-100 max-w-lg mb-6">Changes made in Trello cards are automatically updated in connected Jira issues and Google Drive documents, and vice-versa.</p>
-<div className="flex gap-4">
-<div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl flex-1">
-<div className="flex items-center gap-2 mb-1">
-<span className="material-symbols-outlined text-[18px]" data-icon="sync_alt">sync_alt</span>
-<span className="text-label-bold font-font-label-bold uppercase">Uptime</span>
-</div>
-<div className="text-2xl font-bold">99.98%</div>
-</div>
-<div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl flex-1">
-<div className="flex items-center gap-2 mb-1">
-<span className="material-symbols-outlined text-[18px]" data-icon="bolt">bolt</span>
-<span className="text-label-bold font-font-label-bold uppercase">Avg. Latency</span>
-</div>
-<div className="text-2xl font-bold">142ms</div>
-</div>
-<div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl flex-1">
-<div className="flex items-center gap-2 mb-1">
-<span className="material-symbols-outlined text-[18px]" data-icon="cached">cached</span>
-<span className="text-label-bold font-font-label-bold uppercase">Syncs/Day</span>
-</div>
-<div className="text-2xl font-bold">14.2k</div>
-</div>
-</div>
-</div>
-<div className="shrink-0 bg-white/5 backdrop-blur-xl border border-white/20 p-6 rounded-2xl w-full md:w-auto min-w-[320px]">
-<h4 className="text-label-bold font-font-label-bold mb-4 uppercase">Sync Hierarchy</h4>
-<div className="space-y-4">
-<div className="flex items-center gap-3">
-<div className="w-8 h-8 rounded bg-blue-500/30 flex items-center justify-center">
-<span className="material-symbols-outlined text-[16px]" data-icon="priority_high">priority_high</span>
-</div>
-<span className="text-body-md">Trello (Primary Source)</span>
-</div>
-<div className="w-px h-4 bg-white/20 ml-4"></div>
-<div className="flex items-center gap-3">
-<div className="w-8 h-8 rounded bg-white/10 flex items-center justify-center">
-<span className="material-symbols-outlined text-[16px]" data-icon="mediation">mediation</span>
-</div>
-<span className="text-body-md">Enterprise Gateway Proxy</span>
-</div>
-<div className="w-px h-4 bg-white/20 ml-4"></div>
-<div className="flex items-center gap-3">
-<div className="w-8 h-8 rounded bg-white/10 flex items-center justify-center">
-<span className="material-symbols-outlined text-[16px]" data-icon="link_off">link_off</span>
-</div>
-<span className="text-body-md text-blue-200 italic">Conflict resolution: Auto-merge</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-{/*  Google Drive Component (Bottom Row)  */}
-<div className="col-span-12 lg:col-span-6 bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-<div className="flex items-start justify-between mb-6">
-<div className="flex items-center gap-3">
-<div className="h-10 w-10 bg-green-500 rounded-lg flex items-center justify-center text-white">
-<span className="material-symbols-outlined" data-icon="add_to_drive">add_to_drive</span>
-</div>
-<div>
-<h3 className="font-bold text-slate-900">Google Drive File Stream</h3>
-<p className="text-[12px] text-slate-500">Connected to Enterprise Shared Drive</p>
-</div>
-</div>
-<button className="text-primary text-label-bold font-font-label-bold hover:underline">Change Drive</button>
-</div>
-<div className="bg-slate-50 rounded-lg p-4 flex items-center justify-between border border-slate-100">
-<div className="flex items-center gap-3">
-<span className="material-symbols-outlined text-amber-500" data-icon="folder">folder</span>
-<span className="text-body-md text-slate-700 font-medium">/2024-Campaign-Assets/Designs</span>
-</div>
-<span className="text-[11px] text-slate-400">1.2 GB</span>
-</div>
-</div>
-{/*  Connectivity Stats (Bottom Row)  */}
-<div className="col-span-12 lg:col-span-6 bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-<h3 className="font-bold text-slate-900 mb-4">Account Connectivity Status</h3>
-<div className="grid grid-cols-2 gap-4">
-<div className="flex items-center gap-3">
-<div className="h-2 w-2 rounded-full bg-green-500"></div>
-<span className="text-body-md text-slate-600">Jira API Key (Valid)</span>
-</div>
-<div className="flex items-center gap-3">
-<div className="h-2 w-2 rounded-full bg-green-500"></div>
-<span className="text-body-md text-slate-600">Google OAuth (Active)</span>
-</div>
-<div className="flex items-center gap-3">
-<div className="h-2 w-2 rounded-full bg-green-500"></div>
-<span className="text-body-md text-slate-600">Slack Webhook (Ready)</span>
-</div>
-<div className="flex items-center gap-3">
-<div className="h-2 w-2 rounded-full bg-amber-500"></div>
-<span className="text-body-md text-slate-600">Figma Link (Expired)</span>
-</div>
-</div>
-<button className="mt-6 w-full py-2 bg-slate-50 text-slate-600 rounded-lg text-label-bold font-font-label-bold border border-slate-200 hover:bg-slate-100 transition-colors">Re-authenticate All</button>
-</div>
-</div>
-</div>
-</main>
-{/*  BottomNavBar (Mobile Only)  */}
-<nav className="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 px-4 bg-white dark:bg-slate-900 z-50 border-t border-slate-200 dark:border-slate-800 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-<div className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400">
-<span className="material-symbols-outlined" data-icon="view_kanban">view_kanban</span>
-<span className="text-[10px] font-bold tracking-wide uppercase mt-1">Boards</span>
-</div>
-<div className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400">
-<span className="material-symbols-outlined" data-icon="search">search</span>
-<span className="text-[10px] font-bold tracking-wide uppercase mt-1">Search</span>
-</div>
-<div className="flex flex-col items-center justify-center text-[#0065FF] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl px-4 py-1">
-<span className="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
-<span className="text-[10px] font-bold tracking-wide uppercase mt-1">AI</span>
-</div>
-<div className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400">
-<span className="material-symbols-outlined" data-icon="supervisor_account">supervisor_account</span>
-<span className="text-[10px] font-bold tracking-wide uppercase mt-1">Admin</span>
-</div>
-</nav>
+    <div className="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 py-12 pb-24 md:pb-12">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20">
+        <div>
+          <nav className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">
+            <span>Integrations</span>
+            <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span className="text-blue-600">Smart Links Manager</span>
+          </nav>
+          <h1 className="font-headline-xl text-6xl font-black text-slate-900 dark:text-white mb-4 tracking-tighter text-balance">Nexus Bridge</h1>
+          <p className="font-label-sm text-[10px] text-slate-400 font-black uppercase tracking-[0.3em]">Configure bi-directional synchronization protocols for the global ecosystem.</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <button className="bg-white dark:bg-slate-900 px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all active:scale-95 flex items-center gap-3">
+            <span className="material-symbols-outlined text-lg">history</span>
+            Sync Logs
+          </button>
+          <button className="bg-slate-900 dark:bg-blue-600 px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest text-white shadow-2xl hover:shadow-blue-600/20 transition-all active:scale-95 flex items-center gap-3">
+            <span className="material-symbols-outlined text-lg">add</span>
+            Initialize Node
+          </button>
+        </div>
+      </div>
 
-    </>
+      <div className="grid grid-cols-12 gap-10">
+        {/* Left Column: Active Connections */}
+        <div className="col-span-12 lg:col-span-8 space-y-10">
+          <div className="bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden relative group">
+            <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:opacity-10 transition-opacity">
+              <span className="material-symbols-outlined text-9xl">hub</span>
+            </div>
+            <div className="px-12 py-10 border-b border-slate-50 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-950/50 relative z-10">
+              <h3 className="font-black text-[10px] text-slate-900 dark:text-white uppercase tracking-[0.2em]">Operational Nodes</h3>
+              <div className="flex items-center gap-3">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Active Synchronization</span>
+              </div>
+            </div>
+            <div className="divide-y divide-slate-50 dark:divide-slate-800 relative z-10">
+              {[
+                { name: 'Jira Software', id: 'AT-FINANCE-OPS', status: 'Synced 2m ago', icon: 'developer_board', color: 'blue', stats: '142 Live Nodes' },
+                { name: 'Confluence Wiki', id: 'PRODUCT-SPECS', status: 'Synced 14m ago', icon: 'description', color: 'blue', stats: '38 Previews' },
+                { name: 'Slack Comms', id: '#ops-updates', status: 'Streaming active', icon: 'forum', color: 'indigo', stats: 'Real-time' }
+              ].map((tool, i) => (
+                <div key={i} className="p-10 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all group/item">
+                  <div className="flex items-center gap-8">
+                    <div className={`w-16 h-16 bg-${tool.color}-600/5 rounded-2xl flex items-center justify-center text-${tool.color}-600 font-black text-xl shadow-inner group-hover/item:scale-110 transition-transform`}>
+                      <span className="material-symbols-outlined text-3xl">{tool.icon}</span>
+                    </div>
+                    <div>
+                      <div className="font-headline-md text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-3">
+                        {tool.name}
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      </div>
+                      <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Matrix: {tool.id} • {tool.status}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-12">
+                    <div className="text-right hidden sm:block">
+                      <div className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">{tool.stats}</div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-blue-600">Sync Active</div>
+                    </div>
+                    <button className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-600/5 rounded-2xl transition-all">
+                      <span className="material-symbols-outlined">settings</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-slate-900 rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span className="material-symbols-outlined text-9xl">sync_alt</span>
+            </div>
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
+              <div className="flex-1">
+                <h3 className="font-headline-xl text-3xl font-black mb-4 tracking-tighter text-blue-300">Bi-Directional Core</h3>
+                <p className="text-blue-100/60 font-medium text-sm leading-relaxed mb-10 max-w-lg italic">The Nexus Sync Engine automatically harmonizes data across the global infrastructure, ensuring 100% telemetry fidelity.</p>
+                <div className="grid grid-cols-3 gap-6">
+                  {[
+                    { label: 'Uptime', value: '99.98%', icon: 'verified' },
+                    { label: 'Latency', value: '142ms', icon: 'bolt' },
+                    { label: 'Syncs/24h', value: '14.2k', icon: 'cached' }
+                  ].map((stat, i) => (
+                    <div key={i} className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] hover:bg-white/10 transition-all">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="material-symbols-outlined text-[14px] text-blue-400">{stat.icon}</span>
+                        <span className="font-black text-[8px] uppercase tracking-widest text-blue-300">{stat.label}</span>
+                      </div>
+                      <div className="text-xl font-black tracking-tight">{stat.value}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="w-full md:w-80 bg-white/5 backdrop-blur-2xl border border-white/10 p-10 rounded-[2.5rem] relative group/panel overflow-hidden">
+                <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl group-hover/panel:scale-150 transition-transform duration-1000"></div>
+                <h4 className="font-black text-[9px] uppercase tracking-[0.2em] text-blue-300 mb-8 relative z-10">Bridge Hierarchy</h4>
+                <div className="space-y-6 relative z-10">
+                  {[
+                    { label: 'Trello Master', icon: 'priority_high', active: true },
+                    { label: 'Nexus Gateway', icon: 'mediation' },
+                    { label: 'Auto-Merge Resolve', icon: 'link_off' }
+                  ].map((step, i) => (
+                    <div key={i} className="flex items-center gap-4">
+                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center border ${step.active ? 'bg-blue-600 border-blue-600 shadow-xl' : 'bg-white/5 border-white/10 opacity-50'}`}>
+                        <span className="material-symbols-outlined text-sm">{step.icon}</span>
+                      </div>
+                      <span className={`text-[11px] font-black uppercase tracking-widest ${step.active ? 'text-white' : 'text-slate-400'}`}>{step.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Settings & Security */}
+        <div className="col-span-12 lg:col-span-4 space-y-10">
+          <div className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-sm relative">
+            <h3 className="font-black text-[10px] text-slate-900 dark:text-white uppercase tracking-[0.2em] mb-10">Preview Defaults</h3>
+            <div className="space-y-8">
+              <div>
+                <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-4 block ml-1">Visualization Mode</label>
+                <div className="grid grid-cols-2 gap-4">
+                  <button className="p-6 bg-blue-600 text-white rounded-[1.5rem] text-center shadow-2xl shadow-blue-600/20 active:scale-95 transition-all">
+                    <span className="material-symbols-outlined block text-2xl mb-2">dock_to_right</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest">Compact</span>
+                  </button>
+                  <button className="p-6 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-[1.5rem] text-center hover:bg-white dark:hover:bg-slate-900 transition-all active:scale-95">
+                    <span className="material-symbols-outlined block text-2xl mb-2 text-slate-400">aspect_ratio</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Expanded</span>
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-6">
+                {[
+                  { label: 'Auto-preview links', active: true },
+                  { label: 'Show node metadata', active: true },
+                  { label: 'Allow link attachments', active: false }
+                ].map((toggle, i) => (
+                  <div key={i} className="flex items-center justify-between group cursor-pointer">
+                    <span className="text-[11px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest group-hover:text-blue-600 transition-colors">{toggle.label}</span>
+                    <div className={`w-12 h-6 rounded-full relative transition-colors ${toggle.active ? 'bg-blue-600 shadow-lg shadow-blue-600/20' : 'bg-slate-200 dark:bg-slate-800'}`}>
+                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${toggle.active ? 'right-1' : 'left-1'}`}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="pt-10 border-t border-slate-50 dark:border-slate-800">
+                <h4 className="font-black text-[9px] uppercase tracking-widest text-slate-900 dark:text-white mb-4">Security Protocol</h4>
+                <p className="text-[10px] text-slate-400 font-medium leading-relaxed mb-8 italic">External telemetry is proxied via Nexus Secure Gateway. RSA-4096 encryption active.</p>
+                <button className="w-full py-4 text-blue-600 border-2 border-blue-600/20 hover:border-blue-600 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all active:scale-95">Rotate Auth Tokens</button>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group/drive">
+            <div className="absolute -right-10 -top-10 w-40 h-40 bg-emerald-600/5 rounded-full blur-3xl group-hover/drive:scale-150 transition-transform duration-1000"></div>
+            <div className="flex items-center justify-between mb-8 relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-emerald-600/5 rounded-2xl flex items-center justify-center text-emerald-600 shadow-inner">
+                  <span className="material-symbols-outlined text-2xl">add_to_drive</span>
+                </div>
+                <div>
+                  <h3 className="font-black text-[10px] text-slate-900 dark:text-white uppercase tracking-[0.2em]">Drive Stream</h3>
+                  <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-1">Shared Cluster: Active</p>
+                </div>
+              </div>
+              <button className="text-emerald-600 text-[9px] font-black uppercase tracking-widest hover:underline">Change</button>
+            </div>
+            <div className="bg-slate-50 dark:bg-slate-950 rounded-2xl p-6 flex items-center justify-between border border-slate-100 dark:border-slate-800 relative z-10 shadow-inner">
+              <div className="flex items-center gap-4">
+                <span className="material-symbols-outlined text-amber-500 text-2xl">folder</span>
+                <span className="text-[11px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">/2024-Campaign-Assets</span>
+              </div>
+              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">1.2 GB</span>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-sm">
+            <h3 className="font-black text-[10px] text-slate-900 dark:text-white uppercase tracking-[0.2em] mb-10">Account Matrix</h3>
+            <div className="space-y-6">
+              {[
+                { label: 'Jira API Stream', status: 'Valid', color: 'emerald' },
+                { label: 'Google OAuth Node', status: 'Active', color: 'emerald' },
+                { label: 'Slack Webhook', status: 'Ready', color: 'emerald' },
+                { label: 'Figma Bridge', status: 'Expired', color: 'amber' }
+              ].map((conn, i) => (
+                <div key={i} className="flex items-center gap-4 group cursor-default">
+                  <div className={`w-2.5 h-2.5 rounded-full bg-${conn.color}-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] group-hover:scale-150 transition-transform`}></div>
+                  <span className="text-[11px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest flex-1">{conn.label}</span>
+                  <span className={`text-[9px] font-black uppercase tracking-widest text-${conn.color}-600`}>{conn.status}</span>
+                </div>
+              ))}
+            </div>
+            <button className="mt-10 w-full py-4 bg-slate-50 dark:bg-slate-950 text-slate-400 rounded-2xl text-[9px] font-black uppercase tracking-widest border border-slate-100 dark:border-slate-800 hover:bg-slate-900 hover:text-white transition-all active:scale-95">Re-authenticate All Nodes</button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

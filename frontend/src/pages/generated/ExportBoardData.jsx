@@ -1,238 +1,120 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const ExportBoardData = () => {
   const navigate = useNavigate();
-  return (
-    <>
-      
-{/*  TopAppBar  */}
-<header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-12 bg-[#091E42] dark:bg-slate-950 text-white dark:text-slate-100 border-b border-white/10 shadow-sm">
-<div className="flex items-center gap-4">
-<button className="material-symbols-outlined p-2 hover:bg-white/10 transition-colors rounded-lg">menu</button>
-<span className="text-lg font-black text-white tracking-tight">Workspace</span>
-</div>
-<div className="flex items-center gap-2">
-<nav className="hidden md:flex items-center gap-6 mr-6 font-sans text-sm font-medium Inter">
-<a className="text-slate-300 hover:text-white transition-colors"  onClick={(e) => { e.preventDefault(); navigate('/boards-dashboard'); }}>Boards</a>
-<a className="text-slate-300 hover:text-white transition-colors"  onClick={(e) => { e.preventDefault(); navigate('/workspace-members'); }}>Members</a>
-<a className="text-white font-bold border-b-2 border-white pb-1" href="#">Workspace Settings</a>
-</nav>
-<img alt="User Profile Avatar" className="w-8 h-8 rounded-full border border-white/20" data-alt="close-up professional headshot of a smiling woman with glasses in a minimalist office setting with natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7qpEJxpohIdGIczc4-c8TYVG_TXZ2BA7-KliHlgMq22CmVXLdmBannONRY5z4NQpUHTEHjxOFyVNPinRUAdTbQ_ehnyQ6DxioL6k84Qr2miq9O3uXXdEz0EW2ral-J1v7vTGD6wRFWtTHn6D6guzjEOt5seiH9dy_7kk_Dy0e4MgS_oMP2p4Hlxaa7Lo9PbspFtFuKPJ6dgvMpz-FOguu9j0Jdo-zoBKooiTs5Y9QoUHDoEVV0Uo-hbWTVou1UXOdg5r0va2LHWd8"/>
-</div>
-</header>
-<div className="flex pt-12 h-screen overflow-hidden">
-{/*  NavigationDrawer  */}
-<aside className="hidden md:flex flex-col h-full w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4 gap-2">
-<div className="px-2 py-4 mb-4">
-<span className="text-blue-600 dark:text-blue-400 font-bold font-sans text-sm Inter">Productive Flow</span>
-</div>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined">dashboard</span> Boards
-            </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined">group</span> Members
-            </a>
-<a className="flex items-center gap-3 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold rounded-md font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined">settings</span> Workspace Settings
-            </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined">calendar_today</span> Calendar
-            </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined">timeline</span> Timeline
-            </a>
-<a className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
-<span className="material-symbols-outlined">analytics</span> Dashboard
-            </a>
-</aside>
-{/*  Main Canvas  */}
-<main className="flex-1 overflow-y-auto bg-background p-gutter md:p-lg pb-32 md:pb-lg">
-<div className="max-w-5xl mx-auto space-y-lg">
-{/*  Header Section  */}
-<section className="space-y-xs">
-<h1 className="font-headline-xl text-headline-xl text-on-surface">Export Data</h1>
-<p className="font-body-md text-body-md text-on-surface-variant">Generate a backup or move your data to another application by exporting your boards and workspace information.</p>
-</section>
-<div className="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-{/*  Export Options & Settings  */}
-<div className="lg:col-span-2 space-y-lg">
-{/*  Bento: Primary Export Actions  */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-{/*  JSON Export  */}
-<div className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow">
-<div className="flex items-start justify-between mb-md">
-<div className="bg-primary-container/10 p-sm rounded-lg">
-<span className="material-symbols-outlined text-primary">data_object</span>
-</div>
-<span className="text-[10px] font-bold px-2 py-1 bg-surface-container-highest rounded text-on-surface-variant uppercase tracking-wider">Recommended</span>
-</div>
-<h3 className="font-headline-md text-headline-md mb-xs">Export as JSON</h3>
-<p className="font-body-md text-body-md text-on-surface-variant mb-md">Best for developers and data portability. Includes all metadata and relational links.</p>
-<button className="w-full py-sm bg-primary text-on-primary rounded-lg font-label-bold text-label-bold hover:bg-primary/90 transition-colors">Start JSON Export</button>
-</div>
-{/*  CSV Export  */}
-<div className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow">
-<div className="flex items-start justify-between mb-md">
-<div className="bg-secondary-container/30 p-sm rounded-lg text-secondary">
-<span className="material-symbols-outlined">table_view</span>
-</div>
-</div>
-<h3 className="font-headline-md text-headline-md mb-xs">Export as CSV</h3>
-<p className="font-body-md text-body-md text-on-surface-variant mb-md">Best for spreadsheets and reporting. Includes task lists, dates, and assignees.</p>
-<button className="w-full py-sm border border-outline text-primary rounded-lg font-label-bold text-label-bold hover:bg-surface-container transition-colors">Start CSV Export</button>
-</div>
-</div>
-{/*  Configuration Section  */}
-<div className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
-<div className="p-md border-b border-outline-variant bg-surface-container-low">
-<h2 className="font-headline-md text-headline-md">Export Settings</h2>
-</div>
-<div className="p-md space-y-md">
-{/*  Privacy Toggle  */}
-<div className="flex items-center justify-between">
-<div className="flex items-start gap-md">
-<span className="material-symbols-outlined text-on-surface-variant mt-1">privacy_tip</span>
-<div>
-<p className="font-label-bold text-label-bold">Include Private Comments</p>
-<p className="text-[12px] text-on-surface-variant">Includes internal discussion notes and restricted member updates.</p>
-</div>
-</div>
-<label className="relative inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
-<div className="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-</label>
-</div>
-<hr className="border-outline-variant" />
-{/*  Attachments  */}
-<div className="flex items-center justify-between">
-<div className="flex items-start gap-md">
-<span className="material-symbols-outlined text-on-surface-variant mt-1">attachment</span>
-<div>
-<p className="font-label-bold text-label-bold">Export Attachments</p>
-<p className="text-[12px] text-on-surface-variant">Includes links to hosted files. Increases export size significantly.</p>
-</div>
-</div>
-<label className="relative inline-flex items-center cursor-pointer">
-<input className="sr-only peer" type="checkbox"/>
-<div className="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-</label>
-</div>
-<hr className="border-outline-variant" />
-{/*  Member Mapping  */}
-<div className="flex items-center justify-between">
-<div className="flex items-start gap-md">
-<span className="material-symbols-outlined text-on-surface-variant mt-1">badge</span>
-<div>
-<p className="font-label-bold text-label-bold">Anonymize Member Data</p>
-<p className="text-[12px] text-on-surface-variant">Replaces real names with generic identifiers (e.g., User 1, User 2).</p>
-</div>
-</div>
-<label className="relative inline-flex items-center cursor-pointer">
-<input className="sr-only peer" type="checkbox"/>
-<div className="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-</label>
-</div>
-</div>
-</div>
-</div>
-{/*  Side Panel: History  */}
-<div className="space-y-lg">
-<div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden">
-<div className="p-md border-b border-outline-variant bg-surface-container-low flex items-center gap-2">
-<span className="material-symbols-outlined text-on-surface-variant">history</span>
-<h2 className="font-headline-md text-headline-md">Export History</h2>
-</div>
-<div className="divide-y divide-outline-variant">
-{/*  History Item 1  */}
-<div className="p-md hover:bg-surface-container-low transition-colors cursor-pointer">
-<div className="flex justify-between items-start mb-2">
-<span className="font-label-bold text-label-bold">workspace_backup.json</span>
-<span className="text-[10px] bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded uppercase">Success</span>
-</div>
-<div className="flex items-center justify-between text-on-surface-variant">
-<div className="flex items-center gap-1">
-<span className="material-symbols-outlined text-[14px]">calendar_today</span>
-<span className="text-[11px]">Oct 24, 2023</span>
-</div>
-<div className="flex items-center gap-1">
-<span className="material-symbols-outlined text-[14px]">database</span>
-<span className="text-[11px]">12.4 MB</span>
-</div>
-</div>
-</div>
-{/*  History Item 2  */}
-<div className="p-md hover:bg-surface-container-low transition-colors cursor-pointer">
-<div className="flex justify-between items-start mb-2">
-<span className="font-label-bold text-label-bold">q3_report_tasks.csv</span>
-<span className="text-[10px] bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded uppercase">Success</span>
-</div>
-<div className="flex items-center justify-between text-on-surface-variant">
-<div className="flex items-center gap-1">
-<span className="material-symbols-outlined text-[14px]">calendar_today</span>
-<span className="text-[11px]">Oct 12, 2023</span>
-</div>
-<div className="flex items-center gap-1">
-<span className="material-symbols-outlined text-[14px]">database</span>
-<span className="text-[11px]">1.2 MB</span>
-</div>
-</div>
-</div>
-{/*  History Item 3 - Expired  */}
-<div className="p-md opacity-60">
-<div className="flex justify-between items-start mb-2">
-<span className="font-label-bold text-label-bold">full_export_sep.json</span>
-<span className="text-[10px] bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded uppercase">Expired</span>
-</div>
-<div className="flex items-center justify-between text-on-surface-variant">
-<div className="flex items-center gap-1">
-<span className="material-symbols-outlined text-[14px]">calendar_today</span>
-<span className="text-[11px]">Sep 30, 2023</span>
-</div>
-<button className="text-[11px] font-bold text-primary flex items-center gap-1">
-<span className="material-symbols-outlined text-[14px]">refresh</span> Re-run
-                                        </button>
-</div>
-</div>
-</div>
-<div className="p-md bg-surface-container-low">
-<p className="text-[11px] text-on-surface-variant italic">Note: Exports are kept for 30 days before being automatically purged from our servers for security.</p>
-</div>
-</div>
-{/*  Data Security Tip  */}
-<div className="bg-primary-container text-on-primary-container p-md rounded-xl">
-<div className="flex items-center gap-2 mb-sm">
-<span className="material-symbols-outlined">security</span>
-<span className="font-label-bold text-label-bold">Security Tip</span>
-</div>
-<p className="text-[12px] leading-relaxed">Always use a secure, encrypted storage solution for your workspace backups. Avoid sharing these files over unsecured public networks.</p>
-</div>
-</div>
-</div>
-</div>
-</main>
-</div>
-{/*  BottomNavBar (Mobile Only)  */}
-<nav className="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-white dark:bg-slate-900 pb-safe border-t border-slate-200 dark:border-slate-800 shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
-<a className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500 transition-colors" href="#">
-<span className="material-symbols-outlined">home</span>
-<span className="text-[10px] font-medium Inter">Home</span>
-</a>
-<a className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500 transition-colors" href="#">
-<span className="material-symbols-outlined">search</span>
-<span className="text-[10px] font-medium Inter">Search</span>
-</a>
-<a className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500 transition-colors" href="#">
-<span className="material-symbols-outlined">add_box</span>
-<span className="text-[10px] font-medium Inter">Create</span>
-</a>
-<a className="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400" href="#">
-<span className="material-symbols-outlined">notifications</span>
-<span className="text-[10px] font-medium Inter">Notifications</span>
-</a>
-</nav>
+  const [includeComments, setIncludeComments] = React.useState(true);
+  const [includeAttachments, setIncludeAttachments] = React.useState(false);
+  const [anonymizeData, setAnonymizeData] = React.useState(false);
 
-    </>
+  return (
+    <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-12">
+      {/* Screen Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16">
+        <div>
+          <h1 className="font-headline-xl text-5xl font-black text-slate-900 dark:text-white mb-2 tracking-tighter">Archival</h1>
+          <p className="font-label-sm text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">Secure telemetry extraction and node backups</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-12 gap-8">
+        {/* Export Options */}
+        <div className="col-span-12 lg:col-span-8 space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* JSON Export */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-10 rounded-[3rem] shadow-sm hover:shadow-2xl hover:shadow-blue-600/5 transition-all group">
+              <div className="w-14 h-14 rounded-2xl bg-blue-600/5 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-blue-600 text-3xl">data_object</span>
+              </div>
+              <h3 className="font-headline-md text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-2">Protocol JSON</h3>
+              <p className="text-[11px] font-bold text-slate-400 leading-relaxed mb-10 uppercase tracking-widest">Full metadata portability. 1:1 Schema fidelity.</p>
+              <button className="w-full py-5 bg-slate-900 dark:bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl active:scale-95 transition-all">Extract JSON</button>
+            </div>
+
+            {/* CSV Export */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-10 rounded-[3rem] shadow-sm hover:shadow-2xl hover:shadow-emerald-600/5 transition-all group">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-600/5 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-emerald-600 text-3xl">table_chart</span>
+              </div>
+              <h3 className="font-headline-md text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-2">Matrix CSV</h3>
+              <p className="text-[11px] font-bold text-slate-400 leading-relaxed mb-10 uppercase tracking-widest">Optimized for external analytics & reporting.</p>
+              <button className="w-full py-5 border border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">Extract CSV</button>
+            </div>
+          </div>
+
+          {/* Configuration */}
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[3rem] overflow-hidden shadow-sm">
+            <div className="p-10 border-b border-slate-50 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50">
+              <h2 className="font-headline-md text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Transmission Parameters</h2>
+            </div>
+            <div className="p-10 space-y-10">
+              {[
+                { id: 'comments', label: 'Include Comms Stream', desc: 'Internal discussion nodes and member updates.', state: includeComments, setter: setIncludeComments, icon: 'forum' },
+                { id: 'attachments', label: 'Export Binary Blobs', desc: 'Secure links to hosted files. Increases packet size.', state: includeAttachments, setter: setIncludeAttachments, icon: 'cloud_download' },
+                { id: 'anonymize', label: 'Anonymize Node Identities', desc: 'Replace real names with generic identifiers for privacy.', state: anonymizeData, setter: setAnonymizeData, icon: 'shield_person' }
+              ].map(opt => (
+                <div key={opt.id} className="flex items-center justify-between group">
+                  <div className="flex items-start gap-6">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${opt.state ? 'bg-blue-600 text-white' : 'bg-slate-50 dark:bg-slate-800 text-slate-400'}`}>
+                      <span className="material-symbols-outlined text-xl">{opt.icon}</span>
+                    </div>
+                    <div>
+                      <p className="font-headline-md text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{opt.label}</p>
+                      <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">{opt.desc}</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => opt.setter(!opt.state)}
+                    className={`w-14 h-8 rounded-full transition-all relative ${opt.state ? 'bg-blue-600' : 'bg-slate-200 dark:bg-slate-700'}`}
+                  >
+                    <div className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-all shadow-lg ${opt.state ? 'left-7' : 'left-1'}`}></div>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* History Sidebar */}
+        <div className="col-span-12 lg:col-span-4 space-y-8">
+          <div className="bg-slate-900 rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span className="material-symbols-outlined text-8xl">history_edu</span>
+            </div>
+            <h2 className="font-headline-md text-sm font-black uppercase tracking-tight mb-10 relative z-10">Extraction Log</h2>
+            <div className="space-y-6 relative z-10">
+              {[
+                { name: 'nexus_core_backup.json', size: '12.4 MB', date: 'Oct 24, 2026', status: 'Success' },
+                { name: 'ops_matrix_v2.csv', size: '1.2 MB', date: 'Oct 12, 2026', status: 'Success' },
+                { name: 'full_node_snapshot.json', size: '8.9 MB', date: 'Sep 30, 2026', status: 'Expired' }
+              ].map((item, i) => (
+                <div key={i} className={`p-6 rounded-2xl border transition-all ${item.status === 'Expired' ? 'border-white/5 opacity-50' : 'border-white/10 hover:border-blue-500/50 hover:bg-white/5 cursor-pointer'}`}>
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-[11px] font-black uppercase tracking-widest truncate max-w-[150px]">{item.name}</span>
+                    <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-full ${item.status === 'Success' ? 'bg-emerald-500' : 'bg-white/20'}`}>{item.status}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-white/40">
+                    <span className="text-[9px] font-black uppercase tracking-widest">{item.date}</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest">{item.size}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-blue-600 rounded-[3rem] p-10 text-white shadow-2xl overflow-hidden relative group">
+            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="material-symbols-outlined text-blue-200" style={{ fontVariationSettings: "'FILL' 1" }}>security</span>
+              <span className="font-black text-[10px] uppercase tracking-widest text-blue-100">Security Protocol</span>
+            </div>
+            <p className="text-sm font-bold leading-relaxed text-blue-50">
+              Backups are stored in our secure vault for 30 cycles. Ensure your local storage utilizes at least AES-256 encryption.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

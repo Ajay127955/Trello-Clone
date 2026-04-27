@@ -1,80 +1,32 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-
 const PricingPlans = () => {
   const navigate = useNavigate();
+  const [billingPeriod, setBillingPeriod] = React.useState('monthly');
   const [expanded, setExpanded] = React.useState(false);
 
   return (
-    <>
-      
-{/*  TopAppBar  */}
-<header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm docked full-width top-0 z-40 fixed left-0 right-0">
-<div className="flex justify-between items-center w-full px-4 h-12">
-<div className="flex items-center gap-4">
-<span className="material-symbols-outlined text-blue-600 dark:text-blue-400" data-icon="grid_view" onClick={() => navigate('/boards-dashboard')} className="cursor-pointer">grid_view</span>
-<span className="text-xl font-black text-blue-600 dark:text-blue-400 cursor-pointer" onClick={() => navigate('/boards-dashboard')}>Workspace Settings</span>
-</div>
-<div className="hidden md:flex gap-6 items-center">
-<nav className="flex gap-4">
-<a className="text-blue-600 dark:text-blue-400 font-bold border-b-2 border-blue-600 font-sans text-sm tracking-tight px-1 h-12 flex items-center" href="#" onClick={(e) => { e.preventDefault(); navigate('/pricing-plans'); }}>Pricing</a>
-<a className="text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-sans text-sm font-semibold tracking-tight px-1 h-12 flex items-center" href="#" onClick={(e) => { e.preventDefault(); navigate('/billing-invoices'); }}>Billing</a>
-<a className="text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-sans text-sm font-semibold tracking-tight px-1 h-12 flex items-center" href="#" onClick={(e) => { e.preventDefault(); navigate('/workspace-members/1'); }}>Members</a>
-</nav>
-</div>
-<div className="flex items-center gap-2">
-<div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="User Profile" onClick={() => navigate('/member-profile')}>UP</div>
-</div>
-</div>
-</header>
-{/*  Side Navigation (Web)  */}
-<aside className="hidden md:flex fixed left-0 top-12 h-[calc(100vh-3rem)] w-64 flex-col py-4 bg-slate-50 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 transition-all duration-200 ease-in-out">
-<div className="px-6 mb-6">
-<h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Admin Console</h2>
-</div>
-<nav className="flex-1 space-y-1">
-<a className="flex items-center px-6 py-3 gap-3 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-semibold border-r-4 border-blue-600 text-sm font-medium Inter" href="#" onClick={(e) => { e.preventDefault(); navigate('/pricing-plans'); }}>
-<span className="material-symbols-outlined" data-icon="payments">payments</span>
-                Pricing
-            </a>
-<a className="flex items-center px-6 py-3 gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out text-sm font-medium Inter" href="#" onClick={(e) => { e.preventDefault(); navigate('/billing-invoices'); }}>
-<span className="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
-                Billing
-            </a>
-<a className="flex items-center px-6 py-3 gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out text-sm font-medium Inter" href="#" onClick={(e) => { e.preventDefault(); navigate('/workspace-members/1'); }}>
-<span className="material-symbols-outlined" data-icon="group">group</span>
-                Members
-            </a>
-<a className="flex items-center px-6 py-3 gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out text-sm font-medium Inter" href="#" onClick={(e) => { e.preventDefault(); navigate('/archived-items'); }}>
-<span className="material-symbols-outlined" data-icon="archive">archive</span>
-                Archive
-            </a>
-<a className="flex items-center px-6 py-3 gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out text-sm font-medium Inter" href="#" onClick={(e) => { e.preventDefault(); navigate('/workspace-settings/1'); }}>
-<span className="material-symbols-outlined" data-icon="settings">settings</span>
-                Settings
-            </a>
-</nav>
-</aside>
-{/*  Main Content Canvas  */}
-<main className="pt-20 pb-24 md:pb-12 md:pl-64 min-h-screen bg-white">
-<div className="max-w-7xl mx-auto px-container-padding">
-{/*  Hero Section  */}
-<div className="text-center mb-xl">
-<h1 className="font-headline-xl text-headline-xl text-on-surface mb-sm">Plans for every team size</h1>
-<p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
-                    From solo projects to global enterprise operations, choose the workspace that grows with your productivity.
-                </p>
-<div className="mt-lg flex justify-center items-center gap-md">
-<span className="font-label-bold text-label-bold">Monthly</span>
-<button className="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-primary transition-colors duration-200 ease-in-out focus:outline-none">
-<span className="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
-</button>
-<span className="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
-                        Yearly <span className="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full text-[10px] font-bold">SAVE 20%</span>
-</span>
-</div>
-</div>
-{/*  Bento Grid Pricing Cards  */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/*  Hero Section  */}
+      <div className="text-center mb-16 pt-8">
+        <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-6 font-heading tracking-tight">Plans for every team size</h1>
+        <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-bold">
+          From solo projects to global enterprise operations, choose the workspace that grows with your productivity.
+        </p>
+        
+        {/*  Billing Toggle  */}
+        <div className="mt-10 flex justify-center items-center gap-6">
+          <span className={`text-sm font-black uppercase tracking-widest ${billingPeriod === 'monthly' ? 'text-blue-600' : 'text-slate-400'}`}>Monthly</span>
+          <button 
+            onClick={() => setBillingPeriod(billingPeriod === 'monthly' ? 'yearly' : 'monthly')}
+            className="relative w-14 h-7 bg-slate-200 dark:bg-slate-800 rounded-full p-1 transition-colors duration-300"
+          >
+            <div className={`w-5 h-5 bg-blue-600 rounded-full transition-transform duration-300 ${billingPeriod === 'yearly' ? 'translate-x-7' : 'translate-x-0'}`} />
+          </button>
+          <span className={`text-sm font-black uppercase tracking-widest flex items-center gap-2 ${billingPeriod === 'yearly' ? 'text-blue-600' : 'text-slate-400'}`}>
+            Yearly <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-[10px] font-black">SAVE 20%</span>
+          </span>
+        </div>
+      </div>
+      {/*  Bento Grid Pricing Cards  */}
 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-xl">
 {/*  Free Tier  */}
 <div className="bg-white border-2 border-slate-100 p-8 rounded-3xl shadow-sm flex flex-col hover:border-blue-200 transition-all group">
@@ -238,27 +190,7 @@ const PricingPlans = () => {
 </div>
 </div>
 </main>
-{/*  BottomNavBar (Mobile Only)  */}
-<nav className="fixed bottom-0 w-full flex justify-around items-center h-16 px-2 pb-safe bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] md:hidden z-50">
-<a className="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 scale-110" href="#" onClick={(e) => { e.preventDefault(); navigate('/pricing-plans'); }}>
-<span className="material-symbols-outlined" data-icon="sell">sell</span>
-<span className="text-[10px] font-medium tracking-wide uppercase">Pricing</span>
-</a>
-<a className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500" href="#" onClick={(e) => { e.preventDefault(); navigate('/billing-invoices'); }}>
-<span className="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
-<span className="text-[10px] font-medium tracking-wide uppercase">Billing</span>
-</a>
-<a className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500" href="#" onClick={(e) => { e.preventDefault(); navigate('/workspace-members/1'); }}>
-<span className="material-symbols-outlined" data-icon="people">people</span>
-<span className="text-[10px] font-medium tracking-wide uppercase">Members</span>
-</a>
-<a className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500" href="#" onClick={(e) => { e.preventDefault(); navigate('/notifications'); }}>
-<span className="material-symbols-outlined" data-icon="notifications">notifications</span>
-<span className="text-[10px] font-medium tracking-wide uppercase">Alerts</span>
-</a>
-</nav>
-
-    </>
+    </div>
   );
 };
 
