@@ -34,6 +34,7 @@ const TemplateLibrary = () => {
           </button>
         ))}
       </div>
+    </div>
   );
 };
 
