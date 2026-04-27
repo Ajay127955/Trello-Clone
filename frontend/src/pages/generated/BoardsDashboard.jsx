@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import InviteModal from '../../components/InviteModal';
+import PromptModal from '../../components/PromptModal';
 
 const BoardsDashboard = () => {
   const navigate = useNavigate();
@@ -10,8 +12,10 @@ const BoardsDashboard = () => {
   const [boards, setBoards] = useState([]);
   const [workspaces, setWorkspaces] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { showToast } = useToast();
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [inviteTarget, setInviteTarget] = useState({ id: null, name: '', type: 'workspace' });
+  const [isPromptOpen, setIsPromptOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -34,14 +38,17 @@ const BoardsDashboard = () => {
     }
   };
 
-  const handleCreateWorkspace = async () => {
-    const name = prompt('Enter workspace name:');
-    if (!name) return;
+  const handleCreateWorkspace = () => {
+    setIsPromptOpen(true);
+  };
+
+  const onWorkspaceSubmit = async (name) => {
     try {
       await api.post('workspaces/', { name });
+      showToast('Workspace created successfully!', 'success');
       fetchData();
     } catch (err) {
-      console.error(err);
+      showToast('Failed to create workspace', 'error');
     }
   };
 
@@ -80,10 +87,16 @@ const BoardsDashboard = () => {
             <div 
               key={board.id}
               onClick={() => navigate(`/board-view/${board.id}`)}
-              className="group h-28 p-4 rounded-lg bg-blue-600 hover:bg-blue-700 cursor-pointer shadow-sm hover:shadow-md transition-all relative overflow-hidden"
+              className="group h-28 p-4 rounded-lg cursor-pointer shadow-sm hover:shadow-md transition-all relative overflow-hidden"
+              style={{ 
+                backgroundColor: board.background_color || '#0C66E4',
+                backgroundImage: board.background_image ? `url(${board.background_image})` : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
             >
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors"></div>
               <h3 className="text-white font-bold text-base relative z-10">{board.title}</h3>
-              <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity"></div>
             </div>
           ))}
           {boards.filter(b => b.is_starred).length === 0 && (
@@ -113,10 +126,15 @@ const BoardsDashboard = () => {
             <div 
               key={board.id}
               onClick={() => navigate(`/board-view/${board.id}`)}
-              className="group h-28 p-4 rounded-lg bg-slate-800 hover:bg-slate-900 cursor-pointer shadow-sm hover:shadow-md transition-all relative overflow-hidden"
-              style={{ backgroundImage: board.background_color ? 'none' : 'url(https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&q=80)', backgroundSize: 'cover' }}
+              className="group h-28 p-4 rounded-lg cursor-pointer shadow-sm hover:shadow-md transition-all relative overflow-hidden"
+              style={{ 
+                backgroundColor: board.background_color || '#475569',
+                backgroundImage: board.background_image ? `url(${board.background_image})` : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
             >
-              <div className="absolute inset-0 bg-black/30"></div>
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors"></div>
               <h3 className="text-white font-bold text-base relative z-10">{board.title}</h3>
             </div>
           ))}
@@ -186,9 +204,17 @@ const BoardsDashboard = () => {
       <InviteModal 
         isOpen={isInviteModalOpen}
         onClose={() => setIsInviteModalOpen(false)}
-        workspaceId={inviteTarget.type === 'workspace' ? inviteTarget.id : null}
-        boardId={inviteTarget.type === 'board' ? inviteTarget.id : null}
+        workspaceId={inviteTarget.id}
         targetName={inviteTarget.name}
+      />
+
+      <PromptModal 
+        isOpen={isPromptOpen}
+        onClose={() => setIsPromptOpen(false)}
+        onSubmit={onWorkspaceSubmit}
+        title="Create Workspace"
+        label="Workspace Name"
+        placeholder="e.g. Engineering Team"
       />
     </div>
   );

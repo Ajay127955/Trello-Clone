@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
+import SocialSimulationModal from '../../components/SocialSimulationModal';
 import authBranding from '../../assets/auth-branding.png';
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { register, googleLogin } = useAuth();
+  const { showToast } = useToast();
   const [email, setEmail] = useState(searchParams.get('email') || '');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -14,6 +17,8 @@ const SignUp = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState('');
+  const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
+  const [pendingProvider, setPendingProvider] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,23 +36,26 @@ const SignUp = () => {
     }
   };
 
-  const handleSocialAuth = async (provider) => {
+  const handleSocialAuth = (provider) => {
     if (provider !== 'google') {
-      alert(`${provider} login is not implemented in this demo. Please use Google.`);
+      showToast(`${provider} login is not implemented in this demo. Please use Google.`, 'info');
       return;
     }
-    setSocialLoading(provider);
+    setPendingProvider(provider);
+    setIsSocialModalOpen(true);
+  };
+
+  const onSocialSubmit = async (email, name) => {
+    setSocialLoading(pendingProvider);
     setError('');
     try {
-      const email = prompt('Simulating Google Login: Enter email', 'google_user@example.com');
-      const name = prompt('Simulating Google Login: Enter name', 'Google User');
-      if (!email || !name) throw new Error('Login cancelled');
-      
       await googleLogin(email, name);
+      showToast('Successfully registered!', 'success');
       navigate('/onboarding-welcome');
     } catch (err) {
       console.error(err);
-      setError(`${provider} sign-in failed. Please try again.`);
+      setError(`${pendingProvider} sign-in failed. Please try again.`);
+      showToast('Sign up failed', 'error');
     } finally {
       setSocialLoading('');
     }
@@ -314,6 +322,13 @@ const SignUp = () => {
           <a href="#" className="hover:text-[#0052CC] transition-colors">Support</a>
         </div>
       </div>
+      
+      <SocialSimulationModal 
+        isOpen={isSocialModalOpen} 
+        onClose={() => setIsSocialModalOpen(false)} 
+        onSubmit={onSocialSubmit}
+        provider={pendingProvider}
+      />
     </div>
   );
 };

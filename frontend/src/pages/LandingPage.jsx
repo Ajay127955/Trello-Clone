@@ -25,7 +25,7 @@ const LandingPage = () => {
             Log in
           </button>
           <button 
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/sign-up')}
             className="bg-primary text-on-primary font-bold px-4 py-1.5 rounded-lg hover:opacity-90 active:scale-95 transition-all"
           >
             Get Trello for free
@@ -55,7 +55,7 @@ const LandingPage = () => {
                   type="email"
                 />
                 <button 
-                  onClick={() => navigate('/register')}
+                  onClick={() => navigate('/sign-up')}
                   className="bg-white text-primary font-bold px-8 py-4 rounded-lg hover:bg-slate-50 transition-colors text-lg"
                 >
                   Sign up - it’s free

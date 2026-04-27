@@ -146,9 +146,9 @@ const CardDetailView = () => {
 <div className="space-y-2">
 <h3 className="font-label-bold text-label-bold text-slate-500 uppercase tracking-wider">Members</h3>
 <div className="flex gap-1 items-center">
-  {card.members && card.members.map(member => (
+  {card.assigned_members && card.assigned_members.map(member => (
     <div key={member.id} className="h-8 w-8 rounded-full bg-primary border-2 border-white ring-1 ring-slate-100 flex items-center justify-center text-white text-[10px] font-bold" title={member.username}>
-      {member.username.substring(0, 2).toUpperCase()}
+      {member.username?.substring(0, 2).toUpperCase() || '??'}
     </div>
   ))}
   <button onClick={() => alert('Invite member')} className="h-8 w-8 rounded-full bg-surface-container-high hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
@@ -207,8 +207,9 @@ const CardDetailView = () => {
 </section>
 {/*  Checklist Section  */}
 {card.checklists && card.checklists.map(checklist => {
-  const completedCount = checklist.items.filter(i => i.completed).length;
-  const progress = checklist.items.length > 0 ? Math.round((completedCount / checklist.items.length) * 100) : 0;
+  const checklistItems = checklist.items || [];
+  const completedCount = checklistItems.filter(i => i.completed).length;
+  const progress = checklistItems.length > 0 ? Math.round((completedCount / checklistItems.length) * 100) : 0;
   
   return (
     <section key={checklist.id} className="space-y-4">
@@ -231,7 +232,7 @@ const CardDetailView = () => {
             </div>
           </div>
           <ul className="space-y-1">
-            {checklist.items.map(item => (
+            {(checklist.items || []).map(item => (
               <li key={item.id} className="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg group">
                 <input 
                   type="checkbox" 

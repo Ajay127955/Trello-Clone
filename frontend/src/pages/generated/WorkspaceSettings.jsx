@@ -120,7 +120,7 @@ const WorkspaceSettings = () => {
                 <div key={member.id} className="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-colors">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold">
-                      {member.username.substring(0, 2).toUpperCase()}
+                      {member.username?.substring(0, 2).toUpperCase() || '??'}
                     </div>
                     <div>
                       <div className="font-bold text-slate-900">{member.username}</div>

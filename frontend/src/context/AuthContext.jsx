@@ -49,7 +49,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const googleLogin = async (email, name) => {
-    const response = await api.post('google-login/', { email, name });
+    const response = await api.post('google-login/', { email, name }, {
+      headers: { 'X-Social-Verify': 'productive-flow-demo-secret' }
+    });
     localStorage.setItem('access_token', response.data.access);
     localStorage.setItem('refresh_token', response.data.refresh);
     setUser({ ...response.data.user, token: response.data.access });

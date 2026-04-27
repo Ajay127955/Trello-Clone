@@ -17,6 +17,8 @@ class Board(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_boards')
     members = models.ManyToManyField(User, related_name='boards', blank=True)
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name='boards', null=True, blank=True)
+    background_color = models.CharField(max_length=50, null=True, blank=True)
+    background_image = models.CharField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

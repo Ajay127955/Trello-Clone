@@ -7,14 +7,14 @@ const LandingPage = () => {
     <>
       
 <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none fixed top-0 w-full z-50 flex justify-between items-center px-4 h-14 font-sans Inter antialiased">
-<div className="flex items-center gap-4">
+<div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')}>
 <span className="material-symbols-outlined text-blue-600 dark:text-blue-400" data-icon="grid_view">grid_view</span>
 <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">Trello</span>
 <nav className="hidden md:flex items-center gap-6 ml-6">
-<a className="text-blue-600 dark:text-blue-400 font-semibold border-b-2 border-blue-600 pb-1" href="#">Features</a>
-<a className="text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-2 py-1 rounded" href="#">Solutions</a>
-<a className="text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-2 py-1 rounded" href="#">Plans</a>
-<a className="text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-2 py-1 rounded" href="#">Pricing</a>
+<a className="text-blue-600 dark:text-blue-400 font-semibold border-b-2 border-blue-600 pb-1" href="#" onClick={(e) => e.preventDefault()}>Features</a>
+<a className="text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-2 py-1 rounded" href="#" onClick={(e) => e.preventDefault()}>Solutions</a>
+<a className="text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-2 py-1 rounded" href="#" onClick={(e) => { e.preventDefault(); navigate('/pricing-plans'); }}>Plans</a>
+<a className="text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-2 py-1 rounded" href="#" onClick={(e) => { e.preventDefault(); navigate('/pricing-plans'); }}>Pricing</a>
 </nav>
 </div>
 <div className="flex items-center gap-3">
@@ -182,10 +182,10 @@ const LandingPage = () => {
 <p className="text-xs font-normal text-slate-500 dark:text-slate-400">© 2024 Trello Clone Inc. All rights reserved.</p>
 </div>
 <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
-<a className="text-xs font-normal text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:underline" href="#">Privacy</a>
-<a className="text-xs font-normal text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:underline" href="#">Terms</a>
-<a className="text-xs font-normal text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:underline" href="#">Support</a>
-<a className="text-xs font-normal text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:underline" href="#">About</a>
+<a className="text-xs font-normal text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:underline" href="#" onClick={(e) => e.preventDefault()}>Privacy</a>
+<a className="text-xs font-normal text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:underline" href="#" onClick={(e) => e.preventDefault()}>Terms</a>
+<a className="text-xs font-normal text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:underline" href="#" onClick={(e) => { e.preventDefault(); navigate('/help-center'); }}>Support</a>
+<a className="text-xs font-normal text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:underline" href="#" onClick={(e) => e.preventDefault()}>About</a>
 </div>
 <div className="mt-8 md:mt-0 flex gap-4">
 <span className="material-symbols-outlined text-slate-400 hover:text-primary cursor-pointer" data-icon="public">public</span>
@@ -195,19 +195,19 @@ const LandingPage = () => {
 </div>
 </footer>
 <nav className="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 px-4 pb-safe bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 shadow-[0_-1px_3px_rgba(0,0,0,0.05)] z-50">
-<div className="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
+<div className="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 font-bold cursor-pointer" onClick={() => navigate('/boards-dashboard')}>
 <span className="material-symbols-outlined" data-icon="dashboard">dashboard</span>
 <span className="text-[11px] font-medium Inter">Boards</span>
 </div>
-<div className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300">
+<div className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300 cursor-pointer" onClick={() => navigate('/search-results')}>
 <span className="material-symbols-outlined" data-icon="search">search</span>
 <span className="text-[11px] font-medium Inter">Search</span>
 </div>
-<div className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300">
+<div className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300 cursor-pointer" onClick={() => navigate('/notifications')}>
 <span className="material-symbols-outlined" data-icon="notifications">notifications</span>
 <span className="text-[11px] font-medium Inter">Alerts</span>
 </div>
-<div className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300">
+<div className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300 cursor-pointer" onClick={() => navigate('/member-profile')}>
 <span className="material-symbols-outlined" data-icon="person">person</span>
 <span className="text-[11px] font-medium Inter">Account</span>
 </div>

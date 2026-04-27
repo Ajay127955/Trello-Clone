@@ -5,6 +5,7 @@ import api from '../../services/api';
 const CreateBoard = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
+  const [background, setBackground] = useState({ type: 'image', value: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80' });
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -13,7 +14,11 @@ const CreateBoard = () => {
     
     setLoading(true);
     try {
-      const response = await api.post('boards/', { title });
+      const data = { title };
+      if (background.type === 'color') data.background_color = background.value;
+      if (background.type === 'image') data.background_image = background.value;
+      
+      const response = await api.post('boards/', data);
       navigate(`/board-view/${response.data.id}`);
     } catch (err) {
       console.error(err);
@@ -48,7 +53,11 @@ const CreateBoard = () => {
 {/*  Left Side: Preview & Background Selection  */}
 <div className="w-full md:w-5/12 p-lg bg-surface-container-low flex flex-col gap-md">
 <div className="relative w-full aspect-[4/3] rounded-lg shadow-lg overflow-hidden group transition-all">
-<img alt="Board Preview" className="w-full h-full object-cover" data-alt="Stunning aerial view of jagged blue mountain peaks under a clear sky with soft daylight used as a Trello board background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqwLSH9wAvJpeL78OgnuDdsC--GXSa7P46YuERkAzfdCEEluuABZfDQJsMDCa66Ytsr4ogpXZjqqc0x_a7ZEE-f62_nFs7kwHHpaappqC5Im66u9xqbsRhSUW8LrssFruI1MsaXNF6q_kBZc9kDzOtIPfcnhd9XhmdxHo4R4zTXSZEq0NFDYfIUUXT68fl75VmHuMV8w_UUbPc4HxVKz0Iw_K6rCmtVNZd-oU9dqmiTavBPZWmy8NwaWOvgWyHjWZh9NhKzTPh5uaK"/>
+{background.type === 'image' ? (
+  <img alt="Board Preview" className="w-full h-full object-cover" src={background.value}/>
+) : (
+  <div className="w-full h-full" style={{ backgroundColor: background.value }}></div>
+)}
 <div className="absolute inset-0 bg-black/20 p-md">
 <div className="w-32 h-6 bg-white/30 rounded blur-[1px]"></div>
 <div className="flex gap-xs mt-xs">
@@ -62,25 +71,55 @@ const CreateBoard = () => {
 <h3 className="font-label-bold text-label-bold text-on-surface-variant mb-sm">Background</h3>
 <div className="grid grid-cols-4 gap-xs">
 {/*  Photo Options  */}
-<button className="aspect-square rounded overflow-hidden border-2 border-primary-container">
-<img alt="Option 1" className="w-full h-full object-cover" data-alt="Aerial view of blue mountain peaks for board background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDISIz22kSodLoIUTAMb8N-bYVSVeeGvxD85MrxX7dBrPxmxKzavjTZb-OUxhpvY1zA0znxHDLzjfJbw31GtXSHk8-e0NZ-qlahbOXUkfumwRWr0MSPVwRK4WWIbLngM-g8DXVabhZID5o-KYDNpHe_ACcI2_XOOHXMH26pinevaKVCaMvmnfVwqcjLIduNUjPz6iSjNH7v7pG3u37ccRNikJKaRBGHyVeGky6taxlVSA60UUQhlGQRkYrfJ9QmnhI0bae0gqFIcDyy"/>
+<button 
+  type="button"
+  onClick={() => setBackground({ type: 'image', value: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80' })}
+  className={`aspect-square rounded overflow-hidden border-2 ${background.value === 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80' ? 'border-blue-600 ring-2 ring-blue-100' : 'border-transparent'}`}
+>
+<img alt="Option 1" className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&q=80"/>
 </button>
-<button className="aspect-square rounded overflow-hidden hover:opacity-80 transition-opacity">
-<img alt="Option 2" className="w-full h-full object-cover" data-alt="Golden sand tropical beach with turquoise ocean waves for board background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABHCbod2FNZbQxN1DNp9zY2G6kME9TmLFS7eoNlgIub1WRmj7TW33xlXysvDRew0D9JKbciVkVGIslrbSNnJj913-uAzBxXTXdGtxF9nCWRJw9hBjDpB3LaT5JUf8b9UTW3mTsocAs0gqSCvTwqnT-1yj1yY1YQKb5X6goZplRbra2CWWh1euvpKcIag8gYx5jg_Zz3hpRMy4gONqgjZyCUjnmTwZppfraoHc6iPnuv01ia-pNFIa4DDDWJqbuxrU-rV-43zmLkeqN"/>
+<button 
+  type="button"
+  onClick={() => setBackground({ type: 'image', value: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&q=80' })}
+  className={`aspect-square rounded overflow-hidden border-2 ${background.value === 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&q=80' ? 'border-blue-600 ring-2 ring-blue-100' : 'border-transparent'}`}
+>
+<img alt="Option 2" className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=200&q=80"/>
 </button>
-<button className="aspect-square rounded overflow-hidden hover:opacity-80 transition-opacity">
-<img alt="Option 3" className="w-full h-full object-cover" data-alt="Futuristic city skyline at night with neon lights for board background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuSAuO5rWZEGE0g-kYeEmpbc_FujaWan0aYB6gqTCoUK_2p8HmJ16uyRg7lG0EcRUfc7Nca7PImlojWLZYbXAbJHW0_xi31xP7NlyyMxMk6eT-KGNA3vG80D3o9v-fhapcTlbL-JFDBiUXKLQ9dSwTgCIuICxZupnwGxf6L3JdHIzUmBk7PivsGyZP6HPb9xfiW9MbnA0TWLYB7htkV3YmWOl5KJpxf_4ovDNj-F-XnC_9TTktapdLp7jOTLp0qLtRZhlyIA8tOWWM"/>
+<button 
+  type="button"
+  onClick={() => setBackground({ type: 'image', value: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80' })}
+  className={`aspect-square rounded overflow-hidden border-2 ${background.value === 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80' ? 'border-blue-600 ring-2 ring-blue-100' : 'border-transparent'}`}
+>
+<img alt="Option 3" className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=200&q=80"/>
 </button>
-<button className="aspect-square rounded overflow-hidden hover:opacity-80 transition-opacity">
-<img alt="Option 4" className="w-full h-full object-cover" data-alt="Soft abstract mesh gradient background with vibrant purple and orange tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt7kyqrQcVk3rH-CX_aL-ezkT6egsvGuwJSjYhTwvn6KbR5sN93yHCwa2hQVMQZcI1vpELoyXG6rgZ_OgZY9ziUJoThSUDb1vx6eHSuSlxpqLMk6cCZQ1ExglpomyFYmdH-dsNbbA65Q-D-AaIke-WO_ydbg5nVDE2CZGb_R4tSFkGoyrptuEVxyqPk5ClzBwKqEpk9BIdGsEExphw4nPDd_xhj2p9_BYqW5Dv4NanovnbJhXKlED1zPBEn_30YgpZegTsNYHg9jnK"/>
+<button 
+  type="button"
+  onClick={() => setBackground({ type: 'image', value: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80' })}
+  className={`aspect-square rounded overflow-hidden border-2 ${background.value === 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80' ? 'border-blue-600 ring-2 ring-blue-100' : 'border-transparent'}`}
+>
+<img alt="Option 4" className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200&q=80"/>
 </button>
 {/*  Color Options  */}
-<button className="aspect-square rounded bg-[#0079BF] hover:ring-2 ring-primary transition-all"></button>
-<button className="aspect-square rounded bg-[#D29034] hover:ring-2 ring-primary transition-all"></button>
-<button className="aspect-square rounded bg-[#519839] hover:ring-2 ring-primary transition-all"></button>
-<button className="aspect-square rounded bg-surface-container-highest flex items-center justify-center hover:bg-surface-container-high transition-colors">
-<span className="material-symbols-outlined text-on-surface-variant text-sm">more_horiz</span>
-</button>
+<button 
+  type="button"
+  onClick={() => setBackground({ type: 'color', value: '#0079BF' })}
+  className={`aspect-square rounded bg-[#0079BF] transition-all ${background.value === '#0079BF' ? 'ring-4 ring-blue-200 border-2 border-blue-600' : ''}`}
+></button>
+<button 
+  type="button"
+  onClick={() => setBackground({ type: 'color', value: '#D29034' })}
+  className={`aspect-square rounded bg-[#D29034] transition-all ${background.value === '#D29034' ? 'ring-4 ring-orange-200 border-2 border-orange-600' : ''}`}
+></button>
+<button 
+  type="button"
+  onClick={() => setBackground({ type: 'color', value: '#519839' })}
+  className={`aspect-square rounded bg-[#519839] transition-all ${background.value === '#519839' ? 'ring-4 ring-green-200 border-2 border-green-600' : ''}`}
+></button>
+<button 
+  type="button"
+  onClick={() => setBackground({ type: 'color', value: '#B04632' })}
+  className={`aspect-square rounded bg-[#B04632] transition-all ${background.value === '#B04632' ? 'ring-4 ring-red-200 border-2 border-red-600' : ''}`}
+></button>
 </div>
 </div>
 </div>

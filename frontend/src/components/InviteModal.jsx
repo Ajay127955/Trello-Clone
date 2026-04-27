@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import api from '../services/api';
+import { useToast } from '../context/ToastContext';
 
 const InviteModal = ({ isOpen, onClose, workspaceId, boardId, targetName }) => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { showToast } = useToast();
 
   if (!isOpen) return null;
 
@@ -20,7 +22,7 @@ const InviteModal = ({ isOpen, onClose, workspaceId, boardId, targetName }) => {
         workspace: workspaceId,
         board: boardId
       });
-      alert('Invitation sent successfully!');
+      showToast('Invitation sent successfully!', 'success');
       onClose();
       setEmail('');
       setMessage('');

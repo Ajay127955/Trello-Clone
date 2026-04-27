@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import { useToast } from '../context/ToastContext';
+import PromptModal from './PromptModal';
 
 const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
   const [card, setCard] = useState(null);
@@ -11,6 +13,13 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
   const [showLabelMenu, setShowLabelMenu] = useState(false);
   const [boardLabels, setBoardLabels] = useState([]);
   const [isExpandingAi, setIsExpandingAi] = useState(false);
+  const { showToast } = useToast();
+  
+  // Prompt Modal State
+  const [isPromptOpen, setIsPromptOpen] = useState(false);
+  const [promptTitle, setPromptTitle] = useState('');
+  const [promptLabel, setPromptLabel] = useState('');
+  const [promptOnSubmit, setPromptOnSubmit] = useState(() => () => {});
 
   useEffect(() => {
     if (isOpen && cardId) {
@@ -58,21 +67,25 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
       fetchCard();
       onCardUpdate();
     } catch (err) {
-      alert('AI expansion failed.');
+      showToast('AI expansion failed.', 'error');
     } finally {
       setIsExpandingAi(false);
     }
   };
 
-  const handleAddChecklist = async () => {
-    const title = prompt('Enter checklist title:');
-    if (!title) return;
-    try {
-      await api.post('checklists/', { title, card: cardId });
-      fetchCard();
-    } catch (err) {
-      console.error(err);
-    }
+  const handleAddChecklist = () => {
+    setPromptTitle('Add Checklist');
+    setPromptLabel('Title');
+    setPromptOnSubmit(() => async (title) => {
+      try {
+        await api.post('checklists/', { title, card: cardId });
+        fetchCard();
+        showToast('Checklist added!', 'success');
+      } catch (err) {
+        showToast('Failed to add checklist', 'error');
+      }
+    });
+    setIsPromptOpen(true);
   };
 
   const handleAddChecklistItem = async (checklistId, text) => {
@@ -170,7 +183,7 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
                   <div className="flex -space-x-2">
                     {card.assigned_members.map(m => (
                       <div key={m.id} className="h-8 w-8 rounded-full bg-blue-600 border-2 border-white text-white flex items-center justify-center text-[10px] font-bold" title={m.username}>
-                        {m.username.substring(0, 2).toUpperCase()}
+                        {m.username?.substring(0, 2).toUpperCase() || '??'}
                       </div>
                     ))}
                     <button onClick={() => setShowMemberSearch(!showMemberSearch)} className="h-8 w-8 rounded-full bg-slate-100 border-2 border-white text-slate-400 flex items-center justify-center hover:bg-slate-200 transition-colors">
@@ -351,7 +364,7 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
                             >
                               <div className="flex items-center gap-2">
                                 <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[8px] font-bold">
-                                  {member.username.substring(0, 2).toUpperCase()}
+                                  {member.username?.substring(0, 2).toUpperCase() || '??'}
                                 </div>
                                 <span className="text-xs font-bold">{member.username}</span>
                               </div>
@@ -403,7 +416,7 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
 
                 <button 
                   className="flex items-center gap-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl text-xs font-bold transition-all"
-                  onClick={() => alert('File upload coming soon! (Backend is ready, frontend file handling pending)')}
+                  onClick={() => showToast('File upload coming soon!', 'info')}
                 >
                   <span className="material-symbols-outlined text-[18px]">attach_file</span>
                   Attachment
@@ -419,6 +432,14 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
           </div>
         </div>
       </div>
+
+      <PromptModal 
+        isOpen={isPromptOpen}
+        onClose={() => setIsPromptOpen(false)}
+        onSubmit={promptOnSubmit}
+        title={promptTitle}
+        label={promptLabel}
+      />
     </div>
   );
 };

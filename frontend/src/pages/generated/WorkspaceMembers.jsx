@@ -76,7 +76,7 @@ const WorkspaceMembers = () => {
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">
-                      {member.username.substring(0, 2).toUpperCase()}
+                      {member.username?.substring(0, 2).toUpperCase() || '??'}
                     </div>
                     <div>
                       <div className="font-bold text-slate-900">{member.username}</div>

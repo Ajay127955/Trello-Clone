@@ -101,7 +101,7 @@ class BoardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Board
-        fields = ['id', 'title', 'owner', 'members', 'workspace', 'workspace_id', 'created_at', 'lists']
+        fields = ['id', 'title', 'owner', 'members', 'workspace', 'workspace_id', 'created_at', 'lists', 'background_color', 'background_image']
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -110,6 +110,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'password', 'email']
         extra_kwargs = {'username': {'required': False}}
+
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return value
 
     def create(self, validated_data):
         # Use email as username if no username provided
@@ -120,6 +125,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             email=email
         )
+        # Create a default workspace for the new user
+        from .models import Workspace
+        Workspace.objects.create(name=f"{username}'s Workspace", owner=user)
         return user
 
 
