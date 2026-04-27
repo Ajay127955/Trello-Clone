@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f8f9fa",
+                    "surface-container-high": "#e7e8e9",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#e5fbfe",
+                    "primary-fixed-dim": "#b3c5ff",
+                    "secondary": "#4c5e85",
+                    "inverse-surface": "#2e3132",
+                    "outline-variant": "#c2c6d8",
+                    "on-primary-container": "#f7f6ff",
+                    "surface-tint": "#0054d7",
+                    "secondary-fixed-dim": "#b4c6f3",
+                    "surface-container-low": "#f3f4f5",
+                    "on-secondary-fixed": "#051a3e",
+                    "on-surface": "#191c1d",
+                    "inverse-on-surface": "#f0f1f2",
+                    "surface-variant": "#e1e3e4",
+                    "tertiary-fixed-dim": "#b5cacd",
+                    "on-surface-variant": "#424656",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#485c5f",
+                    "surface-dim": "#d9dadb",
+                    "primary-fixed": "#dbe1ff",
+                    "on-secondary-fixed-variant": "#35466c",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#b3c5ff",
+                    "surface-container": "#edeeef",
+                    "primary-container": "#0065ff",
+                    "on-tertiary-fixed": "#0a1e21",
+                    "on-primary-fixed": "#00184a",
+                    "background": "#f8f9fa",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#617578",
+                    "outline": "#727687",
+                    "on-secondary-container": "#485980",
+                    "surface-container-highest": "#e1e3e4",
+                    "primary": "#004fcb",
+                    "surface-bright": "#f8f9fa",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#bfd1ff",
+                    "on-primary-fixed-variant": "#003fa5",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#364a4d",
+                    "on-background": "#191c1d",
+                    "secondary-fixed": "#d8e2ff",
+                    "tertiary-fixed": "#d1e7e9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "unit": "4px",
+                    "gutter": "12px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "container-padding": "20px"
+            },
+            "fontFamily": {
+                    "label-bold": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                    "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center h-14 px-4 bg-white dark:bg-[#091E42] border-b border-gray-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-[#0065FF] cursor-pointer">grid_view</span>
+<h1 class="text-lg font-bold text-[#091E42] dark:text-white">Productive Flow</h1>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<span class="font-inter text-sm font-bold text-[#0065FF] border-b-2 border-[#0065FF] px-1 py-4">Boards</span>
+<span class="font-inter text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-1 rounded transition-opacity duration-150 ease-in-out cursor-pointer">Activity</span>
+<span class="font-inter text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-1 rounded transition-opacity duration-150 ease-in-out cursor-pointer">Members</span>
+<span class="font-inter text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-1 rounded transition-opacity duration-150 ease-in-out cursor-pointer">Settings</span>
+</nav>
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-white text-xs font-bold">
+                JD
+            </div>
+</div>
+</header>
+<!-- Main Content: Create Board Modal/Screen Overlay -->
+<main class="min-h-screen pt-24 pb-20 flex items-center justify-center px-container-padding bg-slate-100/50">
+<div class="w-full max-w-[840px] bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+<!-- Left Side: Preview & Background Selection -->
+<div class="w-full md:w-5/12 p-lg bg-surface-container-low flex flex-col gap-md">
+<div class="relative w-full aspect-[4/3] rounded-lg shadow-lg overflow-hidden group transition-all">
+<img alt="Board Preview" class="w-full h-full object-cover" data-alt="Stunning aerial view of jagged blue mountain peaks under a clear sky with soft daylight used as a Trello board background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqwLSH9wAvJpeL78OgnuDdsC--GXSa7P46YuERkAzfdCEEluuABZfDQJsMDCa66Ytsr4ogpXZjqqc0x_a7ZEE-f62_nFs7kwHHpaappqC5Im66u9xqbsRhSUW8LrssFruI1MsaXNF6q_kBZc9kDzOtIPfcnhd9XhmdxHo4R4zTXSZEq0NFDYfIUUXT68fl75VmHuMV8w_UUbPc4HxVKz0Iw_K6rCmtVNZd-oU9dqmiTavBPZWmy8NwaWOvgWyHjWZh9NhKzTPh5uaK"/>
+<div class="absolute inset-0 bg-black/20 p-md">
+<div class="w-32 h-6 bg-white/30 rounded blur-[1px]"></div>
+<div class="flex gap-xs mt-xs">
+<div class="w-8 h-10 bg-white/20 rounded"></div>
+<div class="w-8 h-10 bg-white/20 rounded"></div>
+<div class="w-8 h-10 bg-white/20 rounded"></div>
+</div>
+</div>
+</div>
+<div class="mt-sm">
+<h3 class="font-label-bold text-label-bold text-on-surface-variant mb-sm">Background</h3>
+<div class="grid grid-cols-4 gap-xs">
+<!-- Photo Options -->
+<button class="aspect-square rounded overflow-hidden border-2 border-primary-container">
+<img alt="Option 1" class="w-full h-full object-cover" data-alt="Aerial view of blue mountain peaks for board background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDISIz22kSodLoIUTAMb8N-bYVSVeeGvxD85MrxX7dBrPxmxKzavjTZb-OUxhpvY1zA0znxHDLzjfJbw31GtXSHk8-e0NZ-qlahbOXUkfumwRWr0MSPVwRK4WWIbLngM-g8DXVabhZID5o-KYDNpHe_ACcI2_XOOHXMH26pinevaKVCaMvmnfVwqcjLIduNUjPz6iSjNH7v7pG3u37ccRNikJKaRBGHyVeGky6taxlVSA60UUQhlGQRkYrfJ9QmnhI0bae0gqFIcDyy"/>
+</button>
+<button class="aspect-square rounded overflow-hidden hover:opacity-80 transition-opacity">
+<img alt="Option 2" class="w-full h-full object-cover" data-alt="Golden sand tropical beach with turquoise ocean waves for board background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABHCbod2FNZbQxN1DNp9zY2G6kME9TmLFS7eoNlgIub1WRmj7TW33xlXysvDRew0D9JKbciVkVGIslrbSNnJj913-uAzBxXTXdGtxF9nCWRJw9hBjDpB3LaT5JUf8b9UTW3mTsocAs0gqSCvTwqnT-1yj1yY1YQKb5X6goZplRbra2CWWh1euvpKcIag8gYx5jg_Zz3hpRMy4gONqgjZyCUjnmTwZppfraoHc6iPnuv01ia-pNFIa4DDDWJqbuxrU-rV-43zmLkeqN"/>
+</button>
+<button class="aspect-square rounded overflow-hidden hover:opacity-80 transition-opacity">
+<img alt="Option 3" class="w-full h-full object-cover" data-alt="Futuristic city skyline at night with neon lights for board background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuSAuO5rWZEGE0g-kYeEmpbc_FujaWan0aYB6gqTCoUK_2p8HmJ16uyRg7lG0EcRUfc7Nca7PImlojWLZYbXAbJHW0_xi31xP7NlyyMxMk6eT-KGNA3vG80D3o9v-fhapcTlbL-JFDBiUXKLQ9dSwTgCIuICxZupnwGxf6L3JdHIzUmBk7PivsGyZP6HPb9xfiW9MbnA0TWLYB7htkV3YmWOl5KJpxf_4ovDNj-F-XnC_9TTktapdLp7jOTLp0qLtRZhlyIA8tOWWM"/>
+</button>
+<button class="aspect-square rounded overflow-hidden hover:opacity-80 transition-opacity">
+<img alt="Option 4" class="w-full h-full object-cover" data-alt="Soft abstract mesh gradient background with vibrant purple and orange tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt7kyqrQcVk3rH-CX_aL-ezkT6egsvGuwJSjYhTwvn6KbR5sN93yHCwa2hQVMQZcI1vpELoyXG6rgZ_OgZY9ziUJoThSUDb1vx6eHSuSlxpqLMk6cCZQ1ExglpomyFYmdH-dsNbbA65Q-D-AaIke-WO_ydbg5nVDE2CZGb_R4tSFkGoyrptuEVxyqPk5ClzBwKqEpk9BIdGsEExphw4nPDd_xhj2p9_BYqW5Dv4NanovnbJhXKlED1zPBEn_30YgpZegTsNYHg9jnK"/>
+</button>
+<!-- Color Options -->
+<button class="aspect-square rounded bg-[#0079BF] hover:ring-2 ring-primary transition-all"></button>
+<button class="aspect-square rounded bg-[#D29034] hover:ring-2 ring-primary transition-all"></button>
+<button class="aspect-square rounded bg-[#519839] hover:ring-2 ring-primary transition-all"></button>
+<button class="aspect-square rounded bg-surface-container-highest flex items-center justify-center hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Side: Form Content -->
+<div class="w-full md:w-7/12 p-xl flex flex-col gap-lg">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Create Board</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Start organizing your tasks in one place.</p>
+</div>
+<button class="text-on-surface-variant hover:bg-surface-container p-xs rounded-full transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-md">
+<!-- Board Title -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant flex items-center gap-xs" for="board-title">
+                            Board title <span class="text-error">*</span>
+</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-body-md transition-all" id="board-title" placeholder="Enter board title" type="text"/>
+<p class="font-label-sm text-label-sm text-on-surface-variant">👋 Board title is required</p>
+</div>
+<!-- Workspace Selector -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant" for="workspace">Workspace</label>
+<div class="relative">
+<select class="w-full appearance-none px-md py-sm border border-outline-variant rounded bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary font-body-md transition-all cursor-pointer" id="workspace">
+<option>Productive Flow Workspace</option>
+<option>Marketing Projects</option>
+<option>Personal Tasks</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<!-- Visibility Selector -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant" for="visibility">Visibility</label>
+<div class="relative">
+<select class="w-full appearance-none px-md py-sm border border-outline-variant rounded bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary font-body-md transition-all cursor-pointer" id="visibility">
+<option>Workspace (Visible to all members)</option>
+<option>Private (Only you can see this)</option>
+<option>Public (Anyone on the internet)</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Action Footer -->
+<div class="pt-md mt-auto flex flex-col gap-md">
+<button class="w-full py-md bg-primary-container text-on-primary font-label-bold rounded shadow-md hover:bg-primary transition-all active:scale-[0.98]">
+                        Create Board
+                    </button>
+<p class="font-label-sm text-label-sm text-center text-on-surface-variant">
+                        By creating a board, you agree to our 
+                        <a class="text-primary hover:underline" href="#">Terms of Service</a>
+</p>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar for Mobile Shell -->
+<footer class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-white dark:bg-[#091E42] px-2 border-t border-gray-200 dark:border-slate-800 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+<div class="flex flex-col items-center justify-center text-[#0065FF] cursor-pointer">
+<span class="material-symbols-outlined" data-weight="fill">dashboard</span>
+<span class="font-inter text-[11px] font-medium">Boards</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 cursor-pointer active:bg-slate-100 dark:active:bg-slate-800 transition-transform duration-100 scale-95">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-inter text-[11px] font-medium">Activity</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 cursor-pointer active:bg-slate-100 dark:active:bg-slate-800 transition-transform duration-100 scale-95">
+<span class="material-symbols-outlined">search</span>
+<span class="font-inter text-[11px] font-medium">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 cursor-pointer active:bg-slate-100 dark:active:bg-slate-800 transition-transform duration-100 scale-95">
+<span class="material-symbols-outlined">person</span>
+<span class="font-inter text-[11px] font-medium">Account</span>
+</div>
+</footer>
+</body></html>

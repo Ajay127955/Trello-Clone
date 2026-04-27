@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-bright": "#f8f9fa",
+                "surface-container-high": "#e7e8e9",
+                "surface": "#f8f9fa",
+                "surface-container-lowest": "#ffffff",
+                "primary": "#004fcb",
+                "on-primary-fixed-variant": "#003fa5",
+                "on-secondary-container": "#485980",
+                "outline": "#727687",
+                "on-surface-variant": "#424656",
+                "surface-dim": "#d9dadb",
+                "inverse-surface": "#2e3132",
+                "tertiary": "#485c5f",
+                "on-secondary-fixed": "#051a3e",
+                "on-error-container": "#93000a",
+                "surface-container": "#edeeef",
+                "primary-container": "#0065ff",
+                "primary-fixed": "#dbe1ff",
+                "on-tertiary-fixed-variant": "#364a4d",
+                "on-secondary": "#ffffff",
+                "on-surface": "#191c1d",
+                "surface-container-highest": "#e1e3e4",
+                "secondary-fixed-dim": "#b4c6f3",
+                "on-primary-container": "#f7f6ff",
+                "tertiary-fixed-dim": "#b5cacd",
+                "secondary-fixed": "#d8e2ff",
+                "inverse-on-surface": "#f0f1f2",
+                "on-tertiary-fixed": "#0a1e21",
+                "secondary-container": "#bfd1ff",
+                "on-primary": "#ffffff",
+                "on-secondary-fixed-variant": "#35466c",
+                "outline-variant": "#c2c6d8",
+                "background": "#f8f9fa",
+                "on-error": "#ffffff",
+                "tertiary-fixed": "#d1e7e9",
+                "surface-variant": "#e1e3e4",
+                "error": "#ba1a1a",
+                "on-background": "#191c1d",
+                "tertiary-container": "#617578",
+                "on-tertiary": "#ffffff",
+                "on-tertiary-container": "#e5fbfe",
+                "primary-fixed-dim": "#b3c5ff",
+                "surface-tint": "#0054d7",
+                "secondary": "#4c5e85",
+                "surface-container-low": "#f3f4f5",
+                "error-container": "#ffdad6",
+                "on-primary-fixed": "#00184a",
+                "inverse-primary": "#b3c5ff"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "unit": "4px",
+                "md": "16px",
+                "xl": "32px",
+                "container-padding": "20px",
+                "xs": "4px",
+                "lg": "24px",
+                "gutter": "12px",
+                "sm": "8px"
+            },
+            "fontFamily": {
+                "body-md": ["Inter"],
+                "label-bold": ["Inter"],
+                "body-lg": ["Inter"],
+                "headline-md": ["Inter"],
+                "label-sm": ["Inter"],
+                "headline-xl": ["Inter"]
+            },
+            "fontSize": {
+                "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm sticky top-0 z-40">
+<div class="flex justify-between items-center w-full px-4 h-14">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-600 dark:text-slate-400 p-1 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95">menu</button>
+<h1 class="text-blue-600 dark:text-blue-400 font-black text-xl font-inter tracking-tight">Trello</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-slate-600 dark:text-slate-400 p-1 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95">search</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border-2 border-primary-container">
+<img class="h-full w-full object-cover" data-alt="professional portrait of a man with a friendly smile, clean workspace background, soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg9Z9oUtf21GZnifpmZ4ZSZG19Rt0yrZbofLd1_wbRFdfJp7tUKVkFxeeg_zg-gpa6J5AU7baYgK4aO6FUdoPSrRANR47pMkUW3ttpEa1miDlEG1uHWkFlpbccllVSMf6NZhRyFilhwDqLe-VIhv0_eHKT5Bi4VXLD4CsduIhghHW3Sc7I6mvWNJ6lJTEhO6OZkH4n-G3kweJgPNf-BnhQ_yPUWKVbpfWJnJRNSb0mlYA0JXF0nt-tZe3jxC6wIfQvHll_PW5l5UxO"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-6xl mx-auto px-4 py-8 mb-20 md:mb-8">
+<!-- Hero Profile Section -->
+<div class="relative mb-8">
+<div class="h-48 w-full rounded-xl bg-gradient-to-r from-primary to-primary-container overflow-hidden">
+<div class="absolute inset-0 opacity-20" data-alt="abstract geometric pattern with blue and purple gradients and subtle texture" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCMxLWFdqxNhBkAXMyyIiijJZKR84Gh_MaOKie_LPi9Tbd44K-75Xa9r4sU6Eyopj0sPCLEZBfnHV9DfTK40Wkb8nwPzaMy1FgZ8Yrv79YGspLehMgMG_KiK5qoOKJFk-uUY5aEJea_HRu8JQGVsDIcyDF27nxN-TzsmE_aBdwalxSM28qmJ_oP2xFcqcTFUXLE_hwLg9FG-nz12N38nGc2nOo6X1coTPX8atKAR5r_F6gbcLiCfff7H9VtjUdfy8fpNUUG-6AMcOl7');"></div>
+</div>
+<div class="px-6 -mt-12 flex flex-col md:flex-row items-end gap-6">
+<div class="relative">
+<div class="h-32 w-32 rounded-2xl border-4 border-white bg-white shadow-lg overflow-hidden">
+<img class="h-full w-full object-cover" data-alt="close up headshot of a productive professional male, neutral background, soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFVOhx1DxDO_VObTPhH_MQxIIjPaqaG9wUXSI-oDSigF7JMhxOLi3nNr-cKJb5skjo9XX3xO2MYTgTlGFg125AYGzOiIcF9Eft-Qx7AI4KNC45c8zdmrlDy0PTsD8xgRnre4l8JyWnc0AV7b2PPCeCu1twi0IMlh_gy243fHfGE93fCFW_Tgv3a52oUWd5xrS45UlclJTviGqrT-vAnuhTPkmCQqMNQMDr_e9ubfbBjIHYuQks9Gzxo1ewrCqn7YwofETPoIfdtSu1"/>
+</div>
+<button class="absolute bottom-1 right-1 bg-primary text-white rounded-lg p-1.5 shadow-md hover:bg-on-primary-fixed-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">photo_camera</span>
+</button>
+</div>
+<div class="flex-1 pb-2">
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Productive User</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">@productive_flow • Free Workspace</p>
+</div>
+<div class="flex gap-3 pb-2">
+<button class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-xl font-label-bold text-label-bold hover:shadow-md transition-all active:scale-95">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                        Edit Profile
+                    </button>
+<button class="bg-surface-container-high text-on-surface-variant p-2 rounded-xl hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Sidebar: Info & Bio -->
+<div class="lg:col-span-4 space-y-6">
+<section class="bg-white rounded-xl p-6 shadow-sm border border-outline-variant/30">
+<h3 class="font-headline-md text-headline-md mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">info</span>
+                        About
+                    </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                        Senior Project Manager focused on streamlining team workflows and implementing agile methodologies. Passionate about productivity tools and clean UI design. Always looking for the next way to optimize the flow.
+                    </p>
+<div class="mt-6 space-y-3">
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary-container">location_on</span>
+<span class="font-body-md text-body-md">San Francisco, CA</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary-container">link</span>
+<span class="font-body-md text-body-md text-primary">productive-flow.io</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary-container">calendar_today</span>
+<span class="font-body-md text-body-md">Joined January 2022</span>
+</div>
+</div>
+</section>
+<section class="bg-white rounded-xl p-6 shadow-sm border border-outline-variant/30">
+<h3 class="font-headline-md text-headline-md mb-4 flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-primary">settings</span>
+                        Settings
+                    </h3>
+<div class="space-y-1">
+<a class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-low transition-colors group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">lock</span>
+<span class="font-body-md text-body-md text-on-surface">Change Password</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-low transition-colors group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">mail</span>
+<span class="font-body-md text-body-md text-on-surface">Email Preferences</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-low transition-colors group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">notifications_active</span>
+<span class="font-body-md text-body-md text-on-surface">Notification Settings</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-low transition-colors group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">privacy_tip</span>
+<span class="font-body-md text-body-md text-on-surface">Privacy &amp; Security</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+</a>
+</div>
+</section>
+</div>
+<!-- Main Content: Activity Feed -->
+<div class="lg:col-span-8">
+<section class="bg-white rounded-xl shadow-sm border border-outline-variant/30 overflow-hidden">
+<div class="p-6 border-b border-surface-container-high flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">history</span>
+                            Recent Activity
+                        </h3>
+<button class="text-primary font-label-bold text-label-bold hover:underline">View All</button>
+</div>
+<div class="divide-y divide-surface-container">
+<!-- Activity Item 1 -->
+<div class="p-6 hover:bg-surface-bright transition-colors">
+<div class="flex gap-4">
+<div class="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary" data-weight="fill">move_item</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-surface">
+                                        Moved <span class="font-bold text-primary">Homepage Redesign</span> from <span class="px-2 py-0.5 rounded bg-surface-container-highest text-label-sm font-label-sm">Doing</span> to <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-label-sm font-label-sm">Done</span>
+</p>
+<p class="mt-1 font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                        2 hours ago • Marketing Board
+                                    </p>
+</div>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="p-6 hover:bg-surface-bright transition-colors">
+<div class="flex gap-4">
+<div class="h-10 w-10 rounded-full bg-purple-50 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-purple-600" data-weight="fill">add_comment</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-surface">
+                                        Added a comment on <span class="font-bold text-primary">API Documentation Phase 1</span>: "Looks great, let's proceed with the merge."
+                                    </p>
+<p class="mt-1 font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                        5 hours ago • Engineering Board
+                                    </p>
+</div>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="p-6 hover:bg-surface-bright transition-colors">
+<div class="flex gap-4">
+<div class="h-10 w-10 rounded-full bg-orange-50 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-orange-600" data-weight="fill">person_add</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-surface">
+                                        Assigned <span class="font-bold text-primary">Sarah Jenkins</span> to the card <span class="font-bold text-primary">Q4 Budget Planning</span>
+</p>
+<p class="mt-1 font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                        Yesterday at 4:30 PM • Finance Board
+                                    </p>
+</div>
+</div>
+</div>
+<!-- Activity Item 4 -->
+<div class="p-6 hover:bg-surface-bright transition-colors">
+<div class="flex gap-4">
+<div class="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary" data-weight="fill">dashboard</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-surface">
+                                        Created a new board: <span class="font-bold text-primary">Product Launch 2024</span>
+</p>
+<p class="mt-1 font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                        Oct 12, 2023 • Private Workspace
+                                    </p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-bright p-4 text-center">
+<button class="font-label-bold text-label-bold text-on-surface-variant hover:text-primary transition-colors">Load More Activity</button>
+</div>
+</section>
+<!-- Stats Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+<div class="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-sm">
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Completed Tasks</p>
+<p class="font-headline-xl text-headline-xl text-green-600 mt-2">124</p>
+<p class="text-[10px] text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded-full inline-block mt-2">+12% this month</p>
+</div>
+<div class="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-sm">
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Active Boards</p>
+<p class="font-headline-xl text-headline-xl text-primary mt-2">12</p>
+<p class="text-[10px] text-primary-container font-bold bg-blue-50 px-2 py-0.5 rounded-full inline-block mt-2">4 managed</p>
+</div>
+<div class="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-sm">
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Comments Made</p>
+<p class="font-headline-xl text-headline-xl text-purple-600 mt-2">567</p>
+<p class="text-[10px] text-purple-700 font-bold bg-purple-50 px-2 py-0.5 rounded-full inline-block mt-2">High engagement</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- NavigationDrawer (Mobile Sidebar Mockup) -->
+<div class="hidden md:block fixed left-0 top-14 bottom-0 w-16 hover:w-64 bg-white border-r border-slate-200 z-30 transition-all duration-300 group overflow-hidden">
+<div class="flex flex-col h-full py-4">
+<nav class="space-y-2 flex-1">
+<a class="flex items-center gap-4 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-primary">dashboard</span>
+<span class="opacity-0 group-hover:opacity-100 font-inter text-sm font-medium transition-opacity">Workspaces</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-primary">star</span>
+<span class="opacity-0 group-hover:opacity-100 font-inter text-sm font-medium transition-opacity">Starred</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-primary">dashboard_customize</span>
+<span class="opacity-0 group-hover:opacity-100 font-inter text-sm font-medium transition-opacity">Templates</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="opacity-0 group-hover:opacity-100 font-inter text-sm font-bold transition-opacity">Account</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-primary">settings</span>
+<span class="opacity-0 group-hover:opacity-100 font-inter text-sm font-medium transition-opacity">Settings</span>
+</a>
+</nav>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-2 bg-white/80 backdrop-blur-md border-t border-slate-200">
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-inter text-[10px] font-medium">Boards</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-inter text-[10px] font-medium">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-inter text-[10px] font-medium">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-600 bg-blue-50/50 rounded-xl px-3 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-inter text-[10px] font-bold">Account</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-high": "#e7e8e9",
+                        "surface": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#004fcb",
+                        "on-primary-fixed-variant": "#003fa5",
+                        "on-secondary-container": "#485980",
+                        "outline": "#727687",
+                        "on-surface-variant": "#424656",
+                        "surface-dim": "#d9dadb",
+                        "inverse-surface": "#2e3132",
+                        "tertiary": "#485c5f",
+                        "on-secondary-fixed": "#051a3e",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#edeeef",
+                        "primary-container": "#0065ff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed-variant": "#364a4d",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-fixed-dim": "#b4c6f3",
+                        "on-primary-container": "#f7f6ff",
+                        "tertiary-fixed-dim": "#b5cacd",
+                        "secondary-fixed": "#d8e2ff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-tertiary-fixed": "#0a1e21",
+                        "secondary-container": "#bfd1ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#35466c",
+                        "outline-variant": "#c2c6d8",
+                        "background": "#f8f9fa",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#d1e7e9",
+                        "surface-variant": "#e1e3e4",
+                        "error": "#ba1a1a",
+                        "on-background": "#191c1d",
+                        "tertiary-container": "#617578",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#e5fbfe",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "surface-tint": "#0054d7",
+                        "secondary": "#4c5e85",
+                        "surface-container-low": "#f3f4f5",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#00184a",
+                        "inverse-primary": "#b3c5ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "container-padding": "20px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "gutter": "12px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md antialiased">
+<!-- TopAppBar Shell -->
+<header class="bg-white dark:bg-slate-900 shadow-sm fixed top-0 w-full z-50 border-b border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-center w-full px-4 h-14">
+<div class="flex items-center gap-md">
+<button class="p-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">menu</span>
+</button>
+<div class="text-blue-600 dark:text-blue-400 font-black text-xl">Trello</div>
+<nav class="hidden md:flex items-center gap-md ml-lg">
+<a class="text-slate-600 dark:text-slate-400 font-inter text-lg font-semibold tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800 px-sm py-xs rounded" href="#">Workspaces</a>
+<a class="text-blue-600 dark:text-blue-400 font-bold font-inter text-lg tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800 px-sm py-xs rounded" href="#">Templates</a>
+</nav>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">search</span>
+</button>
+<button class="bg-primary-container text-on-primary-container px-md py-sm rounded font-label-bold active:scale-95 transition-transform">Create</button>
+</div>
+</div>
+</header>
+<div class="flex pt-14 pb-16 md:pb-0 h-screen overflow-hidden">
+<!-- NavigationDrawer Shell -->
+<aside class="hidden md:flex flex-col h-full py-4 bg-white dark:bg-slate-900 w-72 rounded-r-lg shadow-2xl divide-y divide-slate-100 dark:divide-slate-800 shrink-0">
+<div class="flex items-center gap-md px-4 py-6">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-white overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="professional headshot of a smiling product manager in a clean corporate studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR6vj1m6yoRaZ2nacBCgbru4thIj2Tmr0_K3MNv50TVSUSVdEFBlpoGOTdkntI7GgfLJ-pm81AgMLvBDJhw69MebAFwoQKH5jfiNo5XkvLNNtotHksN8wCwUhTlEUaEvvbKqeJ9pXNoEvbZ8Qk06eC5LI4iNJ8lwXODthnMSFGsvURSIiqnWpU-w1LdTNCkaGIEg3k7BgYwLxrVxLJaajW3H7zWdeosthfkO8Z3TEv3lwjq0YO03tRE83Y-hYBIQJj3Kac7X9qoY_W"/>
+</div>
+<div>
+<div class="text-blue-600 font-bold font-inter text-sm">Productive User</div>
+<div class="text-slate-500 text-xs">Free Workspace</div>
+</div>
+</div>
+<nav class="flex-1 py-4 flex flex-col">
+<a class="flex items-center gap-md px-4 py-3 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-inter text-sm font-medium">Workspaces</span>
+</a>
+<a class="flex items-center gap-md px-4 py-3 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all" href="#">
+<span class="material-symbols-outlined">star</span>
+<span class="font-inter text-sm font-medium">Starred</span>
+</a>
+<a class="flex items-center gap-md px-4 py-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold border-r-4 border-blue-600 transition-all" href="#">
+<span class="material-symbols-outlined">dashboard_customize</span>
+<span class="font-inter text-sm font-medium">Templates</span>
+</a>
+<a class="flex items-center gap-md px-4 py-3 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all" href="#">
+<span class="material-symbols-outlined">cloud_off</span>
+<span class="font-inter text-sm font-medium">Offline</span>
+</a>
+<div class="mt-auto">
+<a class="flex items-center gap-md px-4 py-3 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-inter text-sm font-medium">Settings</span>
+</a>
+</div>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto bg-surface-bright hide-scrollbar px-lg py-xl">
+<!-- Hero Section -->
+<section class="max-w-6xl mx-auto mb-xl">
+<div class="relative rounded-xl overflow-hidden h-64 flex items-center px-xl mb-xl bg-gradient-to-r from-primary-container to-blue-800">
+<div class="absolute inset-0 opacity-20">
+<img class="w-full h-full object-cover" data-alt="clean minimal office workspace with multiple screens and organized desk layout in soft bright natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFQ_vT32M8_HrCQ0lE_Ilm4fRsoYoO3Ln_z_OsvQoIAtvg0mEhT7ouo5W9pKJyZAdx8qulX2wc4C5Uug_aEtQaKcibqL88ZU58Rfk0Ff8EBFVOqIs86HIqTWRsW0xeNgUtladYBbN0sU9ZvUYMYZA9SsMok2bzaB-2qyYebkUkatkyLTAiuIyUU6gTGTDv4HMP-boVsD1-mSqsjxztZpL-9A0u-JntELyIFRuwNgJCjw6pXBO8WlBrrUAGKIF19j8YXkyRprdKkmUo"/>
+</div>
+<div class="relative z-10 max-w-xl">
+<h1 class="font-headline-xl text-white mb-sm">Template Library</h1>
+<p class="font-body-lg text-blue-50">Choose a pre-built layout to jumpstart your project. From agile sprints to classroom planning, we've got you covered.</p>
+</div>
+</div>
+<!-- Categories Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md mb-xl">
+<div class="md:col-span-8">
+<h2 class="font-headline-md text-on-surface mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">rocket_launch</span>
+                            Project Management
+                        </h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-gutter">
+<!-- Template Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div class="rounded-lg h-32 mb-sm overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="kanban board layout with colorful cards representing a software development sprint workflow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIZV01mx2Z3rmbSsnP-QYL2FUUpkg1w4SVZatUP4lmovnAsQpxcZNuIrcBWJ9yNMRFVXcmigsTHRzLdo0wJ_eFzkGyzV4p3-evLOzqUhopqQkfYmo8huBda6Tumaix8bMTc4M6kWBTjE4AAJ13IAXsgHsVj5jzRvZsn3kuQeMl4S9izB8-L3Z3LaL6h8xx6t708pa-I0f53cJWHPmoNlROpYbEhHRspBhXzvEEjXf_b61m1zQz_W0M_b8Afv9XpG5TuH7dXkG2PHbH"/>
+</div>
+<div class="px-xs">
+<h3 class="font-label-bold text-on-surface">Agile Sprint Board</h3>
+<p class="text-[10px] text-slate-500 mt-xs">Used by 45k+ teams</p>
+</div>
+</div>
+<!-- Template Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div class="rounded-lg h-32 mb-sm overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="project timeline with gantt chart elements and colorful status markers for marketing campaign" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDkd02u2xP0c6blCFr34Wrxr5fEgENIBMaG18YqybFxyJ8jV1oBP32UKxitkMlV2fDeAZNANP1hxUVjTnoNzz_f95sby1Bb-BqF3LVbY-lP2WJgrYE6i8CSh0wXHcwk5kwIFyoP93aYdOYXoV5lUBFKRqXO_FDFP5i7mHWksr4l3AiYjqmeaEgpf8n_e5-A8GYRd69Ju6avLJknUkKwan2LuWGiZixpqjwjS5QTP4Tskgsrsnp0Ou_1mGR9inzeO3jJK3totIlPKPh"/>
+</div>
+<div class="px-xs">
+<h3 class="font-label-bold text-on-surface">Marketing Master Plan</h3>
+<p class="text-[10px] text-slate-500 mt-xs">Used by 12k+ teams</p>
+</div>
+</div>
+</div>
+</div>
+<div class="md:col-span-4">
+<h2 class="font-headline-md text-on-surface mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-tertiary">school</span>
+                            Education
+                        </h2>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-sm hover:shadow-md transition-shadow cursor-pointer group h-full">
+<div class="rounded-lg h-48 mb-sm overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="lesson plan board with organized columns for subjects and homework tracking" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_H17fnygNpuSr1laiZNVttDdrEldF35uzuOaKkHWVHUctuZPl9lr-BfzPwcRirCEy-gg2T7NwASOnd2wKG7EIaXN5OF7ZyDH68NtvHlnF_hfIYXiPqqpciMo26Bsw4cVpxKDZ8YutOuS1zq2sKHZHhNXXQt4g7LGbOnXq9zP3cd1VTeRRAFBuuOQ-3Q7cIPdzBMa9YkJLIEtgz_Mc1PwqSwhytki5RcXEdTr77rvPH0_Q-POFcmqpaQ80lJSrvVUXeMoCZEHeSWdq"/>
+</div>
+<div class="px-xs">
+<h3 class="font-label-bold text-on-surface">Classroom Management</h3>
+<p class="text-[10px] text-slate-500 mt-xs">Perfect for K-12 Teachers</p>
+<button class="mt-md w-full bg-blue-50 text-primary py-sm rounded font-label-sm group-hover:bg-primary group-hover:text-white transition-colors">View Template</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div>
+<h2 class="font-headline-md text-on-surface mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">person</span>
+                            Personal
+                        </h2>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div class="rounded-lg h-32 mb-sm overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="bullet journal style board with habit trackers and weekly goal settings" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgNxUVtg_slMSkP2Ui0IG3Vd_rb0mW6znrYZWnS8eWK4zhwev9rG4KsllHJGzON84ms2AY1CKJxG7aEh1XfnmMrEmuLGNauGGGkODAeZYukriNZ2zwOF3a7_OE82_Skn4-NQNRPccCmxhkpnVxDVvX7Xk7kkElyRNmwMxp46OPoI5-bIutxloMm-SNYJlrAmluEIfZtE6DZyJnUXXXf60vN-S6zI5N3NV7BzPMT27DA5Ut3QQ_la7qRYifsThpYBfmkZ2swtjHpmHN"/>
+</div>
+<div class="px-xs">
+<h3 class="font-label-bold text-on-surface">Daily Habit Tracker</h3>
+<p class="text-[10px] text-slate-500 mt-xs">Boost your productivity</p>
+</div>
+</div>
+</div>
+<div>
+<h2 class="font-headline-md text-on-surface mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-error">favorite</span>
+                            Wellness
+                        </h2>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div class="rounded-lg h-32 mb-sm overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="clean yoga routine board with pose illustrations and duration timers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrtM9KSLpT_zxIwTQJWupq_ELLXYRIJU9Q0w54_u71ulzSXLabmvL3iFYKhSnquxtaTmquSMl9RXbcO3oA2UIouysgnm67DOsWujuEtpvtrdFMd7RSTSJJ6xxwOZJvtOUOTaBECb1vn23OqIQNt5N2ZaMHYovt6LSaUggWyt6x2mcWmr21Hs4fGZikOjMNTzoK_Fgbi01WJN6xW3G3uk5juQQJNNqkTmTZy1B7rDrLMP7VoLQLjwfshwblqR5n7VfzvnzaFBaaODMc"/>
+</div>
+<div class="px-xs">
+<h3 class="font-label-bold text-on-surface">Morning Routine</h3>
+<p class="text-[10px] text-slate-500 mt-xs">Start your day right</p>
+</div>
+</div>
+</div>
+<div>
+<h2 class="font-headline-md text-on-surface mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">more_horiz</span>
+                            Browse More
+                        </h2>
+<div class="bg-white/50 border-2 border-dashed border-slate-200 rounded-xl h-48 flex flex-col items-center justify-center p-md text-center hover:bg-slate-50 transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-slate-400 text-4xl mb-sm group-hover:scale-110 transition-transform">add_circle</span>
+<p class="font-label-bold text-slate-600">Explore 100+ Other Categories</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- BottomNavBar Shell (Mobile Only) -->
+<footer class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-2 bg-white/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-blue-500 transition-opacity active:opacity-80" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-inter text-[10px] font-medium">Boards</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-blue-500 transition-opacity active:opacity-80" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-inter text-[10px] font-medium">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl px-3 py-1 transition-opacity active:opacity-80" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard_customize</span>
+<span class="font-inter text-[10px] font-medium">Templates</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-blue-500 transition-opacity active:opacity-80" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-inter text-[10px] font-medium">Account</span>
+</a>
+</footer>
+</body></html>

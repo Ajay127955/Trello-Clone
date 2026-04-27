@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Inter', Helvetica, Arial, sans-serif; line-height: 1.6; color: #334155; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .content { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .footer { text-align: center; margin-top: 30px; color: #94a3b8; font-size: 12px; }
+        .btn { display: inline-block; padding: 12px 24px; border-radius: 8px; font-weight: bold; text-decoration: none; margin: 10px 5px; }
+        .btn-accept { background-color: #2563eb; color: #ffffff !important; }
+        .btn-decline { background-color: #f1f5f9; color: #475569 !important; }
+        .features { margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 12px; }
+        .feature-item { margin-bottom: 10px; display: flex; align-items: center; }
+        .about-section { border-top: 1px solid #f1f5f9; margin-top: 25px; pt-25px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="color: #1e293b; margin: 0;">Productive Flow 🚀</h1>
+        </div>
+        <div class="content">
+            <h2 style="color: #1e293b;">You're Invited!</h2>
+            <p>Hello,</p>
+            <p><strong>{{ sender_name }}</strong> has invited you to collaborate on <strong>{{ resource_name }}</strong>.</p>
+            {% if message %}
+            <p style="font-style: italic; color: #64748b; border-left: 4px solid #e2e8f0; padding-left: 15px;">"{{ message }}"</p>
+            {% endif %}
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{{ accept_url }}" class="btn btn-accept">✅ Accept Invitation</a>
+                <a href="{{ decline_url }}" class="btn btn-decline">❌ Decline</a>
+            </div>
+
+            <div class="features">
+                <h4 style="margin-top: 0;">Why use Productive Flow?</h4>
+                <div class="feature-item">✨ Real-time Collaboration</div>
+                <div class="feature-item">📊 Intuitive Kanban Boards</div>
+                <div class="feature-item">⚡ Smart Automations (Butler)</div>
+                <div class="feature-item">📱 Responsive Mobile-First Design</div>
+            </div>
+
+            <div class="about-section">
+                <h4 style="color: #1e293b;">About Our Team</h4>
+                <p style="font-size: 14px;">The <strong>Productive Flow Team</strong> is dedicated to building the world's most seamless task management experience. Our mission is to help teams stay synchronized and achieve more together.</p>
+                <p style="font-size: 14px;">Want to learn more? Visit our <a href="http://localhost:5173/landing-page" style="color: #2563eb;">Landing Page</a> for a full tour of features.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Sent with ❤️ from the Productive Flow Team</p>
+            <p>&copy; 2024 Productive Flow Inc. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

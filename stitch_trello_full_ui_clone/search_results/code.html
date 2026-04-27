@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-high": "#e7e8e9",
+                        "surface": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#004fcb",
+                        "on-primary-fixed-variant": "#003fa5",
+                        "on-secondary-container": "#485980",
+                        "outline": "#727687",
+                        "on-surface-variant": "#424656",
+                        "surface-dim": "#d9dadb",
+                        "inverse-surface": "#2e3132",
+                        "tertiary": "#485c5f",
+                        "on-secondary-fixed": "#051a3e",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#edeeef",
+                        "primary-container": "#0065ff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed-variant": "#364a4d",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-fixed-dim": "#b4c6f3",
+                        "on-primary-container": "#f7f6ff",
+                        "tertiary-fixed-dim": "#b5cacd",
+                        "secondary-fixed": "#d8e2ff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-tertiary-fixed": "#0a1e21",
+                        "secondary-container": "#bfd1ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#35466c",
+                        "outline-variant": "#c2c6d8",
+                        "background": "#f8f9fa",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#d1e7e9",
+                        "surface-variant": "#e1e3e4",
+                        "error": "#ba1a1a",
+                        "on-background": "#191c1d",
+                        "tertiary-container": "#617578",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#e5fbfe",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "surface-tint": "#0054d7",
+                        "secondary": "#4c5e85",
+                        "surface-container-low": "#f3f4f5",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#00184a",
+                        "inverse-primary": "#b3c5ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "container-padding": "20px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "gutter": "12px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-4 h-14">
+<div class="flex items-center gap-4">
+<button class="text-slate-600 dark:text-slate-400 active:scale-95 duration-150 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-lg">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="text-blue-600 dark:text-blue-400 font-black text-xl font-inter tracking-tight">Trello</h1>
+</div>
+<div class="flex-1 max-w-2xl px-8 hidden md:block">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-body-md" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-2 pl-10 pr-4 focus:ring-2 focus:ring-primary-container text-body-md transition-all" placeholder="Search for cards, boards, or people..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-slate-600 dark:text-slate-400 active:scale-95 duration-150 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-lg md:hidden">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                PU
+            </div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="mt-14 mb-16 flex-1 w-full max-w-7xl mx-auto p-gutter lg:p-lg">
+<!-- Search Header (Mobile/Tablet View Search Focus) -->
+<div class="mb-lg">
+<div class="md:hidden mb-md">
+<input class="w-full bg-white border border-outline-variant rounded-xl py-3 px-4 shadow-sm focus:ring-2 focus:ring-primary text-body-lg" type="text" value="Marketing Campaign"/>
+</div>
+<div class="flex items-baseline justify-between gap-4">
+<h2 class="font-headline-md text-headline-md text-on-surface">Search Results for <span class="text-primary">"Marketing Campaign"</span></h2>
+<span class="text-label-sm font-label-sm text-on-surface-variant">24 results found</span>
+</div>
+</div>
+<!-- Bento Grid for Results -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Category: Boards (Featured Section) -->
+<section class="lg:col-span-8 flex flex-col gap-sm">
+<div class="flex items-center justify-between px-2 mb-xs">
+<h3 class="font-label-bold text-label-bold text-outline uppercase tracking-wider">Boards</h3>
+<button class="text-primary text-label-sm font-medium hover:underline">View all</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+<!-- Board Card 1 -->
+<div class="bg-white p-md rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-all cursor-pointer group">
+<div class="flex items-start justify-between mb-md">
+<div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-inner">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="star">star</span>
+</div>
+<h4 class="font-headline-md text-body-lg font-semibold mb-xs">Marketing Campaign 2024</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-md">Marketing Workspace • 12 members</p>
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-200"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-300"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-400"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-primary-container text-[8px] flex items-center justify-center text-white">+9</div>
+</div>
+</div>
+<!-- Board Card 2 -->
+<div class="bg-white p-md rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-all cursor-pointer group">
+<div class="flex items-start justify-between mb-md">
+<div class="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-inner">
+<span class="material-symbols-outlined" data-icon="auto_graph">auto_graph</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="star">star</span>
+</div>
+<h4 class="font-headline-md text-body-lg font-semibold mb-xs">Global Growth Strategy</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-md">Executive Team • 5 members</p>
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-200"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-300"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-primary-container text-[8px] flex items-center justify-center text-white">+2</div>
+</div>
+</div>
+</div>
+<!-- Category: Cards (Deep List) -->
+<div class="mt-lg">
+<div class="flex items-center justify-between px-2 mb-xs">
+<h3 class="font-label-bold text-label-bold text-outline uppercase tracking-wider">Cards</h3>
+<div class="flex items-center gap-2">
+<span class="text-label-sm text-on-surface-variant">Sort by:</span>
+<button class="text-label-sm font-bold flex items-center gap-1">Relevance <span class="material-symbols-outlined text-[14px]" data-icon="expand_more">expand_more</span></button>
+</div>
+</div>
+<div class="flex flex-col gap-sm">
+<!-- Card Result 1 -->
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant hover:border-primary-container transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-md group">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded-full bg-blue-100 text-primary text-[10px] font-bold uppercase tracking-wide">Marketing</span>
+<span class="text-[10px] text-on-surface-variant">ID: T-402</span>
+</div>
+<h5 class="font-body-lg text-body-lg font-semibold group-hover:text-primary transition-colors">Quarterly Marketing Budget Approval</h5>
+<div class="flex items-center gap-3 mt-1">
+<span class="flex items-center gap-1 text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="list">list</span> In: <span class="underline">To Do</span>
+</span>
+<span class="flex items-center gap-1 text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="calendar_today">calendar_today</span> Oct 12
+                                    </span>
+</div>
+</div>
+<div class="flex items-center gap-4 border-t md:border-t-0 pt-md md:pt-0">
+<div class="flex items-center -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-300"></div>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble_outline">chat_bubble_outline</span><span class="text-label-sm">4</span></div>
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]" data-icon="attach_file">attach_file</span><span class="text-label-sm">1</span></div>
+</div>
+</div>
+</div>
+<!-- Card Result 2 -->
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant hover:border-primary-container transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-md group">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-bold uppercase tracking-wide">High Priority</span>
+<span class="text-[10px] text-on-surface-variant">ID: T-389</span>
+</div>
+<h5 class="font-body-lg text-body-lg font-semibold group-hover:text-primary transition-colors">Social Media Marketing Asset Review</h5>
+<div class="flex items-center gap-3 mt-1">
+<span class="flex items-center gap-1 text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="list">list</span> In: <span class="underline">In Review</span>
+</span>
+<span class="flex items-center gap-1 text-label-sm text-error">
+<span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span> Overdue
+                                    </span>
+</div>
+</div>
+<div class="flex items-center gap-4 border-t md:border-t-0 pt-md md:pt-0">
+<div class="flex items-center -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200"></div>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble_outline">chat_bubble_outline</span><span class="text-label-sm">12</span></div>
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]" data-icon="check_box">check_box</span><span class="text-label-sm">8/10</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Sidebar: Members & Filters -->
+<aside class="lg:col-span-4 flex flex-col gap-lg">
+<!-- Category: Members -->
+<section class="bg-white p-md rounded-xl border border-outline-variant shadow-sm">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-label-bold text-label-bold text-outline uppercase tracking-wider">Members</h3>
+<span class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold">4 Matches</span>
+</div>
+<div class="flex flex-col gap-md">
+<!-- Member 1 -->
+<div class="flex items-center gap-3 group cursor-pointer">
+<div class="relative">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="professional portrait of a creative marketing director with friendly smile in natural daylight studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqjn0Sp3nh0zN0MynLsrx4gyYx-MevUvRor8Zlo7oB1XkoIpQzxDkn8L_dEFmqQ-gCZqez7slPDkRysHop6j4ZPiMyZLu79gT4aGikrSECP_OmhFG7PoisrDOGokOwi7ed7wCkUsttnhAffCp9xzRxYfBrW9TjSCTVzXWCfYQOXujd30_ZRM4lx3XUMOuXeQ-A2fw1WZi1hAdzq9xTgR4J8fXsmmmjBOX_7st-bnVcowiTKaQwLozatVNb88n23d--po7uiJDd831v"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<h5 class="text-body-md font-semibold group-hover:text-primary transition-colors">Marketing Mike</h5>
+<p class="text-label-sm text-on-surface-variant">Growth Lead</p>
+</div>
+</div>
+<!-- Member 2 -->
+<div class="flex items-center gap-3 group cursor-pointer">
+<div class="relative">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-sm">JS</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-slate-300 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<h5 class="text-body-md font-semibold group-hover:text-primary transition-colors">Jane Smith</h5>
+<p class="text-label-sm text-on-surface-variant">Campaign Designer</p>
+</div>
+</div>
+<button class="w-full mt-2 py-2 border border-outline-variant rounded-lg text-label-sm font-semibold hover:bg-surface-container transition-colors">Search for more people</button>
+</div>
+</section>
+<!-- Refine Search Filters -->
+<section class="bg-surface-container-low p-md rounded-xl border border-outline-variant">
+<h3 class="font-label-bold text-label-bold text-outline uppercase tracking-wider mb-md">Refine Search</h3>
+<div class="flex flex-col gap-md">
+<div class="flex flex-col gap-1.5">
+<label class="text-label-sm font-bold">In Workspace</label>
+<select class="bg-white border-outline-variant rounded-lg text-body-md py-1.5 focus:ring-primary">
+<option>All Workspaces</option>
+<option selected="">Marketing Team</option>
+<option>Product Dev</option>
+</select>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-label-sm font-bold">Created</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-1 rounded-full bg-white border border-outline-variant text-label-sm hover:border-primary">Anytime</button>
+<button class="px-3 py-1 rounded-full bg-primary-container text-white text-label-sm font-bold">Past Month</button>
+<button class="px-3 py-1 rounded-full bg-white border border-outline-variant text-label-sm hover:border-primary">Custom</button>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<input class="rounded border-outline-variant text-primary focus:ring-primary" id="archived" type="checkbox"/>
+<label class="text-body-md" for="archived">Include archived items</label>
+</div>
+</div>
+</section>
+<!-- Recent Searches (Empty State Hint) -->
+<section>
+<h3 class="font-label-bold text-label-bold text-outline uppercase tracking-wider mb-sm">Recent Searches</h3>
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between p-2 rounded hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline" data-icon="history">history</span>
+<span class="text-body-md">Mobile App Redesign</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-outline opacity-0 group-hover:opacity-100" data-icon="close">close</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline" data-icon="history">history</span>
+<span class="text-body-md">Q4 Roadmap</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-outline opacity-0 group-hover:opacity-100" data-icon="close">close</span>
+</div>
+</div>
+</section>
+</aside>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-2 bg-white/80 backdrop-blur-md border-t border-slate-200 shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-inter text-[10px] font-medium">Boards</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-600 bg-blue-50/50 rounded-xl px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-inter text-[10px] font-bold">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-inter text-[10px] font-medium">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-inter text-[10px] font-medium">Account</span>
+</a>
+</nav>
+</body></html>

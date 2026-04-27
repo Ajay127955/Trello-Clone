@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login | Productive Flow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#f8f9fa",
+                      "surface-container-high": "#e7e8e9",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-container": "#e5fbfe",
+                      "primary-fixed-dim": "#b3c5ff",
+                      "secondary": "#4c5e85",
+                      "inverse-surface": "#2e3132",
+                      "outline-variant": "#c2c6d8",
+                      "on-primary-container": "#f7f6ff",
+                      "surface-tint": "#0054d7",
+                      "secondary-fixed-dim": "#b4c6f3",
+                      "surface-container-low": "#f3f4f5",
+                      "on-secondary-fixed": "#051a3e",
+                      "on-surface": "#191c1d",
+                      "inverse-on-surface": "#f0f1f2",
+                      "surface-variant": "#e1e3e4",
+                      "tertiary-fixed-dim": "#b5cacd",
+                      "on-surface-variant": "#424656",
+                      "on-error-container": "#93000a",
+                      "error-container": "#ffdad6",
+                      "tertiary": "#485c5f",
+                      "surface-dim": "#d9dadb",
+                      "primary-fixed": "#dbe1ff",
+                      "on-secondary-fixed-variant": "#35466c",
+                      "on-error": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "inverse-primary": "#b3c5ff",
+                      "surface-container": "#edeeef",
+                      "primary-container": "#0065ff",
+                      "on-tertiary-fixed": "#0a1e21",
+                      "on-primary-fixed": "#00184a",
+                      "background": "#f8f9fa",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-container": "#617578",
+                      "outline": "#727687",
+                      "on-secondary-container": "#485980",
+                      "surface-container-highest": "#e1e3e4",
+                      "primary": "#004fcb",
+                      "surface-bright": "#f8f9fa",
+                      "on-primary": "#ffffff",
+                      "secondary-container": "#bfd1ff",
+                      "on-primary-fixed-variant": "#003fa5",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed-variant": "#364a4d",
+                      "on-background": "#191c1d",
+                      "secondary-fixed": "#d8e2ff",
+                      "tertiary-fixed": "#d1e7e9"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "unit": "4px",
+                      "gutter": "12px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "xl": "32px",
+                      "sm": "8px",
+                      "container-padding": "20px"
+              },
+              "fontFamily": {
+                      "label-bold": ["Inter"],
+                      "headline-xl": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                      "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col">
+<!-- Hero Background Visual (Abstract/Professional) -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+<div class="absolute -top-24 -left-24 w-96 h-96 bg-primary-container/5 rounded-full blur-3xl"></div>
+<div class="absolute top-1/2 -right-48 w-[500px] h-[500px] bg-secondary-container/10 rounded-full blur-[100px]"></div>
+</div>
+<!-- Main Content Container -->
+<main class="relative z-10 flex-grow flex flex-col items-center justify-center px-4 py-xl">
+<!-- Logo Branding -->
+<div class="mb-xl flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-4xl" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tighter">Productive Flow</h1>
+</div>
+<!-- Login Card -->
+<div class="w-full max-w-[400px] bg-surface-container-lowest p-xl rounded-lg shadow-[0_8px_24px_rgba(149,157,165,0.2)] border border-surface-container">
+<h2 class="font-headline-md text-headline-md text-center text-on-surface mb-lg">Log in to continue</h2>
+<form class="space-y-md">
+<!-- Email Input -->
+<div class="space-y-xs">
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg bg-surface focus:ring-2 focus:ring-primary-container focus:border-primary-container outline-none transition-all placeholder:text-on-surface-variant/60 font-body-md" placeholder="Enter email" type="email"/>
+</div>
+<!-- Password Input -->
+<div class="space-y-xs">
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg bg-surface focus:ring-2 focus:ring-primary-container focus:border-primary-container outline-none transition-all placeholder:text-on-surface-variant/60 font-body-md" placeholder="Enter password" type="password"/>
+</div>
+<!-- Login Button -->
+<button class="w-full bg-primary-container text-on-primary-container font-label-bold text-body-md py-sm rounded-lg hover:bg-primary transition-colors duration-200 shadow-sm" type="submit">
+                    Log In
+                </button>
+<div class="flex items-center justify-center py-sm">
+<span class="text-on-surface-variant font-label-sm text-label-sm">OR</span>
+</div>
+<!-- Social Logins Cluster -->
+<div class="space-y-sm">
+<button class="w-full flex items-center justify-center gap-sm px-md py-sm border border-outline-variant rounded-lg bg-white hover:bg-surface transition-all shadow-sm" type="button">
+<img alt="Google logo" class="w-5 h-5" data-alt="clean vector representation of the multi-colored google g icon on a white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAw949gcV1DMNZ7ThDxO9ez8niJT2Tz7hanIid5voaPDk0w9eWSu8DMv2T05Ns-CqVE_mxAkkqwuabtgI-Um6kXtvgXWqybdvQXWxM4dB4GHD9yl9OtXzEonkw8VdKUHJcor0ODrqpeP8x3RFVWMjqq72tql4Ub_1-Fl5GyAED5xs_eOqdWAhP5ZLzZ6P-DFo3PrQsxdmfuk0uTXH42UBz-HolQaOWPnlDE_tlI27uxYTklMpWvXFzVFR5MYIOcY-cV1oE-08_m_H8M"/>
+<span class="font-label-bold text-on-surface">Continue with Google</span>
+</button>
+<button class="w-full flex items-center justify-center gap-sm px-md py-sm border border-outline-variant rounded-lg bg-white hover:bg-surface transition-all shadow-sm" type="button">
+<img alt="Microsoft logo" class="w-5 h-5" data-alt="classic microsoft square logo with four colored quadrants representing windows and office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3iWCeGr0hMUwhs-SCGL9zT4lG3-rSuaJhEjZAIu7SIxYhtWrAZs2BqKYkP8RNnGgggZh1iLl3D6MFOuDbOy1RC7Z5VUPj2TMGaqLf762dwwWxxwPh0I-r1Xo709p-saVBheArpMNzfCFpOvDi-3VQqPat0H14fGZiMdLfO2NwiYiXxqqhXM95rPL374hvbJblta5U3fUxTXBbxVfRp6jeTYsjRD_0zNYbJAgB4rBzxtlPB_k9RRd_veyGR1cmK1vSnfAKW_jo7fib"/>
+<span class="font-label-bold text-on-surface">Continue with Microsoft</span>
+</button>
+<button class="w-full flex items-center justify-center gap-sm px-md py-sm border border-outline-variant rounded-lg bg-white hover:bg-surface transition-all shadow-sm" type="button">
+<img alt="Apple logo" class="w-5 h-5" data-alt="minimalist black apple logo with a bite taken out, clean monochrome silhouette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAs1RHDZzH81wqfjHWhPWOVaj8YgET0bsO5WqmqUZ7ih-VBk4lEzWNwfghBYdhbYb-3wTAzZBZk0GwYloDoQLmaj7K2muwqXV5a4gnSRC1MFVTjYYI8oU1bQ1f_i2sYpWJxqxbc6Q02LLyXmcPPzV1UphJ56dLZNhQIDSJufVaaYi_ODVLEY7Kig3Dd8v4hzHZbYYgCa0vw6qXo_OT6fkoFH8b1ZMuhwnH1qQRlk0zhI29rPTnFSuf7oLxSEnJ-PBAIi61cmIyhEDfk"/>
+<span class="font-label-bold text-on-surface">Continue with Apple</span>
+</button>
+<button class="w-full flex items-center justify-center gap-sm px-md py-sm border border-outline-variant rounded-lg bg-white hover:bg-surface transition-all shadow-sm" type="button">
+<img alt="Slack logo" class="w-5 h-5" data-alt="colorful slack hash icon consisting of four distinct primary colors on a white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAy4nMb_eCRKELY9YWZ_9Lw3m1jEfj5-sWD5vQQGvrEmmXpYe3f3IlvuexWBJ__5hxdu9POG5-wGmzh5mVdoEzGphDqaVdlKrhOZ2CbHmIYWZjPGIAUXwzpk7_GquNiezL86isUp7fZydzEcQbiRdI73O1erV8KVc7OB4k3tP_-qhJsk6ZQnqnXuXTubIxKl0LgKavXfJXRH7yead88AUcMiwz5BALyhWePlKmif6i9T6bnl1PBAmq53VZv7xZZs43UYsdrXekuKJk5"/>
+<span class="font-label-bold text-on-surface">Continue with Slack</span>
+</button>
+</div>
+</form>
+<div class="mt-lg pt-lg border-t border-surface-container flex flex-col items-center gap-sm">
+<a class="text-primary font-label-sm text-label-sm hover:underline" href="#">Forgot password?</a>
+<div class="flex items-center gap-xs">
+<span class="text-on-surface-variant text-label-sm font-label-sm">•</span>
+<a class="text-primary font-label-sm text-label-sm hover:underline" href="#">Sign up for an account</a>
+</div>
+</div>
+</div>
+<!-- Footer Links -->
+<footer class="mt-xl flex flex-wrap justify-center gap-md text-on-surface-variant font-label-sm text-label-sm opacity-60">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Contact Support</a>
+</footer>
+</main>
+<!-- Side Decoration (Bento Style Sub-visuals) -->
+<div class="hidden lg:block fixed bottom-lg left-lg space-y-md opacity-40">
+<div class="w-48 h-24 bg-surface-container-high rounded-xl border border-outline-variant p-sm overflow-hidden">
+<div class="w-full h-2 bg-primary-container/20 rounded-full mb-2"></div>
+<div class="w-3/4 h-2 bg-on-surface-variant/10 rounded-full mb-4"></div>
+<div class="flex gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary-container"></div>
+<div class="w-8 h-8 rounded-full bg-tertiary-container"></div>
+</div>
+</div>
+<div class="w-32 h-16 bg-surface-container-high rounded-xl border border-outline-variant p-sm ml-8">
+<div class="w-full h-full rounded bg-primary-container/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container/30">analytics</span>
+</div>
+</div>
+</div>
+</body></html>

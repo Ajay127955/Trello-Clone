@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign Up | Productive Flow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f8f9fa",
+                        "surface-container-high": "#e7e8e9",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#e5fbfe",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "secondary": "#4c5e85",
+                        "inverse-surface": "#2e3132",
+                        "outline-variant": "#c2c6d8",
+                        "on-primary-container": "#f7f6ff",
+                        "surface-tint": "#0054d7",
+                        "secondary-fixed-dim": "#b4c6f3",
+                        "surface-container-low": "#f3f4f5",
+                        "on-secondary-fixed": "#051a3e",
+                        "on-surface": "#191c1d",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-variant": "#e1e3e4",
+                        "tertiary-fixed-dim": "#b5cacd",
+                        "on-surface-variant": "#424656",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#485c5f",
+                        "surface-dim": "#d9dadb",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary-fixed-variant": "#35466c",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#b3c5ff",
+                        "surface-container": "#edeeef",
+                        "primary-container": "#0065ff",
+                        "on-tertiary-fixed": "#0a1e21",
+                        "on-primary-fixed": "#00184a",
+                        "background": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#617578",
+                        "outline": "#727687",
+                        "on-secondary-container": "#485980",
+                        "surface-container-highest": "#e1e3e4",
+                        "primary": "#004fcb",
+                        "surface-bright": "#f8f9fa",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#bfd1ff",
+                        "on-primary-fixed-variant": "#003fa5",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#364a4d",
+                        "on-background": "#191c1d",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary-fixed": "#d1e7e9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "unit": "4px",
+                        "gutter": "12px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "label-bold": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                        "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col items-center justify-center p-md">
+<!-- Auth Background Elements -->
+<div class="fixed inset-0 overflow-hidden -z-10 pointer-events-none">
+<div class="absolute -top-[10%] -left-[5%] w-[40%] h-[40%] rounded-full bg-primary-fixed/20 blur-[120px]"></div>
+<div class="absolute -bottom-[10%] -right-[5%] w-[40%] h-[40%] rounded-full bg-secondary-fixed/20 blur-[120px]"></div>
+</div>
+<!-- Main Content Container -->
+<main class="w-full max-w-[400px] flex flex-col items-center">
+<!-- Logo Section -->
+<div class="mb-xl flex flex-col items-center gap-xs">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-[32px]" data-icon="grid_view">grid_view</span>
+<h1 class="font-headline-xl text-headline-xl text-[#091E42]">Productive Flow</h1>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Streamline your teamwork today.</p>
+</div>
+<!-- Auth Card -->
+<div class="w-full bg-surface-container-lowest shadow-[0_8px_24px_rgba(9,30,66,0.08)] border border-surface-variant rounded-lg p-lg">
+<h2 class="font-headline-md text-headline-md text-center mb-md">Sign up for your account</h2>
+<form class="flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant" for="email">Email</label>
+<input class="w-full h-10 px-sm border border-outline rounded-lg bg-surface-container-lowest font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="email" placeholder="Enter email" type="email"/>
+</div>
+<button class="w-full h-10 bg-primary-container text-on-primary-container font-label-bold text-label-bold rounded-lg hover:bg-primary transition-colors flex items-center justify-center" type="submit">
+                    Sign Up
+                </button>
+</form>
+<div class="flex items-center my-lg">
+<div class="flex-grow border-t border-surface-variant"></div>
+<span class="px-sm font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">OR</span>
+<div class="flex-grow border-t border-surface-variant"></div>
+</div>
+<!-- Social Auth Options -->
+<div class="flex flex-col gap-sm">
+<button class="w-full h-10 bg-surface-container-lowest border border-outline-variant shadow-sm rounded-lg flex items-center px-md gap-md hover:bg-surface-container-low transition-colors">
+<img alt="Google" class="w-5 h-5" data-alt="Official Google G logo in bright primary colors on a transparent background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCxa1wouDWunWRFzBc6jITFhMTB8ogDeSDwJXDYu6zWaEMzA3RpvWmWpXKbNZryhNw74dw_fmDwGp8kC1wmPwgimoT14LfaE60uOm7fLjAbc7QvJcrwZfuTM7sALysFvfnvtWRhunRe1r9xQZlYSkIByfBZZrS7tWOq0m8enctZZyxTSAk-RBVrXVbjmAFjEMPEKCivMP96FUej6Nq2Ilb6xhNNoNnaKf0KCWAsZV97uMOzHM7aG85a29mIU_5MdBXFO1Hl5Jl9pEF"/>
+<span class="font-label-bold text-label-bold text-on-surface">Continue with Google</span>
+</button>
+<button class="w-full h-10 bg-surface-container-lowest border border-outline-variant shadow-sm rounded-lg flex items-center px-md gap-md hover:bg-surface-container-low transition-colors">
+<img alt="Microsoft" class="w-5 h-5" data-alt="Microsoft corporate logo featuring the four colored squares representing their primary product lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByWG19MzemjH18wPvZKxzUkJntab2Sj308GtFdoYMjif2iHvTyB1z2HqyT7Lp_U8cEpwt0w7wZtv3JmHedFeOg4_NLdwxAS5oaDvlsu-Q-XEQFfSL0VlCI0OmaBPwUTa7jYy9OarxsRijGoDEdCZsab_pshoS9_3bjD86b1S3fKUQRP640plENQHJK7N8o9u1dyQNi_UaIFmiHcelHfEpoJgBIvW3VArNTDyHqiEemzkcd3ZKa2bDcGwrIWzpydvD43Zg6MetxOX1i"/>
+<span class="font-label-bold text-label-bold text-on-surface">Continue with Microsoft</span>
+</button>
+<button class="w-full h-10 bg-surface-container-lowest border border-outline-variant shadow-sm rounded-lg flex items-center px-md gap-md hover:bg-surface-container-low transition-colors">
+<img alt="Apple" class="w-5 h-5" data-alt="Classic black Apple logo in a sleek minimalist vector style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDsFxtIlHzRENvjya3ZBtRivKirlIRVs7aEwVe3sBxmS8oiHNzbyns0hrPdlrih7oh3Fw6lgEOo64vXaVRUU8zE9tbp4DF_N1eOhmE8vVMeHJJdhjsHaLKMXFH8E-CcByfwcgj-HcK5F-Lkf6JdLuYHmYJ4989p1AUAQ1LosB24pjE_PFbpfO0JtPOsvSln4iS2EBvREolni67U__QIGJBfN4V12Amrx-WyYMVNcr1O-xyg60Kk1m4UWp5dHGb6YPAp-kejUPlvaNh"/>
+<span class="font-label-bold text-label-bold text-on-surface">Continue with Apple</span>
+</button>
+<button class="w-full h-10 bg-surface-container-lowest border border-outline-variant shadow-sm rounded-lg flex items-center px-md gap-md hover:bg-surface-container-low transition-colors">
+<img alt="Slack" class="w-5 h-5" data-alt="Slack octothorpe logo with vibrant hashtag colors representing workplace collaboration" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrbHqhpJSVueBq4wbjDmgujXg5avII8p-VRIQ35iDGL9nFMoWDoAm2djWFPdfRjJiaXPUuWl6CLmG8uByojLppg3Ypkww7nkNqMDI9XMLBCvVYCV7QyTBhFEWRmsROhYFCSzFMSYJvttKl_dUQBL64KA_m-_F52t1COVRyuWPEDjniuC_I65QXi-zyD33bP2Ob1VLyCl4cdc14NmYRj-9SJvHMymQAKJS5LpHhk961jxamOIB2uGEFoIkU0EI5AhD7FDu8LoVnhjqB"/>
+<span class="font-label-bold text-label-bold text-on-surface">Continue with Slack</span>
+</button>
+</div>
+<hr class="my-lg border-surface-variant"/>
+<!-- Footer Links -->
+<div class="flex flex-col items-center gap-sm">
+<a class="font-body-md text-body-md text-primary hover:underline" href="#">Already have an account? Log in</a>
+</div>
+</div>
+<!-- Terms and Privacy -->
+<div class="mt-lg px-md text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant leading-relaxed">
+                By signing up, you confirm that you've read and accepted our 
+                <a class="text-primary hover:underline" href="#">Terms of Service</a> 
+                and 
+                <a class="text-primary hover:underline" href="#">Privacy Policy</a>.
+            </p>
+</div>
+<!-- Illustrative Element (Asymmetric) -->
+<div class="hidden lg:block fixed left-12 bottom-12 w-64 opacity-20">
+<div class="relative w-full h-48 bg-white border-2 border-surface-variant rounded-xl p-md shadow-sm">
+<div class="h-4 w-3/4 bg-surface-container-high rounded-full mb-sm"></div>
+<div class="h-4 w-1/2 bg-surface-container-high rounded-full mb-lg"></div>
+<div class="flex gap-xs">
+<div class="w-8 h-8 rounded-full bg-primary-fixed"></div>
+<div class="w-8 h-8 rounded-full bg-secondary-fixed"></div>
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed"></div>
+</div>
+</div>
+<p class="mt-sm font-label-bold text-label-bold text-outline">BOARD PREVIEW</p>
+</div>
+<div class="hidden lg:block fixed right-12 top-12 w-48 opacity-20 transform rotate-3">
+<div class="relative w-full h-32 bg-white border-2 border-surface-variant rounded-xl p-md shadow-sm">
+<div class="flex items-center gap-xs mb-sm">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span>
+<div class="h-3 w-full bg-surface-container-high rounded-full"></div>
+</div>
+<div class="flex items-center gap-xs mb-sm">
+<span class="material-symbols-outlined text-sm" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<div class="h-3 w-3/4 bg-surface-container-high rounded-full"></div>
+</div>
+</div>
+<p class="mt-sm font-label-bold text-label-bold text-outline text-right">TASK FLOW</p>
+</div>
+</main>
+<!-- Footer Decorative -->
+<footer class="mt-xl py-lg text-center w-full max-w-[400px]">
+<div class="flex justify-center gap-md mb-sm">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors" data-icon="language">language</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors" data-icon="help">help</span>
+</div>
+<p class="font-label-sm text-label-sm text-outline">© 2024 Productive Flow Inc.</p>
+</footer>
+</body></html>

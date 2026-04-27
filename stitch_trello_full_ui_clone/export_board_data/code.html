@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Export Data - Productive Flow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#d1e7e9",
+                    "secondary-container": "#bfd1ff",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#0065ff",
+                    "error-container": "#ffdad6",
+                    "surface-container": "#edeeef",
+                    "on-surface-variant": "#424656",
+                    "on-surface": "#191c1d",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "primary": "#004fcb",
+                    "primary-fixed-dim": "#b3c5ff",
+                    "on-tertiary-fixed": "#0a1e21",
+                    "inverse-surface": "#2e3132",
+                    "on-primary-container": "#f7f6ff",
+                    "inverse-on-surface": "#f0f1f2",
+                    "outline": "#727687",
+                    "on-secondary-fixed": "#051a3e",
+                    "on-secondary-container": "#485980",
+                    "on-primary": "#ffffff",
+                    "background": "#f8f9fa",
+                    "on-primary-fixed": "#00184a",
+                    "primary-fixed": "#dbe1ff",
+                    "on-tertiary-container": "#e5fbfe",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary": "#485c5f",
+                    "surface": "#f8f9fa",
+                    "on-secondary-fixed-variant": "#35466c",
+                    "on-primary-fixed-variant": "#003fa5",
+                    "surface-variant": "#e1e3e4",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#b5cacd",
+                    "surface-tint": "#0054d7",
+                    "secondary": "#4c5e85",
+                    "secondary-fixed-dim": "#b4c6f3",
+                    "surface-container-highest": "#e1e3e4",
+                    "surface-container-high": "#e7e8e9",
+                    "on-tertiary-fixed-variant": "#364a4d",
+                    "on-background": "#191c1d",
+                    "surface-dim": "#d9dadb",
+                    "inverse-primary": "#b3c5ff",
+                    "surface-bright": "#f8f9fa",
+                    "tertiary-container": "#617578",
+                    "surface-container-low": "#f3f4f5",
+                    "outline-variant": "#c2c6d8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "gutter": "12px",
+                    "xl": "32px",
+                    "unit": "4px",
+                    "md": "16px",
+                    "container-padding": "20px"
+            },
+            "fontFamily": {
+                    "headline-xl": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background selection:bg-primary-container selection:text-white">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-12 bg-[#091E42] dark:bg-slate-950 text-white dark:text-slate-100 border-b border-white/10 shadow-sm">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 hover:bg-white/10 transition-colors rounded-lg">menu</button>
+<span class="text-lg font-black text-white tracking-tight">Workspace</span>
+</div>
+<div class="flex items-center gap-2">
+<nav class="hidden md:flex items-center gap-6 mr-6 font-sans text-sm font-medium Inter">
+<a class="text-slate-300 hover:text-white transition-colors" href="#">Boards</a>
+<a class="text-slate-300 hover:text-white transition-colors" href="#">Members</a>
+<a class="text-white font-bold border-b-2 border-white pb-1" href="#">Workspace Settings</a>
+</nav>
+<img alt="User Profile Avatar" class="w-8 h-8 rounded-full border border-white/20" data-alt="close-up professional headshot of a smiling woman with glasses in a minimalist office setting with natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7qpEJxpohIdGIczc4-c8TYVG_TXZ2BA7-KliHlgMq22CmVXLdmBannONRY5z4NQpUHTEHjxOFyVNPinRUAdTbQ_ehnyQ6DxioL6k84Qr2miq9O3uXXdEz0EW2ral-J1v7vTGD6wRFWtTHn6D6guzjEOt5seiH9dy_7kk_Dy0e4MgS_oMP2p4Hlxaa7Lo9PbspFtFuKPJ6dgvMpz-FOguu9j0Jdo-zoBKooiTs5Y9QoUHDoEVV0Uo-hbWTVou1UXOdg5r0va2LHWd8"/>
+</div>
+</header>
+<div class="flex pt-12 h-screen overflow-hidden">
+<!-- NavigationDrawer -->
+<aside class="hidden md:flex flex-col h-full w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4 gap-2">
+<div class="px-2 py-4 mb-4">
+<span class="text-blue-600 dark:text-blue-400 font-bold font-sans text-sm Inter">Productive Flow</span>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
+<span class="material-symbols-outlined">dashboard</span> Boards
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
+<span class="material-symbols-outlined">group</span> Members
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold rounded-md font-sans text-sm Inter" href="#">
+<span class="material-symbols-outlined">settings</span> Workspace Settings
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
+<span class="material-symbols-outlined">calendar_today</span> Calendar
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
+<span class="material-symbols-outlined">timeline</span> Timeline
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all font-sans text-sm Inter" href="#">
+<span class="material-symbols-outlined">analytics</span> Dashboard
+            </a>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 overflow-y-auto bg-background p-gutter md:p-lg pb-32 md:pb-lg">
+<div class="max-w-5xl mx-auto space-y-lg">
+<!-- Header Section -->
+<section class="space-y-xs">
+<h1 class="font-headline-xl text-headline-xl text-on-surface">Export Data</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Generate a backup or move your data to another application by exporting your boards and workspace information.</p>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Export Options & Settings -->
+<div class="lg:col-span-2 space-y-lg">
+<!-- Bento: Primary Export Actions -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- JSON Export -->
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between mb-md">
+<div class="bg-primary-container/10 p-sm rounded-lg">
+<span class="material-symbols-outlined text-primary">data_object</span>
+</div>
+<span class="text-[10px] font-bold px-2 py-1 bg-surface-container-highest rounded text-on-surface-variant uppercase tracking-wider">Recommended</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-xs">Export as JSON</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Best for developers and data portability. Includes all metadata and relational links.</p>
+<button class="w-full py-sm bg-primary text-on-primary rounded-lg font-label-bold text-label-bold hover:bg-primary/90 transition-colors">Start JSON Export</button>
+</div>
+<!-- CSV Export -->
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between mb-md">
+<div class="bg-secondary-container/30 p-sm rounded-lg text-secondary">
+<span class="material-symbols-outlined">table_view</span>
+</div>
+</div>
+<h3 class="font-headline-md text-headline-md mb-xs">Export as CSV</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Best for spreadsheets and reporting. Includes task lists, dates, and assignees.</p>
+<button class="w-full py-sm border border-outline text-primary rounded-lg font-label-bold text-label-bold hover:bg-surface-container transition-colors">Start CSV Export</button>
+</div>
+</div>
+<!-- Configuration Section -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+<div class="p-md border-b border-outline-variant bg-surface-container-low">
+<h2 class="font-headline-md text-headline-md">Export Settings</h2>
+</div>
+<div class="p-md space-y-md">
+<!-- Privacy Toggle -->
+<div class="flex items-center justify-between">
+<div class="flex items-start gap-md">
+<span class="material-symbols-outlined text-on-surface-variant mt-1">privacy_tip</span>
+<div>
+<p class="font-label-bold text-label-bold">Include Private Comments</p>
+<p class="text-[12px] text-on-surface-variant">Includes internal discussion notes and restricted member updates.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<hr class="border-outline-variant"/>
+<!-- Attachments -->
+<div class="flex items-center justify-between">
+<div class="flex items-start gap-md">
+<span class="material-symbols-outlined text-on-surface-variant mt-1">attachment</span>
+<div>
+<p class="font-label-bold text-label-bold">Export Attachments</p>
+<p class="text-[12px] text-on-surface-variant">Includes links to hosted files. Increases export size significantly.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<hr class="border-outline-variant"/>
+<!-- Member Mapping -->
+<div class="flex items-center justify-between">
+<div class="flex items-start gap-md">
+<span class="material-symbols-outlined text-on-surface-variant mt-1">badge</span>
+<div>
+<p class="font-label-bold text-label-bold">Anonymize Member Data</p>
+<p class="text-[12px] text-on-surface-variant">Replaces real names with generic identifiers (e.g., User 1, User 2).</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Panel: History -->
+<div class="space-y-lg">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden">
+<div class="p-md border-b border-outline-variant bg-surface-container-low flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">history</span>
+<h2 class="font-headline-md text-headline-md">Export History</h2>
+</div>
+<div class="divide-y divide-outline-variant">
+<!-- History Item 1 -->
+<div class="p-md hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-bold text-label-bold">workspace_backup.json</span>
+<span class="text-[10px] bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded uppercase">Success</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span class="text-[11px]">Oct 24, 2023</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">database</span>
+<span class="text-[11px]">12.4 MB</span>
+</div>
+</div>
+</div>
+<!-- History Item 2 -->
+<div class="p-md hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-bold text-label-bold">q3_report_tasks.csv</span>
+<span class="text-[10px] bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded uppercase">Success</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span class="text-[11px]">Oct 12, 2023</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">database</span>
+<span class="text-[11px]">1.2 MB</span>
+</div>
+</div>
+</div>
+<!-- History Item 3 - Expired -->
+<div class="p-md opacity-60">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-bold text-label-bold">full_export_sep.json</span>
+<span class="text-[10px] bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded uppercase">Expired</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span class="text-[11px]">Sep 30, 2023</span>
+</div>
+<button class="text-[11px] font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">refresh</span> Re-run
+                                        </button>
+</div>
+</div>
+</div>
+<div class="p-md bg-surface-container-low">
+<p class="text-[11px] text-on-surface-variant italic">Note: Exports are kept for 30 days before being automatically purged from our servers for security.</p>
+</div>
+</div>
+<!-- Data Security Tip -->
+<div class="bg-primary-container text-on-primary-container p-md rounded-xl">
+<div class="flex items-center gap-2 mb-sm">
+<span class="material-symbols-outlined">security</span>
+<span class="font-label-bold text-label-bold">Security Tip</span>
+</div>
+<p class="text-[12px] leading-relaxed">Always use a secure, encrypted storage solution for your workspace backups. Avoid sharing these files over unsecured public networks.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-white dark:bg-slate-900 pb-safe border-t border-slate-200 dark:border-slate-800 shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium Inter">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] font-medium Inter">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined">add_box</span>
+<span class="text-[10px] font-medium Inter">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="text-[10px] font-medium Inter">Notifications</span>
+</a>
+</nav>
+</body></html>

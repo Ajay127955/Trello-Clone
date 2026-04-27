@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#485980",
+                    "surface-bright": "#f8f9fa",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed-variant": "#364a4d",
+                    "inverse-on-surface": "#f0f1f2",
+                    "background": "#f8f9fa",
+                    "primary-fixed-dim": "#b3c5ff",
+                    "surface-tint": "#0054d7",
+                    "on-primary-fixed": "#00184a",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#35466c",
+                    "tertiary-fixed": "#d1e7e9",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#617578",
+                    "outline": "#727687",
+                    "on-secondary-fixed": "#051a3e",
+                    "surface-container": "#edeeef",
+                    "on-background": "#191c1d",
+                    "surface-container-high": "#e7e8e9",
+                    "primary-fixed": "#dbe1ff",
+                    "error-container": "#ffdad6",
+                    "primary": "#004fcb",
+                    "primary-container": "#0065ff",
+                    "secondary-container": "#bfd1ff",
+                    "outline-variant": "#c2c6d8",
+                    "secondary": "#4c5e85",
+                    "inverse-surface": "#2e3132",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#e1e3e4",
+                    "tertiary-fixed-dim": "#b5cacd",
+                    "on-primary-fixed-variant": "#003fa5",
+                    "surface-variant": "#e1e3e4",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-surface-variant": "#424656",
+                    "surface-container-low": "#f3f4f5",
+                    "surface": "#f8f9fa",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed-dim": "#b4c6f3",
+                    "on-tertiary-container": "#e5fbfe",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#b3c5ff",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary": "#485c5f",
+                    "surface-dim": "#d9dadb",
+                    "on-primary-container": "#f7f6ff",
+                    "on-tertiary-fixed": "#0a1e21",
+                    "on-surface": "#191c1d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "unit": "4px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "gutter": "12px",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "container-padding": "20px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "label-bold": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-[#091E42] border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none fixed top-0 z-50 w-full">
+<div class="flex justify-between items-center w-full px-4 h-12">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#0065FF] dark:text-[#4C9AFF]" data-icon="grid_view">grid_view</span>
+<span class="text-xl font-black text-[#091E42] dark:text-white flex items-center gap-2">ProductiveFlow</span>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-[#0065FF] border-b-2 border-[#0065FF] pb-1 font-['Inter'] text-sm font-medium tracking-tight" href="#">Help Center</a>
+<a class="text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors font-['Inter'] text-sm font-medium tracking-tight px-2 py-1 rounded" href="#">Boards</a>
+<a class="text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors font-['Inter'] text-sm font-medium tracking-tight px-2 py-1 rounded" href="#">Community</a>
+</nav>
+<div class="flex items-center gap-3">
+<img alt="User Profile Avatar" class="w-8 h-8 rounded-full object-cover" data-alt="Professional headshot of a friendly support representative in a clean office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAxRZdZHiIB2J6KwJrZlyBd_3jmd1gtDFocwOT86nTEuHD49gpwTziOIzaSzI1HcCr1Cp6b9sAObrL5ff87zUAY_wIpc1P7fym2SGkDMjIQC-5tXPynWcd9_AgM1xfy0XJw-CO33gHpxLXtXlxnX7bZIp4ImfQpN8cl3y-9zkz0rOf4IwDF47LcmB-l3Y0KzKBq_rXrB8h8PBwE47Ashc4POS6D3oKUMlFrjSfCEzVRRzN4N0meEaFQmskD7yA8uSYFBWIVPWs1Qdz"/>
+</div>
+</div>
+</header>
+<!-- NavigationDrawer (Suppressed for focused Help Center experience per shell visibility rules, but structure exists) -->
+<aside class="fixed left-0 top-12 bottom-0 flex flex-col p-3 space-y-1 h-full w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#172B4D] hidden xl:flex">
+<div class="text-lg font-bold text-[#091E42] dark:text-slate-100 mb-4 px-2">Workspace Alpha</div>
+<div class="flex flex-col space-y-1">
+<button class="flex items-center gap-3 px-3 py-2 text-slate-700 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-white/5 hover:translate-x-1 transition-transform duration-200 font-['Inter'] text-[14px] leading-5">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Boards</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 text-slate-700 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-white/5 hover:translate-x-1 transition-transform duration-200 font-['Inter'] text-[14px] leading-5">
+<span class="material-symbols-outlined" data-icon="calendar_view_day">calendar_view_day</span>
+<span>Views</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 text-slate-700 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-white/5 hover:translate-x-1 transition-transform duration-200 font-['Inter'] text-[14px] leading-5">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+<span>Automation</span>
+</button>
+<button class="bg-[#E6FCFF] dark:bg-[#0065FF]/20 text-[#0065FF] dark:text-[#4C9AFF] font-semibold rounded-md flex items-center gap-3 px-3 py-2 hover:translate-x-1 transition-transform duration-200 font-['Inter'] text-[14px] leading-5">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Help Center</span>
+</button>
+</div>
+</aside>
+<main class="xl:ml-64 pt-12 min-h-screen">
+<!-- Hero Section -->
+<section class="relative bg-[#004fcb] overflow-hidden py-16 md:py-24 px-6">
+<div class="absolute inset-0 opacity-10">
+<div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_30%,#ffffff_0%,transparent_50%)]"></div>
+</div>
+<div class="max-w-4xl mx-auto text-center relative z-10">
+<h1 class="font-headline-xl text-headline-xl text-white mb-6">How can we help?</h1>
+<div class="relative max-w-2xl mx-auto">
+<input class="w-full h-14 pl-14 pr-6 rounded-xl bg-white border-none shadow-xl text-on-surface focus:ring-2 focus:ring-[#0065FF] transition-all font-body-md text-body-md" placeholder="Search for articles, guides, and more..." type="text"/>
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" data-icon="search">search</span>
+</div>
+<div class="mt-8 flex flex-wrap justify-center gap-3">
+<span class="text-primary-fixed font-label-sm text-label-sm">Popular:</span>
+<a class="text-white underline font-label-sm text-label-sm hover:text-secondary-fixed" href="#">Single Sign-On</a>
+<a class="text-white underline font-label-sm text-label-sm hover:text-secondary-fixed" href="#">Card Limits</a>
+<a class="text-white underline font-label-sm text-label-sm hover:text-secondary-fixed" href="#">Workspace Billing</a>
+</div>
+</div>
+</section>
+<!-- Category Grid -->
+<section class="max-w-6xl mx-auto py-16 px-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Category Card 1 -->
+<div class="group bg-white p-lg rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="w-12 h-12 bg-primary-fixed rounded-lg flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-sm">Getting Started</h3>
+<p class="text-on-surface-variant font-body-md text-body-md">New to ProductiveFlow? Learn the basics of boards, cards, and workflows.</p>
+</div>
+<!-- Category Card 2 -->
+<div class="group bg-white p-lg rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="w-12 h-12 bg-secondary-fixed rounded-lg flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-secondary" data-icon="payments">payments</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-sm">Account &amp; Billing</h3>
+<p class="text-on-surface-variant font-body-md text-body-md">Manage your subscription, invoices, and team workspace settings.</p>
+</div>
+<!-- Category Card 3 -->
+<div class="group bg-white p-lg rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="w-12 h-12 bg-tertiary-fixed rounded-lg flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-tertiary" data-icon="construction">construction</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-sm">Troubleshooting</h3>
+<p class="text-on-surface-variant font-body-md text-body-md">Having technical issues? Find solutions for common bugs and errors.</p>
+</div>
+</div>
+</section>
+<!-- Promoted Articles (Asymmetric Bento Style) -->
+<section class="bg-surface-container py-16 px-6">
+<div class="max-w-6xl mx-auto">
+<div class="flex items-center justify-between mb-8">
+<h2 class="font-headline-md text-headline-md text-on-surface">Promoted Articles</h2>
+<a class="text-primary font-label-bold text-label-bold flex items-center gap-1 hover:underline" href="#">
+                        View all <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Featured Article -->
+<div class="md:col-span-8 bg-white p-8 rounded-xl border border-slate-200 shadow-sm hover:border-primary transition-colors cursor-pointer flex flex-col justify-between">
+<div>
+<span class="inline-block px-2 py-1 bg-[#E6FCFF] text-primary rounded font-label-sm text-label-sm mb-4">NEW GUIDE</span>
+<h3 class="font-headline-xl text-headline-md text-on-surface mb-4">Mastering the Automation Engine</h3>
+<p class="text-on-surface-variant font-body-lg text-body-lg mb-6">Discover how to eliminate repetitive tasks by building advanced Butler rules and command strings for your workspace.</p>
+</div>
+<div class="flex items-center gap-4 border-t border-slate-100 pt-6">
+<img alt="Author" class="w-10 h-10 rounded-full" data-alt="Close up portrait of a male support engineer smiling, wearing glasses and a headset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4_eX39eQ3HoPtcrM3GkhYy68EQZuhC8KLXTpSpMgzUEcTuyyUVIvjjPIDfITJNxLWWebBpQ-u4Xn6Gshtjp93sWHDzFO9dzsH3-5XMIQZj__Q89MQNyu3b669tTu2dIg-FHp1a7LGqrlzyplTdG62iqe6Dzjdz9tcQHFYOyKKK17CQQQITybC_6yXMJogZV2X_kSkMH9THOaswMeGhGJhk-1ivg9RzDWCseJzuAW0vKu-c-4bFcvKgs4HdG21VKRaVo_-l02VTWRZ"/>
+<div>
+<p class="font-label-bold text-label-bold text-on-surface">Written by Alex Rivera</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Last updated 2 days ago</p>
+</div>
+</div>
+</div>
+<!-- Article List Column -->
+<div class="md:col-span-4 flex flex-col gap-gutter">
+<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:bg-slate-50 transition-colors cursor-pointer">
+<h4 class="font-headline-md text-body-lg font-bold text-on-surface mb-2">Changing your workspace visibility</h4>
+<p class="text-on-surface-variant font-label-sm text-label-sm line-clamp-2">Control who can see your boards and workspace details...</p>
+</div>
+<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:bg-slate-50 transition-colors cursor-pointer">
+<h4 class="font-headline-md text-body-lg font-bold text-on-surface mb-2">Deleting a ProductiveFlow account</h4>
+<p class="text-on-surface-variant font-label-sm text-label-sm line-clamp-2">Step-by-step guide to permanently removing your personal data...</p>
+</div>
+<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:bg-slate-50 transition-colors cursor-pointer">
+<h4 class="font-headline-md text-body-lg font-bold text-on-surface mb-2">Power-Ups and Integrations</h4>
+<p class="text-on-surface-variant font-label-sm text-label-sm line-clamp-2">Connect Slack, Jira, and Google Drive to your boards...</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact Support / Community Section -->
+<section class="max-w-6xl mx-auto py-16 px-6">
+<div class="bg-[#091E42] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
+<div class="md:w-1/2 p-12 text-white flex flex-col justify-center">
+<h2 class="font-headline-xl text-headline-xl mb-4">Still need help?</h2>
+<p class="text-slate-300 font-body-lg text-body-lg mb-8">Our support team is available 24/7. Connect with an expert or ask the community for quick answers.</p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="bg-[#0065FF] hover:bg-[#0054d7] text-white px-8 py-3 rounded-md font-label-bold text-body-md transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+                            Contact Support
+                        </button>
+<button class="bg-transparent border border-white hover:bg-white/10 text-white px-8 py-3 rounded-md font-label-bold text-body-md transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+                            Ask Community
+                        </button>
+</div>
+</div>
+<div class="md:w-1/2 bg-slate-100 relative min-h-[300px]">
+<img alt="Support Team" class="absolute inset-0 w-full h-full object-cover" data-alt="A diverse team of collaborative professionals working together in a modern, bright office with glass walls" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6X-PR5o_JsU3BGV025FWn2btREoWxF7AVNiRoAl8o29ftCW1ApW5IBWOFtMpYMWYJU986voetwupG_mDpJXLpjjF3d-C2B4yIH5iWrMik1OCRDvbEJ3waQr0blAzGpSb1_4UcM3OGXX5Vch5FSrnS_2rCJOrX5K1fyHk8s0LrhXJqXxDDdwNGDOcJZjEdLIar0i71l6bKZWdR2NUOI3t6cx-N41E5AWfNQsLThLyjbe2xhXHeiRlDslhf1Fn_U0TOO3F-yHzlN4oK"/>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="border-t border-slate-200 py-12 px-6">
+<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-2">
+<span class="text-xl font-black text-[#091E42] dark:text-white">ProductiveFlow</span>
+</div>
+<div class="flex gap-8 text-on-surface-variant font-label-sm text-label-sm">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Cookie Settings</a>
+</div>
+<p class="text-on-surface-variant font-label-sm text-label-sm">© 2024 ProductiveFlow Inc.</p>
+</div>
+</footer>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-6 right-6 w-14 h-14 bg-primary rounded-full shadow-2xl flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group z-50">
+<span class="material-symbols-outlined" data-icon="chat" data-weight="fill" style="font-variation-settings: 'FILL' 1;">chat</span>
+<div class="absolute right-16 bg-white text-on-surface px-4 py-2 rounded-lg shadow-lg font-label-bold text-label-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-slate-200">
+            Chat with us
+        </div>
+</button>
+</body></html>

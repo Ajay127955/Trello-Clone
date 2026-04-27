@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-bright": "#f8f9fa",
+            "surface-container-high": "#e7e8e9",
+            "surface": "#f8f9fa",
+            "surface-container-lowest": "#ffffff",
+            "primary": "#004fcb",
+            "on-primary-fixed-variant": "#003fa5",
+            "on-secondary-container": "#485980",
+            "outline": "#727687",
+            "on-surface-variant": "#424656",
+            "surface-dim": "#d9dadb",
+            "inverse-surface": "#2e3132",
+            "tertiary": "#485c5f",
+            "on-secondary-fixed": "#051a3e",
+            "on-error-container": "#93000a",
+            "surface-container": "#edeeef",
+            "primary-container": "#0065ff",
+            "primary-fixed": "#dbe1ff",
+            "on-tertiary-fixed-variant": "#364a4d",
+            "on-secondary": "#ffffff",
+            "on-surface": "#191c1d",
+            "surface-container-highest": "#e1e3e4",
+            "secondary-fixed-dim": "#b4c6f3",
+            "on-primary-container": "#f7f6ff",
+            "tertiary-fixed-dim": "#b5cacd",
+            "secondary-fixed": "#d8e2ff",
+            "inverse-on-surface": "#f0f1f2",
+            "on-tertiary-fixed": "#0a1e21",
+            "secondary-container": "#bfd1ff",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#35466c",
+            "outline-variant": "#c2c6d8",
+            "background": "#f8f9fa",
+            "on-error": "#ffffff",
+            "tertiary-fixed": "#d1e7e9",
+            "surface-variant": "#e1e3e4",
+            "error": "#ba1a1a",
+            "on-background": "#191c1d",
+            "tertiary-container": "#617578",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-container": "#e5fbfe",
+            "primary-fixed-dim": "#b3c5ff",
+            "surface-tint": "#0054d7",
+            "secondary": "#4c5e85",
+            "surface-container-low": "#f3f4f5",
+            "error-container": "#ffdad6",
+            "on-primary-fixed": "#00184a",
+            "inverse-primary": "#b3c5ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "unit": "4px",
+            "md": "16px",
+            "xl": "32px",
+            "container-padding": "20px",
+            "xs": "4px",
+            "lg": "24px",
+            "gutter": "12px",
+            "sm": "8px"
+          },
+          "fontFamily": {
+            "body-md": ["Inter"],
+            "label-bold": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "headline-xl": ["Inter"]
+          },
+          "fontSize": {
+            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+            "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    body {
+      background-color: #f8f9fa;
+      color: #191c1d;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md">
+<header class="bg-white dark:bg-slate-900 shadow-sm border-b border-slate-200 dark:border-slate-800 docked full-width top-0 z-40">
+<div class="flex justify-between items-center w-full px-4 h-14">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 duration-150 p-1 hover:bg-slate-50 rounded">
+<span class="material-symbols-outlined text-slate-600" data-icon="menu">menu</span>
+</button>
+<span class="font-inter text-blue-600 dark:text-blue-400 font-black text-xl">Trello</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="active:scale-95 duration-150 p-1 hover:bg-slate-50 rounded">
+<span class="material-symbols-outlined text-slate-600" data-icon="search">search</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">PU</div>
+</div>
+</div>
+</header>
+<div class="flex min-h-[calc(100vh-56px)]">
+<aside class="hidden md:flex flex-col h-full w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 py-4 transition-all ease-in-out duration-200">
+<div class="flex items-center gap-3 px-4 py-3 mb-4">
+<div class="h-10 w-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+</div>
+<div>
+<h3 class="font-inter text-sm font-bold text-slate-900">Productive Workspace</h3>
+<p class="text-xs text-slate-500">Free Plan</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-2">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-slate-500" data-icon="dashboard">dashboard</span>
+<span>Boards</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-slate-500" data-icon="person">person</span>
+<span>Members</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-blue-50 text-blue-600 font-bold border-r-4 border-blue-600 rounded-lg font-inter text-sm" href="#">
+<span class="material-symbols-outlined text-blue-600" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+<div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Workspace views</div>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-slate-500" data-icon="calendar_month">calendar_month</span>
+<span>Calendar</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-slate-500" data-icon="table_chart">table_chart</span>
+<span>Table</span>
+</a>
+</nav>
+</aside>
+<main class="flex-1 overflow-y-auto bg-surface-bright pb-20 md:pb-8">
+<div class="max-w-4xl mx-auto px-4 md:px-8 py-8">
+<header class="mb-10">
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-2">Workspace Settings</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Manage your workspace profiles, member permissions, and overall visibility.</p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<section class="lg:col-span-8 space-y-8">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/30">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="edit_square">edit_square</span>
+                Workspace Profile
+              </h2>
+<form class="space-y-6">
+<div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
+<div class="relative group">
+<div class="h-24 w-24 rounded-2xl bg-primary-container flex items-center justify-center text-white text-3xl font-bold shadow-inner overflow-hidden">
+<img alt="Workspace Logo" class="h-full w-full object-cover" data-alt="abstract geometric pattern with blue and purple gradients and sharp architectural lines in high resolution" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdgx1ldSF-_TjuWltX3UjyZUI31GFjT7p-4kFPuevRXb3NzhWH6Xz2hfbfo5UNVJ2ZlIvoiRpOlFjyJoMblfSzCLQqYJBQ7Q4raD7TN6goJ9RQwhPmAZlKwQ563Nk02johZVzWRZ94hrRLYaoJslqdP2afpHSx1ITjGFLoMkRuklRQ4Of3bGMXl96L14_F-lR7m2pnt3r_L-nQ_vukdWGvWngKHpkVym6rU4ElRLFREE_e6mUQjgzzysA14nAMp3QNfrplqlsuP6gJ"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined text-white" data-icon="photo_camera">photo_camera</span>
+</div>
+</div>
+</div>
+<div class="flex-1 w-full">
+<label class="font-label-bold text-label-bold text-on-surface-variant mb-2 block">Workspace Name</label>
+<input class="w-full bg-surface p-3 rounded-lg border border-outline-variant focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-body-md text-body-md" type="text" value="Productive Flow Team"/>
+</div>
+</div>
+<div>
+<label class="font-label-bold text-label-bold text-on-surface-variant mb-2 block">Short Bio</label>
+<textarea class="w-full bg-surface p-3 rounded-lg border border-outline-variant focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-body-md text-body-md" placeholder="Tell your team what this workspace is about..." rows="3">Collaborating on the next generation of productivity tools for modern distributed teams.</textarea>
+</div>
+<div class="flex justify-end">
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-label-bold text-label-bold hover:brightness-110 active:scale-95 transition-all" type="button">Save Changes</button>
+</div>
+</form>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/30">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="group">group</span>
+                  Manage Members
+                </h2>
+<button class="bg-primary-container/10 text-primary px-4 py-2 rounded-lg font-label-sm text-label-sm hover:bg-primary-container/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="person_add">person_add</span>
+                  Invite
+                </button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 hover:bg-surface-container-low rounded-xl transition-colors">
+<div class="flex items-center gap-3">
+<img alt="Alex Rivera" class="h-10 w-10 rounded-full object-cover" data-alt="professional portrait of a confident man with short beard in a clean studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpcH3B4maD1fm5yrW2dFf2FK-X4-7GsKDAQG10b8g1rHc8Chkw73hsHahDG98eiuITXAjYltWsknhjPoHxTN_wWbHzlhUo0qBMKtdfHHK_4giUypLa3JoC8M42dxMIwgV0qcKoeLLIPjjvwFsof43Pt-1GNq7keKdDa2UwxCZe8Mfm93_tMysbUYiMLVojDekyVUGr1GKdYZ5oIrGZeeDdRhG3kH1M8Q3CXppqm8UK9B08MjvA-1BvZLUe3Z6Uedse5sh72E8No5Fp"/>
+<div>
+<div class="font-inter font-bold text-on-surface">Alex Rivera</div>
+<div class="text-xs text-on-surface-variant">alex.rivera@productive.io</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="bg-primary-fixed text-on-primary-fixed-variant px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">Admin</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 hover:bg-surface-container-low rounded-xl transition-colors">
+<div class="flex items-center gap-3">
+<img alt="Sarah Chen" class="h-10 w-10 rounded-full object-cover" data-alt="cheerful young woman with curly hair smiling in a bright outdoor natural setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA12MaolccjA2KvTRmcJxK0mwotcpSf1zZzxyEKmiBKtKkIblcSicGkCT2YTSrGRxb7CXM-D_MDfHdqiqs0AILo-sAIDykd9wakkDzlq3MofJZ0rXaaJgpIGfs6Ti-qnEYJiLuYnBOp2VNl41qDilY9rbqk3QCJENkj7qX5v15ZfaEr0aW-fJJ6HEyVkCXkGiRJtRotSOMREDrY6b71mJ6gyhFQSAmsjSXizHLE8mNG8DRcfPx4jlE5I5jJq5YSvw7pUbDc357zNlvR"/>
+<div>
+<div class="font-inter font-bold text-on-surface">Sarah Chen</div>
+<div class="text-xs text-on-surface-variant">sarah.c@design.co</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">Editor</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 hover:bg-surface-container-low rounded-xl transition-colors">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary text-sm font-bold">JD</div>
+<div>
+<div class="font-inter font-bold text-on-surface">John Doe</div>
+<div class="text-xs text-on-surface-variant">john.doe@internal.org</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="bg-surface-variant text-on-surface-variant px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">Viewer</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-2 border border-dashed border-outline-variant rounded-lg text-on-surface-variant hover:border-primary hover:text-primary transition-all font-label-sm text-label-sm">
+                View all 12 members
+              </button>
+</div>
+</section>
+<aside class="lg:col-span-4 space-y-8">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/30">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-6">Visibility</h2>
+<div class="space-y-4">
+<label class="relative flex p-4 cursor-pointer rounded-xl border border-outline-variant hover:bg-primary-container/5 transition-all group">
+<input checked="" class="hidden peer" name="visibility" type="radio" value="private"/>
+<div class="flex gap-4">
+<div class="h-10 w-10 flex-shrink-0 bg-surface-container-highest rounded-full flex items-center justify-center text-primary group-peer-checked:bg-primary group-peer-checked:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="lock" data-weight="fill">lock</span>
+</div>
+<div>
+<p class="font-inter font-bold text-sm text-on-surface">Private</p>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">Only workspace members can see and edit boards.</p>
+</div>
+</div>
+<div class="absolute top-4 right-4 opacity-0 peer-checked:opacity-100 text-primary">
+<span class="material-symbols-outlined" data-icon="check_circle" data-weight="fill">check_circle</span>
+</div>
+</label>
+<label class="relative flex p-4 cursor-pointer rounded-xl border border-outline-variant hover:bg-primary-container/5 transition-all group">
+<input class="hidden peer" name="visibility" type="radio" value="public"/>
+<div class="flex gap-4">
+<div class="h-10 w-10 flex-shrink-0 bg-surface-container-highest rounded-full flex items-center justify-center text-primary group-peer-checked:bg-primary group-peer-checked:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="public">public</span>
+</div>
+<div>
+<p class="font-inter font-bold text-sm text-on-surface">Public</p>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">Anyone with the link can view. Search engines can index it.</p>
+</div>
+</div>
+<div class="absolute top-4 right-4 opacity-0 peer-checked:opacity-100 text-primary">
+<span class="material-symbols-outlined" data-icon="check_circle" data-weight="fill">check_circle</span>
+</div>
+</label>
+</div>
+</div>
+<div class="bg-gradient-to-br from-primary to-on-primary-fixed-variant p-6 rounded-xl shadow-lg text-white">
+<span class="material-symbols-outlined mb-4 text-3xl" data-icon="auto_awesome">auto_awesome</span>
+<h3 class="font-headline-md text-headline-md mb-2">Upgrade to Pro</h3>
+<p class="text-sm opacity-90 mb-4">Get unlimited boards, advanced permissions, and priority support for your team.</p>
+<button class="w-full bg-white text-primary py-3 rounded-lg font-label-bold text-label-bold hover:bg-opacity-90 transition-all">
+                Learn More
+              </button>
+</div>
+<div class="bg-error-container/20 p-6 rounded-xl border border-error/20">
+<h3 class="font-label-bold text-label-bold text-error mb-2 uppercase tracking-wider">Danger Zone</h3>
+<p class="text-xs text-on-surface-variant mb-4 leading-relaxed">Once you delete a workspace, there is no going back. Please be certain.</p>
+<button class="w-full border border-error text-error py-2 rounded-lg font-label-sm text-label-sm hover:bg-error hover:text-white transition-all">
+                Delete Workspace
+              </button>
+</div>
+</aside>
+</div>
+</div>
+</main>
+</div>
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-2 bg-white/80 backdrop-blur-md border-t border-slate-200">
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-inter text-[10px] font-medium">Boards</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-inter text-[10px] font-medium">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-inter text-[10px] font-medium">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-600 bg-blue-50/50 rounded-xl px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="settings" data-weight="fill">settings</span>
+<span class="font-inter text-[10px] font-bold">Settings</span>
+</a>
+</nav>
+</body></html>

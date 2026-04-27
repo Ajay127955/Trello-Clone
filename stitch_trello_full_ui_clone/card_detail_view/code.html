@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Card Details - Trello</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "surface-variant": "#e1e3e4",
+                    "secondary-fixed-dim": "#b4c6f3",
+                    "on-surface-variant": "#424656",
+                    "on-primary-fixed-variant": "#003fa5",
+                    "surface-container-high": "#e7e8e9",
+                    "primary-container": "#0065ff",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#f0f1f2",
+                    "tertiary": "#485c5f",
+                    "tertiary-container": "#617578",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#b5cacd",
+                    "secondary": "#4c5e85",
+                    "inverse-primary": "#b3c5ff",
+                    "primary-fixed-dim": "#b3c5ff",
+                    "outline-variant": "#c2c6d8",
+                    "on-tertiary-fixed-variant": "#364a4d",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#d1e7e9",
+                    "on-tertiary": "#ffffff",
+                    "primary": "#004fcb",
+                    "on-secondary-fixed-variant": "#35466c",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#191c1d",
+                    "on-secondary-container": "#485980",
+                    "on-primary-fixed": "#00184a",
+                    "surface-tint": "#0054d7",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#e5fbfe",
+                    "background": "#f8f9fa",
+                    "secondary-fixed": "#d8e2ff",
+                    "surface-dim": "#d9dadb",
+                    "surface-bright": "#f8f9fa",
+                    "surface-container-low": "#f3f4f5",
+                    "outline": "#727687",
+                    "inverse-surface": "#2e3132",
+                    "on-secondary-fixed": "#051a3e",
+                    "surface": "#f8f9fa",
+                    "secondary-container": "#bfd1ff",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#dbe1ff",
+                    "surface-container": "#edeeef",
+                    "on-background": "#191c1d",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-tertiary-fixed": "#0a1e21",
+                    "on-primary-container": "#f7f6ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "gutter": "12px",
+                    "xs": "4px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "container-padding": "20px",
+                    "unit": "4px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                    "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none flex justify-between items-center w-full px-4 h-14 z-50 fixed top-0">
+<div class="flex items-center gap-4">
+<button class="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 p-2 rounded transition-colors">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</button>
+<span class="text-xl font-black tracking-tight text-slate-900 dark:text-white">Trello</span>
+<nav class="hidden md:flex gap-6 ml-4">
+<a class="text-blue-600 dark:text-blue-400 font-semibold border-b-2 border-blue-600 pb-1 font-sans antialiased text-body-md" href="#">Boards</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors font-sans antialiased text-body-md" href="#">Templates</a>
+</nav>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 p-2 rounded transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+<img alt="User" data-alt="professional portrait of a young creative professional with a friendly smile, clean lighting, studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLGk2-hEZQvv-t3Tue5tPE-sgRvZEwQ9TEe2zmV-GdpA5oqKL2vPF7qvXHnoemxak6h0dpwVjUWpPJk0Ono7Cl7zgTCqz0g1NK8sMso88Ef_2ucIEm4eDqgNA4PafRczdYw3x5qmiy-jhM8vybb6XOMMD78vCyAQ5y6ShAwvXAB0afStJPrfoLYZsFPGb-QE6qAof9oPLyKTtMwm5P1kFa0YFlQxOo86NdcDL9N1R0mpQP8JQKkdBUeoRvMCJjdOPEMPJQyOAR-rT1"/>
+</div>
+</div>
+</header>
+<!-- Modal Backdrop Overlay -->
+<div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex items-start justify-center overflow-y-auto pt-12 pb-20 px-4">
+<!-- Detailed Card View Modal -->
+<article class="bg-surface-container-lowest w-full max-w-4xl rounded-xl shadow-2xl relative flex flex-col md:flex-row gap-0 overflow-hidden">
+<!-- Close Button (Mobile/Top Right) -->
+<button class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 z-10">
+<span class="material-symbols-outlined">close</span>
+</button>
+<!-- Main Content Area (Left) -->
+<div class="flex-grow p-6 md:p-8 md:pr-4">
+<!-- Title & List Section -->
+<header class="flex gap-4 mb-8">
+<span class="material-symbols-outlined text-slate-500 mt-1">credit_card</span>
+<div class="flex-grow">
+<h1 class="font-headline-md text-headline-md text-on-surface mb-1">Implement Bento Grid layout for mobile dashboard</h1>
+<p class="font-body-md text-body-md text-slate-500">
+                            in list <span class="underline cursor-pointer hover:text-primary">Development</span>
+</p>
+</div>
+</header>
+<div class="space-y-10">
+<!-- Badges Row (Members & Labels) -->
+<section class="flex flex-wrap gap-8 ml-10">
+<div class="space-y-2">
+<h3 class="font-label-bold text-label-bold text-slate-500 uppercase tracking-wider">Members</h3>
+<div class="flex gap-1 items-center">
+<div class="h-8 w-8 rounded-full bg-slate-200 border-2 border-white ring-1 ring-slate-100 flex items-center justify-center overflow-hidden">
+<img alt="User" data-alt="headshot of male designer in casual wear, blurred office background, soft daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlWyZkXc26WNXSQx1feS9DsAjZSni9c_CWyYdyWx0rF4J-vBxl5h1khHOUPFMErlDSZ0efCbRVFscADXVJT00_Fx703cHzRnjxxDhueU-3tSJoS5_QYGVAGhMtnm-PHEKOtr7zp3DztiVwTy6CyRM_JrHCvVzNtw48S_x3KviA6z8kZez2r3MvujSQYehy_6Njfb7lPo1HmO5D9ru8HWpPr_mhpG0VtzJHTSiyNJMsC3O4OL4P5qXokway3_w3j8eKNcqPFXsLdE2I"/>
+</div>
+<div class="h-8 w-8 rounded-full bg-slate-200 border-2 border-white ring-1 ring-slate-100 flex items-center justify-center overflow-hidden">
+<img alt="User" data-alt="close up profile of professional woman with neutral expression, soft lighting, minimalistic aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsLs201k02HYEXzbmrrTtM8q_giMly7yeWabzktWoJou0T1MSbmFBWY0RyUSI6EnK6tzpyi3tEAWGhxM2wZNQnNIKMsw0ijVr368dZ6NyCmLZlp4eBEXdpQFrspY_KdWOGcIe--c00CZhqkYe7ERoi55wdtyrwQa7CcWREgcoj9tqSIqB_0VOxriw7Lo7rqAa9C4mjP9K95b2KW64KcBq52Ej3yf9UL0H2W974fTU_p5Kk0_NwGNT5VkwzpGAU0ZHMq24XiPBIUiYA"/>
+</div>
+<button class="h-8 w-8 rounded-full bg-surface-container-high hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+<div class="space-y-2">
+<h3 class="font-label-bold text-label-bold text-slate-500 uppercase tracking-wider">Labels</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 rounded-lg bg-green-100 text-green-800 font-label-bold text-[11px] flex items-center gap-1">
+                                    UI DESIGN
+                                </span>
+<span class="px-3 py-1.5 rounded-lg bg-blue-100 text-blue-800 font-label-bold text-[11px] flex items-center gap-1">
+                                    MOBILE
+                                </span>
+<button class="px-2 py-1.5 rounded-lg bg-surface-container-high hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Description Section -->
+<section class="space-y-4">
+<div class="flex gap-4 items-start">
+<span class="material-symbols-outlined text-slate-500 mt-1">notes</span>
+<div class="flex-grow space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-body-lg font-bold text-on-surface">Description</h2>
+<button class="px-3 py-1 bg-surface-container-high rounded text-slate-600 hover:bg-slate-200 font-label-bold transition-colors">Edit</button>
+</div>
+<div class="bg-surface-container-low rounded-xl p-4 min-h-[100px] border border-transparent hover:border-slate-300 cursor-pointer transition-all">
+<p class="font-body-md text-body-md text-slate-700 leading-relaxed">
+                                        We need to reorganize the mobile view to use a Bento Grid layout. This will improve the hierarchy of information and make better use of the limited screen real estate. Reference the Productive Flow guidelines for grid spacing (4px base unit).
+                                    </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Checklist Section -->
+<section class="space-y-4">
+<div class="flex gap-4 items-start">
+<span class="material-symbols-outlined text-slate-500 mt-1">check_box</span>
+<div class="flex-grow space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-body-lg font-bold text-on-surface">Checklist</h2>
+<button class="px-3 py-1 bg-surface-container-high rounded text-slate-600 hover:bg-slate-200 font-label-bold transition-colors">Delete</button>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-slate-500">60%</span>
+<div class="flex-grow h-2 bg-slate-200 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[60%]"></div>
+</div>
+</div>
+<ul class="space-y-2">
+<li class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg group">
+<input checked="" class="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-body-md text-slate-700 line-through decoration-slate-400">Define grid specifications</span>
+</li>
+<li class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg group">
+<input checked="" class="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-body-md text-slate-700 line-through decoration-slate-400">Sketch wireframes</span>
+</li>
+<li class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg group">
+<input checked="" class="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-body-md text-slate-700 line-through decoration-slate-400">Update design system components</span>
+</li>
+<li class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg group">
+<input class="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-body-md text-slate-700">Implement CSS Grid structure</span>
+</li>
+<li class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg group">
+<input class="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-body-md text-slate-700">QA testing across devices</span>
+</li>
+</ul>
+<button class="ml-1 px-4 py-2 bg-surface-container-high rounded-xl text-slate-700 hover:bg-slate-200 font-label-bold transition-all text-sm">Add an item</button>
+</div>
+</div>
+</section>
+<!-- Activity Section -->
+<section class="space-y-6">
+<div class="flex gap-4 items-start">
+<span class="material-symbols-outlined text-slate-500 mt-1">segment</span>
+<div class="flex-grow space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-body-lg font-bold text-on-surface">Activity</h2>
+<button class="px-3 py-1 bg-surface-container-high rounded text-slate-600 hover:bg-slate-200 font-label-bold transition-colors">Show details</button>
+</div>
+<!-- Comment Input -->
+<div class="flex gap-3">
+<div class="h-8 w-8 rounded-full bg-primary flex-shrink-0 flex items-center justify-center text-white font-bold text-[10px]">MY</div>
+<div class="flex-grow bg-white border border-slate-200 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-primary-container transition-all overflow-hidden">
+<textarea class="w-full border-none focus:ring-0 p-3 text-body-md resize-none min-h-[40px]" placeholder="Write a comment..."></textarea>
+<div class="flex justify-between items-center p-2 bg-slate-50 border-t border-slate-100">
+<div class="flex gap-1">
+<button class="p-1 hover:bg-slate-200 rounded text-slate-500"><span class="material-symbols-outlined text-xl">attachment</span></button>
+<button class="p-1 hover:bg-slate-200 rounded text-slate-500"><span class="material-symbols-outlined text-xl">alternate_email</span></button>
+<button class="p-1 hover:bg-slate-200 rounded text-slate-500"><span class="material-symbols-outlined text-xl">sentiment_satisfied</span></button>
+</div>
+<button class="px-4 py-1.5 bg-primary text-white font-label-bold rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all">Save</button>
+</div>
+</div>
+</div>
+<!-- Past Activity -->
+<div class="space-y-6">
+<div class="flex gap-3">
+<div class="h-8 w-8 rounded-full bg-slate-200 flex-shrink-0 overflow-hidden">
+<img alt="User" data-alt="professional male headshot with modern clean lighting and blurred office backdrop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHWvoUfS2ZkKB6w9vtKzmGf_CrFwY4niHtcMRR79FYuGqXMmkEghkn32EH9r0yuR4tJIYCvehgjA0TNqtkB0tPwR4LpTDqxwv2DK8FmEPFwUh9TXAmoGIQrP8xj9WCekAkqqKRer0B2PYle1d-7shLQBHXY87CyVBZ94eH6DCvU-s-SmkN8_1-LIcKGurqDIWa1cG95-ijSMvQFLp5TNmK7M5jFkg6KUx6GEjIt5E1itzi1bdUiYf6Lo9iq55v3yGlw1RoSkbUxcjR"/>
+</div>
+<div class="space-y-1">
+<div class="flex items-baseline gap-2">
+<span class="font-label-bold text-slate-900">David Miller</span>
+<span class="text-[11px] text-slate-500">2 hours ago</span>
+</div>
+<div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm inline-block max-w-lg">
+<p class="font-body-md text-slate-700">The current grid implementation seems a bit rigid. Should we explore auto-fill vs auto-fit for these cards?</p>
+</div>
+<div class="flex gap-3 text-[11px] text-slate-500 ml-1">
+<button class="underline hover:text-slate-800">Reply</button>
+<span>•</span>
+<button class="underline hover:text-slate-800">Edit</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Sidebar Actions (Right) -->
+<aside class="md:w-64 bg-surface-container-low p-6 md:p-8 flex flex-col gap-8 border-l border-slate-200/50">
+<section class="space-y-3">
+<h3 class="font-label-bold text-[11px] text-slate-500 uppercase tracking-widest">Add to card</h3>
+<div class="flex flex-col gap-2">
+<button class="flex items-center gap-3 px-3 py-2 bg-surface-container-high hover:bg-slate-200 rounded-xl text-slate-700 transition-all group">
+<span class="material-symbols-outlined text-lg text-slate-500 group-hover:text-slate-900" data-icon="person">person</span>
+<span class="font-body-md font-medium">Members</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 bg-surface-container-high hover:bg-slate-200 rounded-xl text-slate-700 transition-all group">
+<span class="material-symbols-outlined text-lg text-slate-500 group-hover:text-slate-900" data-icon="label">label</span>
+<span class="font-body-md font-medium">Labels</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 bg-surface-container-high hover:bg-slate-200 rounded-xl text-slate-700 transition-all group">
+<span class="material-symbols-outlined text-lg text-slate-500 group-hover:text-slate-900" data-icon="check_box">check_box</span>
+<span class="font-body-md font-medium">Checklist</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 bg-surface-container-high hover:bg-slate-200 rounded-xl text-slate-700 transition-all group">
+<span class="material-symbols-outlined text-lg text-slate-500 group-hover:text-slate-900" data-icon="schedule">schedule</span>
+<span class="font-body-md font-medium">Dates</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 bg-surface-container-high hover:bg-slate-200 rounded-xl text-slate-700 transition-all group">
+<span class="material-symbols-outlined text-lg text-slate-500 group-hover:text-slate-900" data-icon="attachment">attachment</span>
+<span class="font-body-md font-medium">Attachment</span>
+</button>
+</div>
+</section>
+<section class="space-y-3">
+<h3 class="font-label-bold text-[11px] text-slate-500 uppercase tracking-widest">Actions</h3>
+<div class="flex flex-col gap-2">
+<button class="flex items-center gap-3 px-3 py-2 bg-surface-container-high hover:bg-slate-200 rounded-xl text-slate-700 transition-all group">
+<span class="material-symbols-outlined text-lg text-slate-500 group-hover:text-slate-900" data-icon="arrow_forward">arrow_forward</span>
+<span class="font-body-md font-medium">Move</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 bg-surface-container-high hover:bg-slate-200 rounded-xl text-slate-700 transition-all group">
+<span class="material-symbols-outlined text-lg text-slate-500 group-hover:text-slate-900" data-icon="content_copy">content_copy</span>
+<span class="font-body-md font-medium">Copy</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 bg-surface-container-high hover:bg-slate-200 rounded-xl text-slate-700 transition-all group">
+<span class="material-symbols-outlined text-lg text-slate-500 group-hover:text-slate-900" data-icon="visibility">visibility</span>
+<span class="font-body-md font-medium">Watch</span>
+</button>
+<div class="h-px bg-slate-200 my-2"></div>
+<button class="flex items-center gap-3 px-3 py-2 bg-surface-container-high hover:bg-red-50 hover:text-red-700 rounded-xl text-slate-700 transition-all group">
+<span class="material-symbols-outlined text-lg text-slate-500 group-hover:text-red-700" data-icon="archive">archive</span>
+<span class="font-body-md font-medium">Archive</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 bg-surface-container-high hover:bg-slate-200 rounded-xl text-slate-700 transition-all group">
+<span class="material-symbols-outlined text-lg text-slate-500 group-hover:text-slate-900" data-icon="share">share</span>
+<span class="font-body-md font-medium">Share</span>
+</button>
+</div>
+</section>
+<div class="mt-auto pt-8 border-t border-slate-200/50">
+<p class="text-[10px] text-slate-400 font-medium tracking-tight">Created May 12, 2024</p>
+</div>
+</aside>
+</article>
+</div>
+<!-- Background Board Layout (Dummy content behind modal) -->
+<main class="pt-14 h-screen w-full flex bg-[#F7F8F9] overflow-x-auto p-gutter gap-gutter">
+<div class="flex-shrink-0 w-[272px] bg-slate-200/50 rounded-xl h-fit p-3">
+<h2 class="font-label-bold mb-3 px-2">Development</h2>
+<div class="space-y-sm">
+<div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200/50">Card Content</div>
+<div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200/50 ring-2 ring-primary">implement Bento Grid...</div>
+<div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200/50">Bug Fixes</div>
+</div>
+</div>
+<div class="flex-shrink-0 w-[272px] bg-slate-200/50 rounded-xl h-fit p-3">
+<h2 class="font-label-bold mb-3 px-2">Ready for QA</h2>
+<div class="space-y-sm">
+<div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200/50">Header Responsive</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 px-4 pb-safe bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 shadow-[0_-1px_3px_rgba(0,0,0,0.05)] z-50">
+<button class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 font-bold active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[11px] font-medium Inter">Boards</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="text-[11px] font-medium Inter">Search</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="text-[11px] font-medium Inter">Alerts</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[11px] font-medium Inter">Account</span>
+</button>
+</nav>
+</body></html>

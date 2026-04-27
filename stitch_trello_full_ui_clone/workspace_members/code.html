@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#364a4d",
+                    "secondary-container": "#bfd1ff",
+                    "tertiary": "#485c5f",
+                    "primary-fixed-dim": "#b3c5ff",
+                    "tertiary-fixed": "#d1e7e9",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-container": "#e5fbfe",
+                    "error": "#ba1a1a",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-secondary-fixed-variant": "#35466c",
+                    "background": "#f8f9fa",
+                    "outline-variant": "#c2c6d8",
+                    "primary-fixed": "#dbe1ff",
+                    "tertiary-container": "#617578",
+                    "primary": "#004fcb",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-primary-fixed": "#00184a",
+                    "on-primary-container": "#f7f6ff",
+                    "surface-container-high": "#e7e8e9",
+                    "on-tertiary-fixed": "#0a1e21",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#424656",
+                    "inverse-on-surface": "#f0f1f2",
+                    "surface-variant": "#e1e3e4",
+                    "surface-bright": "#f8f9fa",
+                    "secondary": "#4c5e85",
+                    "on-surface": "#191c1d",
+                    "inverse-surface": "#2e3132",
+                    "inverse-primary": "#b3c5ff",
+                    "on-background": "#191c1d",
+                    "surface-tint": "#0054d7",
+                    "primary-container": "#0065ff",
+                    "tertiary-fixed-dim": "#b5cacd",
+                    "on-error-container": "#93000a",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#051a3e",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#003fa5",
+                    "on-secondary-container": "#485980",
+                    "secondary-fixed-dim": "#b4c6f3",
+                    "surface": "#f8f9fa",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#edeeef",
+                    "surface-container-low": "#f3f4f5",
+                    "on-secondary": "#ffffff",
+                    "outline": "#727687",
+                    "surface-dim": "#d9dadb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "unit": "4px",
+                    "sm": "8px",
+                    "gutter": "12px",
+                    "container-padding": "20px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm fixed top-0 z-40 flex justify-between items-center w-full px-4 h-12">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-xl font-black" data-icon="grid_view">grid_view</span>
+<h1 class="font-sans text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100">Workspace Settings</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors p-1.5 rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined text-slate-600" data-icon="search">search</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container text-xs font-bold ring-2 ring-white">
+                JD
+            </div>
+</div>
+</header>
+<!-- Sidebar Navigation (Desktop) -->
+<aside class="fixed left-0 top-12 h-[calc(100vh-3rem)] flex flex-col py-4 bg-slate-50 dark:bg-slate-950 docked h-full w-64 border-r border-slate-200 dark:border-slate-800 hidden md:flex">
+<div class="px-6 mb-6">
+<h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">Admin Console</h2>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-2.5 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="payments">payments</span>
+                Pricing
+            </a>
+<a class="flex items-center px-6 py-2.5 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="receipt_long">receipt_long</span>
+                Billing
+            </a>
+<a class="flex items-center px-6 py-2.5 text-sm font-medium Inter bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-semibold border-r-4 border-blue-600 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="group">group</span>
+                Members
+            </a>
+<a class="flex items-center px-6 py-2.5 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="archive">archive</span>
+                Archive
+            </a>
+<a class="flex items-center px-6 py-2.5 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-12 pb-20 md:pb-0 md:pl-64 min-h-screen">
+<div class="max-w-6xl mx-auto p-gutter sm:p-container-padding">
+<!-- Page Header Section -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-lg mb-xl">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface">Manage Members</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Control access and roles for your workspace team.</p>
+</div>
+<div class="flex items-center gap-sm">
+<button class="flex items-center justify-center bg-primary-container text-on-primary-container px-md h-10 rounded-xl font-label-bold text-label-bold shadow-sm hover:brightness-110 active:scale-95 duration-150">
+<span class="material-symbols-outlined mr-2 text-[18px]" data-icon="person_add">person_add</span>
+                        Invite Member
+                    </button>
+</div>
+</div>
+<!-- Management Tools Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-lg">
+<!-- Search and Filter Bar -->
+<div class="md:col-span-8 bg-surface-container-low p-sm rounded-xl border border-outline-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline ml-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full font-body-md text-body-md placeholder:text-outline" placeholder="Search by name or email..." type="text"/>
+<div class="h-6 w-[1px] bg-outline-variant mx-1"></div>
+<button class="flex items-center gap-xs px-sm py-1.5 hover:bg-surface-container rounded-lg font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                        Filter
+                    </button>
+</div>
+<!-- Stats Quick View -->
+<div class="md:col-span-4 bg-surface-container-highest p-sm rounded-xl border border-outline-variant flex items-center justify-around">
+<div class="text-center">
+<p class="font-label-sm text-[10px] uppercase tracking-wider text-on-surface-variant">Total</p>
+<p class="font-headline-md text-headline-md">24</p>
+</div>
+<div class="text-center">
+<p class="font-label-sm text-[10px] uppercase tracking-wider text-on-surface-variant">Active</p>
+<p class="font-headline-md text-headline-md text-primary">22</p>
+</div>
+<div class="text-center">
+<p class="font-label-sm text-[10px] uppercase tracking-wider text-on-surface-variant">Pending</p>
+<p class="font-headline-md text-headline-md text-secondary">2</p>
+</div>
+</div>
+</div>
+<!-- Members List Table -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-lg py-md font-label-bold text-label-bold text-on-surface-variant">Member</th>
+<th class="px-lg py-md font-label-bold text-label-bold text-on-surface-variant">Role</th>
+<th class="px-lg py-md font-label-bold text-label-bold text-on-surface-variant hidden md:table-cell">Last Active</th>
+<th class="px-lg py-md font-label-bold text-label-bold text-on-surface-variant text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Member Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img alt="Sarah Johnson" class="w-10 h-10 rounded-full object-cover ring-1 ring-outline-variant" data-alt="portrait of a professional woman with a friendly smile in a modern office setting, bright natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA79VMUWfAX7jaWr_Ir6kzbVjEQcejjpXuNz81tevvvi2WmzIutOFUxHimaaey-zLibhNtgib5IqDclcRktJ3NqgMD9lhzUbJtekbimWm1LH2aPTfApQCqe7VNBGaG8OaH0Jjk-MPlpwccZ3Q3Xwf3eMY6lCi6Sh0MBGQHFe_XP7mCcFcP23BOT7uudGwoBDQe1KxZY7QYYLRHYrH6O3PNP7FNvIUA3dTKF1Fam1tgEsiuQBNGfpNTjUIT_D96q5t5iGsZnTVYhgPaZ"/>
+<div>
+<p class="font-label-bold text-on-surface">Sarah Johnson</p>
+<p class="font-body-md text-on-surface-variant text-xs">sarah.j@workspace.com</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-sm py-0.5 rounded-full bg-primary-container/10 text-primary font-label-sm text-label-sm">Admin</span>
+</td>
+<td class="px-lg py-md hidden md:table-cell">
+<p class="font-body-md text-on-surface-variant">2 mins ago</p>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-outline">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Member Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img alt="Marcus Chen" class="w-10 h-10 rounded-full object-cover ring-1 ring-outline-variant" data-alt="Close-up portrait of a man with glasses looking thoughtful, soft indoor lighting with architectural details in background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8BkTsCft0-sdBtq1m-H4rKcijVFN5yWVhJGFvHlRg2LuBepPxzj6zciHoVWtdyBlwqwe-3XoZ485pLW8DwSD8AjlieZAQ_fXjEDdNnzdumbHliGAfqq5SNhJ4Ai0me-S-TZlR_vdwSng24TBGoGj4h2d17fhOX8bVoVTxFytZ6WKFI2EBZ4a5dNOxXJZ07Whb0W_Fr4eWuZIyZbmAJgu3fMnmxzgT9h4FkJe52sAno0gveft2oPE8wrXrnnhyW1TfVAWCMZTEwR-d"/>
+<div>
+<p class="font-label-bold text-on-surface">Marcus Chen</p>
+<p class="font-body-md text-on-surface-variant text-xs">m.chen@workspace.com</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-sm py-0.5 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm">Editor</span>
+</td>
+<td class="px-lg py-md hidden md:table-cell">
+<p class="font-body-md text-on-surface-variant">Yesterday</p>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-outline">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Member Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img alt="Elena Rodriguez" class="w-10 h-10 rounded-full object-cover ring-1 ring-outline-variant" data-alt="Professional woman of Hispanic descent in a minimalist studio setting, clean lighting, confident expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbixJ5EmHpX7WvKsLGc19QkIXrZyaSyeXbU7w6bL0nFHcHeDiVGPfj-EYL9H6Z2z0xN7JBcnbA3t7qw-0APxTb7FiHj3IHE7CgBrswlwhJDicgQDbkZBryU1pHmZV9YEMtAsWADzYVHixHSW1QFTPYRagWybjKezF_rK9mkw4tnAZ7Gy8fu3j0TvGJhoKFluFJhsmSV2fiaXsyi_f9dX5eaYTO1sFI_tfYOlWz8eYsCdg5EskYuUAmIrIQ1PRVjNI8Qed2sxhLoe6t"/>
+<div>
+<p class="font-label-bold text-on-surface">Elena Rodriguez</p>
+<p class="font-body-md text-on-surface-variant text-xs">elena.r@workspace.com</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-sm py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">Viewer</span>
+</td>
+<td class="px-lg py-md hidden md:table-cell">
+<p class="font-body-md text-on-surface-variant">4 days ago</p>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-outline">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Member Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img alt="David Kim" class="w-10 h-10 rounded-full object-cover ring-1 ring-outline-variant" data-alt="A young man with a casual professional look, urban backdrop with soft bokeh circles from city lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2PGo8Moj0-JvTFkL3j8i0Ilp8UDJ4oy29opDuYgRG1jA7Zlfgv6b70q8Gl2dchHmkJyXG6k1m4u7ZzB2r1OY3oDMsYzV8Nx_D7ScINfyxg12jyiRv4eX6qsFKgugeUacuAAv6f3TcOVYow4HFhOF3DeiAIeHyN-J0A5PMXntjWTNiMchkPPmg4uSB-Cvb5Gtoqvm2XUxe3T5T2RC4StaRxVMKIfpzgZcmoAOpG6l7MOqZh6fzlkiBNY9CuTzUOxgwILb56VZfDddF"/>
+<div>
+<p class="font-label-bold text-on-surface">David Kim</p>
+<p class="font-body-md text-on-surface-variant text-xs">david.kim@workspace.com</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-sm py-0.5 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm">Editor</span>
+</td>
+<td class="px-lg py-md hidden md:table-cell">
+<p class="font-body-md text-on-surface-variant">3 hours ago</p>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-outline">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Member Row 5 (Pending) -->
+<tr class="hover:bg-surface-container-low transition-colors group bg-error-container/5">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-outline-variant">
+<span class="material-symbols-outlined" data-icon="person_outline">person_outline</span>
+</div>
+<div>
+<p class="font-label-bold text-on-surface italic">alex.rivera@workspace.com</p>
+<p class="font-body-md text-error text-xs font-medium">Invite Pending</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-sm py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">Viewer</span>
+</td>
+<td class="px-lg py-md hidden md:table-cell">
+<p class="font-body-md text-on-surface-variant">—</p>
+</td>
+<td class="px-lg py-md text-right">
+<button class="px-sm py-1.5 text-primary font-label-bold text-label-sm hover:underline">
+                                    Resend
+                                </button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination Footer -->
+<div class="px-lg py-md border-t border-outline-variant flex items-center justify-between">
+<p class="font-body-md text-on-surface-variant text-xs">Showing 5 of 24 members</p>
+<div class="flex gap-sm">
+<button class="p-1.5 border border-outline-variant rounded-lg hover:bg-surface-container disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-1.5 border border-outline-variant rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center h-16 px-2 pb-safe bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] md:hidden z-50 rounded-t-lg">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500 tap-highlight-transparent active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="sell">sell</span>
+<span class="text-[10px] font-medium tracking-wide uppercase mt-1">Pricing</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500 tap-highlight-transparent active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-[10px] font-medium tracking-wide uppercase mt-1">Billing</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 scale-110 tap-highlight-transparent active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="people" style="font-variation-settings: 'FILL' 1;">people</span>
+<span class="text-[10px] font-medium tracking-wide uppercase mt-1">Members</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 hover:text-blue-500 tap-highlight-transparent active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+<span class="text-[10px] font-medium tracking-wide uppercase mt-1">More</span>
+</a>
+</nav>
+</body></html>

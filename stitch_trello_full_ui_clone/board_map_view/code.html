@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#d1e7e9",
+                        "secondary-container": "#bfd1ff",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#0065ff",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#edeeef",
+                        "on-surface-variant": "#424656",
+                        "on-surface": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary": "#004fcb",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "on-tertiary-fixed": "#0a1e21",
+                        "inverse-surface": "#2e3132",
+                        "on-primary-container": "#f7f6ff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "outline": "#727687",
+                        "on-secondary-fixed": "#051a3e",
+                        "on-secondary-container": "#485980",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "on-primary-fixed": "#00184a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-container": "#e5fbfe",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#485c5f",
+                        "surface": "#f8f9fa",
+                        "on-secondary-fixed-variant": "#35466c",
+                        "on-primary-fixed-variant": "#003fa5",
+                        "surface-variant": "#e1e3e4",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#b5cacd",
+                        "surface-tint": "#0054d7",
+                        "secondary": "#4c5e85",
+                        "secondary-fixed-dim": "#b4c6f3",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-container-high": "#e7e8e9",
+                        "on-tertiary-fixed-variant": "#364a4d",
+                        "on-background": "#191c1d",
+                        "surface-dim": "#d9dadb",
+                        "inverse-primary": "#b3c5ff",
+                        "surface-bright": "#f8f9fa",
+                        "tertiary-container": "#617578",
+                        "surface-container-low": "#f3f4f5",
+                        "outline-variant": "#c2c6d8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "gutter": "12px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "md": "16px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col h-screen overflow-hidden text-on-surface">
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-12 bg-[#091E42] text-white shadow-sm border-b border-white/10">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined cursor-pointer hover:bg-white/10 p-1 rounded transition-colors" data-icon="menu">menu</span>
+<h1 class="text-lg font-black text-white tracking-tight">Workspace</h1>
+<nav class="hidden md:flex gap-6 items-center ml-4">
+<span class="text-white font-bold border-b-2 border-white pb-1 font-sans text-sm font-medium Inter cursor-pointer">Boards</span>
+<span class="text-slate-300 hover:text-white font-sans text-sm font-medium Inter cursor-pointer transition-colors">Members</span>
+<span class="text-slate-300 hover:text-white font-sans text-sm font-medium Inter cursor-pointer transition-colors">Settings</span>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<div class="hidden sm:flex bg-white/10 rounded px-2 py-1 items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none text-sm focus:ring-0 placeholder-white/60 w-32" placeholder="Search" type="text"/>
+</div>
+<img alt="Profile" class="w-8 h-8 rounded-full border border-white/20" data-alt="close-up portrait of a professional male in a soft-lit modern office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPxnzfEREz7c9wm_4FNgLG2pauG19TaaRW2RxmiFxan0eHTmjz_BZQuYvPb4e8eBemJ6fRBTTE_X4HtjxO9qlTRnYf8Oj-T5KsFAxPB5NKcuFlssyh3CPngNULwT8bpjgazlG6BOGpdIIpGI1wNns7ziiqFQxlUQ_IFtx3RFQUeQnYzv-QiAxrhjaaNuk7CDfz9p9DsxGaWndtrcCG_IlVpt8HFnfwHNSdLP2lruPJnAH4oy8lcZqQUmsLs6PSpKnaboo925orZ4S3"/>
+</div>
+</header>
+<div class="flex h-full pt-12">
+<aside class="hidden md:flex flex-col h-screen p-4 gap-2 bg-slate-50 border-r border-slate-200 w-64 shrink-0 overflow-y-auto">
+<div class="px-3 py-2 mb-4">
+<h2 class="text-blue-600 font-bold font-sans text-sm">Productive Flow</h2>
+</div>
+<a class="flex items-center gap-3 p-2 text-slate-600 hover:bg-slate-200/50 rounded-md transition-all font-sans text-sm active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Boards</span>
+</a>
+<a class="flex items-center gap-3 p-2 text-slate-600 hover:bg-slate-200/50 rounded-md transition-all font-sans text-sm active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Members</span>
+</a>
+<a class="flex items-center gap-3 p-2 bg-blue-50 text-blue-700 font-semibold rounded-md transition-all font-sans text-sm active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+<span>Map View</span>
+</a>
+<a class="flex items-center gap-3 p-2 text-slate-600 hover:bg-slate-200/50 rounded-md transition-all font-sans text-sm active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span>Calendar</span>
+</a>
+<a class="flex items-center gap-3 p-2 text-slate-600 hover:bg-slate-200/50 rounded-md transition-all font-sans text-sm active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="timeline">timeline</span>
+<span>Timeline</span>
+</a>
+<a class="flex items-center gap-3 p-2 text-slate-600 hover:bg-slate-200/50 rounded-md transition-all font-sans text-sm active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Dashboard</span>
+</a>
+<div class="mt-auto border-t border-slate-200 pt-4 px-2">
+<div class="flex items-center gap-3 p-2 text-slate-500 hover:bg-slate-100 rounded-md cursor-pointer">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-sans text-sm">Settings</span>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col relative overflow-hidden bg-background">
+<div class="flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200">
+<div class="flex items-center gap-4">
+<h3 class="font-headline-md text-headline-md text-on-surface">Event Planning Map</h3>
+<div class="flex gap-1 bg-surface-container-low rounded-lg p-1">
+<button class="px-3 py-1 text-label-sm font-label-sm rounded bg-white shadow-sm border border-slate-200">Cards</button>
+<button class="px-3 py-1 text-label-sm font-label-sm rounded text-slate-500 hover:bg-white/50 transition-colors">Markers</button>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-xl text-label-bold font-label-bold active:opacity-80 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                        New Location
+                    </button>
+</div>
+</div>
+<div class="flex-1 flex overflow-hidden">
+<div class="flex-1 relative bg-slate-200">
+<img class="w-full h-full object-cover grayscale-[0.2]" data-alt="Detailed urban satellite map view of San Francisco streets and bay area with subtle overlay of UI elements" data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbVV_SBGzgWbh_rozTjV-qUyj26JrB5Yt0r06Ob0vsU6vlOmrmeTZDwmKpse7PaT4A1F4i7V7h0h7m8MW2eVtKxuulRMDrue5SlLkx2rHzi13W_RTdPOqMJYoF_0BqQm1gPva3DccrmYGUVRr1E-bLGvqe9LjUUp0sQPtXSHnU5cfVDg_uLvDcDl1mBU9Lf2I-3XiT-F-9nnJN0cY6G3HsDTeesmedUrLuN3TXtJaA2bqk3oQ281FrmDNtpCkJeVTunnunU2t5UMT4"/>
+<div class="absolute inset-0 bg-blue-900/5 pointer-events-none"></div>
+<div class="absolute top-[30%] left-[45%] group cursor-pointer">
+<div class="bg-white p-1 rounded-full shadow-lg border-2 border-primary active:scale-95 transition-transform">
+<div class="w-8 h-8 rounded-full overflow-hidden">
+<img data-alt="Modern high-end corporate office interior with glass walls and minimalist furniture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzM_g3rbmzWyzWW2DL0MdB-7tBd5rouWe_REWsz-KEyhjUS8esZERnlcM9mCxrx5hbGUHKCzrL7BvCiUanSnbQr0cdrNlVdv-r0u3XJvjPfWvXg22zRiOon8bt0vyQJnXVLxkVtsQZ2yuYKv3ynC7rEa8B9kdlQgmB8uXR9vjpxwbe8hEIcbIbAZt9n4xRg-YX0ycX48nqPtyPxWFWs_WKyxG6VbLkGYaV6NrnWF7Jvw1swColkZr2NtnOrH2vpLJQKQdbysLUHye4"/>
+</div>
+</div>
+<div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+<div class="bg-white p-3 rounded-lg shadow-xl border border-slate-200 min-w-[180px]">
+<span class="text-label-bold font-label-bold text-primary block mb-1">Main Office</span>
+<p class="text-label-sm font-label-sm text-slate-600">Client Strategy Meeting</p>
+</div>
+</div>
+</div>
+<div class="absolute top-[55%] left-[25%] group cursor-pointer">
+<div class="bg-white p-1 rounded-full shadow-lg border-2 border-tertiary active:scale-95 transition-transform">
+<div class="w-8 h-8 rounded-full overflow-hidden">
+<img data-alt="Elegant restaurant dining room with warm ambient lighting and wooden tables" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLQP4noNPa-u5PX9nJY8wRGHkPXLxuV-b0P1WR8DECumR15sUKp9B72YG2L19UiWVXFIy-WhwNs1Bp9Pq9-9Y_rhXnFvpO09nFEULjE0egJliarUKTmt-AlK5fu0MYcY2-u3qXj_bi1dwt1teSQ7S1rQHmlsPTUudjeKiEXI89ByjpozZT7sMcgpDQPDVMeaX1wMo3QHVWrkEVkJE_l6MmA8Y1kwhoK-lwlE7tOKiVKEWwmUSqcbzScgVebAlNfQHa8-3QvjdH8A28"/>
+</div>
+</div>
+</div>
+<div class="absolute top-[40%] left-[70%] group cursor-pointer">
+<div class="bg-white p-1 rounded-full shadow-lg border-2 border-secondary active:scale-95 transition-transform">
+<div class="w-8 h-8 rounded-full overflow-hidden">
+<img data-alt="Auditorium stage with blue lighting and large presentation screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgtnLE9jarRs4GSW-51HReXCqYtfojXT0G6efc9oR2GJWkfd1L9F_OUmDWNyo2ZeDjPtmGWE6agOwG3v9xzw0Rw4IzZm550-0jbgxq3iyrrUf6YKj460X4ZPi7IOfNQM0g9k7T3x8nhOA5gJG7dZn-Dffd8gm_yfRjGnjyeGyxV401vHfIn7YWizc7JQJTGFQn500zqcbfJ7r7X9bh11eCsRS3_CU9eG9VetDJteIioPFa_tx4ulL4ZxkQj172EDM-wVZsJrRaTGfn"/>
+</div>
+</div>
+</div>
+<div class="absolute bottom-6 right-6 flex flex-col gap-2">
+<button class="bg-white w-10 h-10 rounded-lg shadow-md flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<button class="bg-white w-10 h-10 rounded-lg shadow-md flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<button class="bg-white w-10 h-10 rounded-lg shadow-md flex items-center justify-center text-primary hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined" data-icon="my_location" style="font-variation-settings: 'FILL' 1;">my_location</span>
+</button>
+</div>
+</div>
+<div class="w-80 bg-surface-container-low border-l border-slate-200 overflow-y-auto hidden lg:block">
+<div class="p-4 border-b border-slate-200 bg-white sticky top-0 z-20">
+<div class="flex items-center justify-between mb-4">
+<h4 class="font-headline-md text-sm font-bold">List: Venues (3)</h4>
+<span class="material-symbols-outlined text-slate-400 cursor-pointer" data-icon="filter_list">filter_list</span>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 text-sm" data-icon="search">search</span>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-lg py-1.5 pl-8 pr-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Filter cards..." type="text"/>
+</div>
+</div>
+<div class="p-3 space-y-3">
+<div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition-all cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Strategy</span>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-slate-600 transition-colors" data-icon="edit">edit</span>
+</div>
+<h5 class="text-body-md font-bold mb-1">Client Strategy Meeting</h5>
+<p class="text-label-sm text-slate-500 line-clamp-2 mb-3">Reviewing the Q4 roadmap with the primary stakeholders at headquarters.</p>
+<div class="flex items-center justify-between">
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border-2 border-white" data-alt="Professional portrait of a man smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQRx13L0KwSmcAQg1r39mgyrgjLyCVSpYJjpXUrw37vyd-DJUtDqtCKe1vjAL-NXZvHUHTZvbaztgCanvnBvoLNzr69x_t93NNXCtFodOfqu6LmXKeb9-kq-Q3rOJ5XjD208-T5vcWH1_OlraJtyZav4HNVxL2ft_jfiu7XdjNv0eahz0NEUwD54nxKAtN73JQwFDVqN_tKtnCtDqJSqG-k-Ls87-OlOLGnuUi8VEhYOvDgqjKLpx3GDOT9qBFjN1GUPCTCt7KbDjW"/>
+<img class="w-6 h-6 rounded-full border-2 border-white" data-alt="Professional portrait of a woman smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7WgJTMNt3FD6LvvuSWopTyunnSyI3AO02xXzHhCC_lwlCBbMZHIbDwww2vgJsM7Gj51xzKZz9UaXe3E3Bz1l4X7TIK7y4eoQHhM0di1DQ-bP54GgEsS-TyHt15vCJrUAKJfr80KcBFi2xYf_Nk4cuhOnGsR7PBLWBLr98zr_DLDgK6kKdmt2rXbd_E-9cWpGTDNkNvKxdpYRXmqyIxeX2xWZ-ZXyy1-g_-FYiLToaLbZHvIczntm1qnPN4S9We2PycBA7KCr3EhQD"/>
+</div>
+<div class="flex items-center gap-2 text-slate-400">
+<span class="material-symbols-outlined text-sm" data-icon="chat_bubble">chat_bubble</span>
+<span class="text-[10px] font-bold">4</span>
+</div>
+</div>
+</div>
+<div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition-all cursor-pointer group border-l-4 border-l-tertiary">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Logistics</span>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-slate-600 transition-colors" data-icon="edit">edit</span>
+</div>
+<h5 class="text-body-md font-bold mb-1">Networking Dinner Venue</h5>
+<p class="text-label-sm text-slate-500 line-clamp-2 mb-3">Final site visit to the downtown bistro for evening networking event.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1 text-error text-[10px] font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span>Oct 24</span>
+</div>
+<div class="flex items-center gap-2 text-slate-400">
+<span class="material-symbols-outlined text-sm" data-icon="attach_file">attach_file</span>
+<span class="text-[10px] font-bold">2</span>
+</div>
+</div>
+</div>
+<div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition-all cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Events</span>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-slate-600 transition-colors" data-icon="edit">edit</span>
+</div>
+<h5 class="text-body-md font-bold mb-1">Keynote Stage Layout</h5>
+<p class="text-label-sm text-slate-500 line-clamp-2 mb-3">Coordinate AV setup at the Grand Hall for opening ceremony.</p>
+<div class="flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[8px] font-bold">+3</div>
+</div>
+<div class="flex items-center gap-2 text-slate-400">
+<span class="material-symbols-outlined text-sm" data-icon="description">description</span>
+</div>
+</div>
+</div>
+<button class="w-full flex items-center gap-2 p-2 text-slate-500 hover:bg-slate-200/50 rounded-lg transition-colors text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                            Add another card
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<footer class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-white border-t border-slate-200 pb-safe shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-medium Inter">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="text-[10px] font-medium Inter">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-600" href="#">
+<span class="material-symbols-outlined" data-icon="add_box" style="font-variation-settings: 'FILL' 1;">add_box</span>
+<span class="text-[10px] font-medium Inter">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="text-[10px] font-medium Inter">Alerts</span>
+</a>
+</footer>
+</body></html>

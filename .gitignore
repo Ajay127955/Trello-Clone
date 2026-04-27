@@ -1,0 +1,42 @@
+# Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+*.local
+
+# Python
+venv/
+backend/venv/
+backend/__pycache__/
+*.py[cod]
+*$py.class
+backend/db.sqlite3
+backend/.env
+backend/server_log.txt
+backend/server_log_utf8.txt
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Agent files
+.agents/
+.claude/
+.windsurf/

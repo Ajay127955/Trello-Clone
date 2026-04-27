@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#364a4d",
+                        "secondary-container": "#bfd1ff",
+                        "tertiary": "#485c5f",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "tertiary-fixed": "#d1e7e9",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#e5fbfe",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-secondary-fixed-variant": "#35466c",
+                        "background": "#f8f9fa",
+                        "outline-variant": "#c2c6d8",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-container": "#617578",
+                        "primary": "#004fcb",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-primary-fixed": "#00184a",
+                        "on-primary-container": "#f7f6ff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-tertiary-fixed": "#0a1e21",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#424656",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-variant": "#e1e3e4",
+                        "surface-bright": "#f8f9fa",
+                        "secondary": "#4c5e85",
+                        "on-surface": "#191c1d",
+                        "inverse-surface": "#2e3132",
+                        "inverse-primary": "#b3c5ff",
+                        "on-background": "#191c1d",
+                        "surface-tint": "#0054d7",
+                        "primary-container": "#0065ff",
+                        "tertiary-fixed-dim": "#b5cacd",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#051a3e",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#003fa5",
+                        "on-secondary-container": "#485980",
+                        "secondary-fixed-dim": "#b4c6f3",
+                        "surface": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#edeeef",
+                        "surface-container-low": "#f3f4f5",
+                        "on-secondary": "#ffffff",
+                        "outline": "#727687",
+                        "surface-dim": "#d9dadb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "gutter": "12px",
+                        "container-padding": "20px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm docked full-width top-0 z-40 fixed left-0 right-0">
+<div class="flex justify-between items-center w-full px-4 h-12">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400" data-icon="grid_view">grid_view</span>
+<h1 class="font-sans text-sm font-semibold tracking-tight text-blue-600 dark:text-blue-400">Workspace Settings</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors p-1 rounded" data-icon="search">search</button>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container text-xs font-bold" title="User Profile">
+                    UP
+                </div>
+</div>
+</div>
+</header>
+<!-- NavigationDrawer -->
+<aside class="fixed left-0 top-12 h-[calc(100vh-3rem)] flex flex-col py-4 bg-slate-50 dark:bg-slate-950 docked h-full w-64 border-r border-slate-200 dark:border-slate-800 hidden md:flex">
+<div class="px-4 mb-6">
+<span class="text-lg font-bold text-slate-900 dark:text-slate-100">Admin Console</span>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-4 py-2 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="payments">payments</span>
+                Pricing
+            </a>
+<a class="flex items-center px-4 py-2 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="receipt_long">receipt_long</span>
+                Billing
+            </a>
+<a class="flex items-center px-4 py-2 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="group">group</span>
+                Members
+            </a>
+<a class="flex items-center px-4 py-2 text-sm font-medium Inter bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-semibold border-r-4 border-blue-600 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="archive">archive</span>
+                Archive
+            </a>
+<a class="flex items-center px-4 py-2 text-sm font-medium Inter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 mt-12 pb-20 md:pb-8 p-gutter lg:p-container-padding min-h-screen">
+<div class="max-w-6xl mx-auto">
+<!-- Screen Header -->
+<div class="mb-8">
+<h2 class="font-headline-xl text-headline-xl text-on-surface mb-2">Archive Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage and restore your archived boards and individual task cards.</p>
+</div>
+<!-- Custom Tabs -->
+<div class="flex items-center space-x-1 border-b border-outline-variant mb-6 overflow-x-auto whitespace-nowrap">
+<button class="px-6 py-3 font-label-bold text-label-bold text-primary border-b-2 border-primary">
+                    Archived Boards
+                </button>
+<button class="px-6 py-3 font-label-bold text-label-bold text-on-surface-variant hover:bg-surface-container-high transition-colors">
+                    Archived Cards
+                </button>
+</div>
+<!-- Bento Grid - Boards Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Board Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow group overflow-hidden">
+<div class="h-24 bg-gradient-to-r from-blue-500 to-indigo-600 relative overflow-hidden" data-alt="abstract geometric pattern with blue and indigo gradients and subtle light flares">
+<div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface">Product Roadmap Q1</h3>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-label-sm font-label-sm text-on-surface-variant">Board</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2">Legacy product goals and milestone tracking for the initial launch phase.</p>
+<div class="flex items-center gap-2 mb-6 text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span>
+                            Archived 12 days ago
+                        </div>
+<div class="flex items-center gap-2">
+<button class="flex-1 bg-primary text-on-primary font-label-bold text-label-bold py-2 rounded transition-all active:scale-95 hover:bg-on-primary-fixed-variant flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="unarchive">unarchive</span>
+                                Send to Board
+                            </button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-error text-error hover:bg-error-container transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Board Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow group overflow-hidden">
+<div class="h-24 bg-gradient-to-r from-tertiary-container to-on-tertiary-fixed-variant relative overflow-hidden" data-alt="minimalist architectural shadows on a smooth concrete wall with cool morning light">
+<div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface">Marketing Assets</h3>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-label-sm font-label-sm text-on-surface-variant">Board</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2">Old branding materials, logos, and high-resolution campaign imagery.</p>
+<div class="flex items-center gap-2 mb-6 text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span>
+                            Archived 3 weeks ago
+                        </div>
+<div class="flex items-center gap-2">
+<button class="flex-1 bg-primary text-on-primary font-label-bold text-label-bold py-2 rounded transition-all active:scale-95 hover:bg-on-primary-fixed-variant flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="unarchive">unarchive</span>
+                                Send to Board
+                            </button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-error text-error hover:bg-error-container transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card Style Item 1 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow p-md flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface">User Feedback Logs</h3>
+<span class="px-2 py-0.5 rounded bg-surface-container text-label-sm font-label-sm text-on-surface-variant">Card</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Initial interviews from the beta testing group regarding the navigation overhaul.</p>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800">Feedback</span>
+<span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800">Q4 2023</span>
+</div>
+</div>
+<div class="flex items-center gap-2 pt-4 border-t border-outline-variant">
+<button class="flex-1 bg-primary text-on-primary font-label-bold text-label-bold py-2 rounded transition-all active:scale-95 hover:bg-on-primary-fixed-variant flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="unarchive">unarchive</span>
+                            Send to Board
+                        </button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-error text-error hover:bg-error-container transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Card Style Item 2 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow p-md flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface">Design System V1.0</h3>
+<span class="px-2 py-0.5 rounded bg-surface-container text-label-sm font-label-sm text-on-surface-variant">Card</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Archive of the original component library before the Material 3 migration.</p>
+<div class="flex items-center gap-3 mb-4">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-secondary text-[8px] flex items-center justify-center text-white border border-white">JD</div>
+<div class="w-6 h-6 rounded-full bg-primary-container text-[8px] flex items-center justify-center text-on-primary-container border border-white">AS</div>
+</div>
+<span class="text-label-sm text-on-surface-variant italic">+2 more</span>
+</div>
+</div>
+<div class="flex items-center gap-2 pt-4 border-t border-outline-variant">
+<button class="flex-1 bg-primary text-on-primary font-label-bold text-label-bold py-2 rounded transition-all active:scale-95 hover:bg-on-primary-fixed-variant flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="unarchive">unarchive</span>
+                            Send to Board
+                        </button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-error text-error hover:bg-error-container transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Async Layout Filler - Stats Card -->
+<div class="bg-blue-600 rounded-xl p-md flex flex-col justify-center text-on-primary lg:col-span-1 shadow-lg relative overflow-hidden">
+<div class="absolute -right-8 -bottom-8 opacity-10">
+<span class="material-symbols-outlined text-[120px]" data-icon="inventory_2">inventory_2</span>
+</div>
+<h4 class="font-label-bold text-label-bold mb-1 opacity-80 uppercase tracking-widest">Storage Status</h4>
+<div class="text-4xl font-black mb-4">84% Full</div>
+<p class="font-body-md text-body-md opacity-90 mb-4">You have 4.2GB of archived content. Items older than 90 days are flagged for permanent deletion.</p>
+<div class="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+<div class="w-[84%] bg-white h-full"></div>
+</div>
+</div>
+<!-- Empty State Helper (Hidden by default, shown for concept) -->
+<div class="hidden lg:flex bg-surface-container rounded-xl border border-dashed border-outline border-2 items-center justify-center p-xl opacity-60">
+<div class="text-center">
+<span class="material-symbols-outlined text-4xl text-outline mb-2" data-icon="auto_delete">auto_delete</span>
+<p class="font-label-bold text-label-bold text-on-surface-variant">Scheduled cleanup active</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile only) -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center h-16 px-2 pb-safe bg-white dark:bg-slate-900 md:hidden z-50 rounded-t-lg border-t border-slate-200 dark:border-slate-800 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 tap-highlight-transparent active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="sell">sell</span>
+<span class="text-[10px] font-medium tracking-wide uppercase">Pricing</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 tap-highlight-transparent active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-[10px] font-medium tracking-wide uppercase">Billing</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-500 tap-highlight-transparent active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="people">people</span>
+<span class="text-[10px] font-medium tracking-wide uppercase">Members</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 scale-110 tap-highlight-transparent active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="more_horiz" style="font-variation-settings: 'FILL' 1;">more_horiz</span>
+<span class="text-[10px] font-medium tracking-wide uppercase">More</span>
+</a>
+</nav>
+</body></html>
