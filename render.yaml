@@ -25,7 +25,7 @@ services:
         sync: false # Set manually in Render Dashboard
 
   # ─── React Frontend (Static Site) ───────────────────────────────────────────
-  - type: static
+  - type: web
     name: trello-clone-frontend
     env: static
     region: oregon
