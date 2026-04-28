@@ -16,6 +16,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-secret-key-here')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
 
 INSTALLED_APPS = [
     'django.contrib.admin',

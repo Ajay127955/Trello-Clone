@@ -12,6 +12,7 @@ from .utils import send_productive_flow_email
 from .ai_service import generate_board_structure, analyze_card_content, chat_with_assistant
 from django.contrib.auth.models import User
 from django.db.models import Count
+from django.conf import settings
 
 class SearchViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
@@ -223,8 +224,8 @@ class InvitationViewSet(viewsets.ModelViewSet):
         
         # Send Email
         target_name = invitation.workspace.name if invitation.workspace else invitation.board.title
-        accept_url = f"http://localhost:5173/invite/{invitation.token}"
-        decline_url = f"http://localhost:5173/invite/{invitation.token}?action=decline"
+        accept_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}"
+        decline_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}?action=decline"
         
         send_productive_flow_email(
             subject="You're Invited to Join a Workspace",
@@ -400,7 +401,7 @@ class AuthViewSet(viewsets.GenericViewSet):
                     template_name="welcome",
                     context={
                         "user_name": user.username,
-                        "dashboard_url": "http://localhost:5173/boards-dashboard"
+                        "dashboard_url": f"{settings.FRONTEND_URL}/boards-dashboard"
                     },
                     to_email=user.email
                 )
@@ -479,7 +480,7 @@ class AuthViewSet(viewsets.GenericViewSet):
                 template_name="welcome",
                 context={
                     "user_name": user.username,
-                    "dashboard_url": "http://localhost:5173/boards-dashboard"
+                    "dashboard_url": f"{settings.FRONTEND_URL}/boards-dashboard"
                 },
                 to_email=user.email
             )
