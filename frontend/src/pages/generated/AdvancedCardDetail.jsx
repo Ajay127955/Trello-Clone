@@ -315,5 +315,3 @@ const AdvancedCardDetail = () => {
 };
 
 export default AdvancedCardDetail;
-
-export default AdvancedCardDetail;

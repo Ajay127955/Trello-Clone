@@ -107,11 +107,7 @@ const CardDetailView = () => {
                         </div>
                       ))}
                     </div>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </div>
+
 
           {/*  Sidebar Actions (Right)  */}
           <aside className="md:w-64 bg-slate-50 dark:bg-slate-800/30 p-8 flex flex-col gap-10 border-l border-slate-100 dark:border-slate-800/50">

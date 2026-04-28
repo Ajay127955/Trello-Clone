@@ -189,7 +189,7 @@ const PricingPlans = () => {
 <button onClick={() => navigate('/help-center')} className="px-lg py-sm bg-white border border-slate-300 rounded-lg font-bold hover:bg-slate-50 transition-colors">View FAQ</button>
 </div>
 </div>
-</main>
+
     </div>
   );
 };
