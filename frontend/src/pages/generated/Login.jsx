@@ -206,7 +206,7 @@ const Login = () => {
                 <label className="block text-xs font-semibold text-[#344563]" htmlFor="login-password">
                   Password
                 </label>
-                <a href="#" className="text-xs text-[#0052CC] hover:underline font-medium">Forgot password?</a>
+                <button type="button" onClick={(e) => e.preventDefault()} className="text-xs text-[#0052CC] hover:underline font-medium">Forgot password?</button>
               </div>
               <div className="relative">
                 <input
@@ -258,9 +258,6 @@ const Login = () => {
           <div className="space-y-3">
             {[
               { provider: 'google', label: 'Google', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAw949gcV1DMNZ7ThDxO9ez8niJT2Tz7hanIid5voaPDk0w9eWSu8DMv2T05Ns-CqVE_mxAkkqwuabtgI-Um6kXtvgXWqybdvQXWxM4dB4GHD9yl9OtXzEonkw8VdKUHJcor0ODrqpeP8x3RFVWMjqq72tql4Ub_1-Fl5GyAED5xs_eOqdWAhP5ZLzZ6P-DFo3PrQsxdmfuk0uTXH42UBz-HolQaOWPnlDE_tlI27uxYTklMpWvXFzVFR5MYIOcY-cV1oE-08_m_H8M' },
-              { provider: 'microsoft', label: 'Microsoft', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA3iWCeGr0hMUwhs-SCGL9zT4lG3-rSuaJhEjZAIu7SIxYhtWrAZs2BqKYkP8RNnGgggZh1iLl3D6MFOuDbOy1RC7Z5VUPj2TMGaqLf762dwwWxxwPh0I-r1Xo709p-saVBheArpMNzfCFpOvDi-3VQqPat0H14fGZiMdLfO2NwiYiXxqqhXM95rPL374hvbJblta5U3fUxTXBbxVfRp6jeTYsjRD_0zNYbJAgB4rBzxtlPB_k9RRd_veyGR1cmK1vSnfAKW_jo7fib' },
-              { provider: 'apple', label: 'Apple', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAs1RHDZzH81wqfjHWhPWOVaj8YgET0bsO5WqmqUZ7ih-VBk4lEzWNwfghBYdhbYb-3wTAzZBZk0GwYloDoQLmaj7K2muwqXV5a4gnSRC1MFVTjYYI8oU1bQ1f_i2sYpWJxqxbc6Q02LLyXmcPPzV1UphJ56dLZNhQIDSJufVaaYi_ODVLEY7Kig3Dd8v4hzHZbYYgCa0vw6qXo_OT6fkoFH8b1ZMuhwnH1qQRlk0zhI29rPTnFSuf7oLxSEnJ-PBAIi61cmIyhEDfk' },
-              { provider: 'slack', label: 'Slack', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAy4nMb_eCRKELY9YWZ_9Lw3m1jEfj5-sWD5vQQGvrEmmXpYe3f3IlvuexWBJ__5hxdu9POG5-wGmzh5mVdoEzGphDqaVdlKrhOZ2CbHmIYWZjPGIAUXwzpk7_GquNiezL86isUp7fZydzEcQbiRdI73O1erV8KVc7OB4k3tP_-qhJsk6ZQnqnXuXTubIxKl0LgKavXfJXRH7yead88AUcMiwz5BALyhWePlKmif6i9T6bnl1PBAmq53VZv7xZZs43UYsdrXekuKJk5' },
             ].map(({ provider, label, icon }) => (
               <button
                 key={provider}
@@ -293,9 +290,9 @@ const Login = () => {
 
         {/* Footer */}
         <div className="mt-10 flex gap-4 text-xs text-[#97A0AF]">
-          <a href="#" className="hover:text-[#0052CC] transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-[#0052CC] transition-colors">Terms of Service</a>
-          <a href="#" className="hover:text-[#0052CC] transition-colors">Support</a>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-[#0052CC] transition-colors">Privacy Policy</button>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-[#0052CC] transition-colors">Terms of Service</button>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-[#0052CC] transition-colors">Support</button>
         </div>
       </div>
       

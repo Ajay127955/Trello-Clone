@@ -2,7 +2,7 @@ from django.db import models
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Board, List, Card, Workspace, Checklist, ChecklistItem, Invitation, Notification, Label, Attachment
+from .models import Board, List, Card, Workspace, Checklist, ChecklistItem, Invitation, Notification, Label, Attachment, OTPVerification
 from .serializers import (
     BoardSerializer, ListSerializer, CardSerializer, RegisterSerializer, 
     WorkspaceSerializer, ChecklistSerializer, ChecklistItemSerializer,
@@ -340,47 +340,100 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'])
     def register(self, request):
+        import random
+        from django.utils import timezone
+        
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
+            email = serializer.validated_data.get('email')
             
-            # Welcome Email
+            # Generate 6-digit OTP
+            otp = str(random.randint(100000, 999999))
+            
+            # Store/Update OTP
+            OTPVerification.objects.filter(email=email).delete()
+            OTPVerification.objects.create(email=email, otp=otp)
+            
+            # Send OTP Email
             send_productive_flow_email(
-                subject="Welcome to Productive Flow 🚀",
-                template_name="welcome",
+                subject="Your Verification Code",
+                template_name="notification",
                 context={
-                    "user_name": user.username,
-                    "dashboard_url": "http://localhost:5173/boards-dashboard"
+                    "message": f"Your verification code is: {otp}. It will expire in 10 minutes."
                 },
-                to_email=user.email
+                to_email=email
             )
+            
+            return Response({
+                "message": "OTP sent to email",
+                "email": email
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check for pending invitations
-            invites = Invitation.objects.filter(email=user.email, status='pending')
-            for invite in invites:
-                if invite.workspace:
-                    invite.workspace.members.add(user)
-                if invite.board:
-                    invite.board.members.add(user)
-                invite.status = 'accepted'
-                invite.save()
+    @action(detail=False, methods=['post'])
+    def verify_otp(self, request):
+        from django.utils import timezone
+        import datetime
+        
+        email = request.data.get('email')
+        otp = request.data.get('otp')
+        
+        if not email or not otp:
+            return Response({"error": "Email and OTP are required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            verification = OTPVerification.objects.get(email=email, otp=otp)
+            # Check if expired (10 minutes)
+            if timezone.now() > verification.created_at + datetime.timedelta(minutes=10):
+                verification.delete()
+                return Response({"error": "OTP has expired"}, status=status.HTTP_400_BAD_REQUEST)
                 
-                Notification.objects.create(
-                    user=invite.sender,
-                    message=f"{user.username} joined via your invitation!",
-                    type="invite_accepted"
+            # Valid OTP, now register the user
+            serializer = RegisterSerializer(data=request.data)
+            if serializer.is_valid():
+                user = serializer.save()
+                verification.delete()
+                
+                # Welcome Email
+                send_productive_flow_email(
+                    subject="Welcome to Productive Flow 🚀",
+                    template_name="welcome",
+                    context={
+                        "user_name": user.username,
+                        "dashboard_url": "http://localhost:5173/boards-dashboard"
+                    },
+                    to_email=user.email
                 )
 
-            from rest_framework_simplejwt.tokens import RefreshToken
-            refresh = RefreshToken.for_user(user)
+                # Check for pending invitations
+                invites = Invitation.objects.filter(email=user.email, status='pending')
+                for invite in invites:
+                    if invite.workspace:
+                        invite.workspace.members.add(user)
+                    if invite.board:
+                        invite.board.members.add(user)
+                    invite.status = 'accepted'
+                    invite.save()
+                    
+                    Notification.objects.create(
+                        user=invite.sender,
+                        message=f"{user.username} joined via your invitation!",
+                        type="invite_accepted"
+                    )
 
-            return Response({
-                "message": "User registered successfully",
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
-                "user": serializer.data
-            }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                from rest_framework_simplejwt.tokens import RefreshToken
+                refresh = RefreshToken.for_user(user)
+
+                return Response({
+                    "message": "User registered successfully",
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                    "user": serializer.data
+                }, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        except OTPVerification.DoesNotExist:
+            return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])
     def google_login(self, request):

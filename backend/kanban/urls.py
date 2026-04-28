@@ -23,6 +23,7 @@ router.register(r'search', SearchViewSet, basename='search')
 urlpatterns = [
     path('', include(router.urls)),
     path('register/', AuthViewSet.as_view({'post': 'register'}), name='register'),
+    path('verify-otp/', AuthViewSet.as_view({'post': 'verify_otp'}), name='verify_otp'),
     path('google-login/', AuthViewSet.as_view({'post': 'google_login'}), name='google_login'),
     path('me/', AuthViewSet.as_view({'get': 'me'}), name='me'),
 ]

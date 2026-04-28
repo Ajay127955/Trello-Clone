@@ -19,18 +19,27 @@ const SignUp = () => {
   const [socialLoading, setSocialLoading] = useState('');
   const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
   const [pendingProvider, setPendingProvider] = useState('');
+  const [step, setStep] = useState(1);
+  const [otp, setOtp] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      // Pass the username to the backend; if empty, our RegisterSerializer will handle generation
-      await register(username || '', password, email);
-      navigate('/onboarding-welcome');
+      if (step === 1) {
+        // Pass the username to the backend; if empty, our RegisterSerializer will handle generation
+        await register(username || '', password, email);
+        showToast('OTP sent to your email', 'success');
+        setStep(2);
+      } else {
+        await verifyRegistration(username || '', password, email, otp);
+        showToast('Successfully registered!', 'success');
+        navigate('/onboarding-welcome');
+      }
     } catch (err) {
       console.error(err);
-      setError('Registration failed. Please try again.');
+      setError(err.response?.data?.error || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -189,61 +198,85 @@ const SignUp = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email */}
-            <div>
-              <label className="block text-xs font-semibold text-[#344563] mb-1.5" htmlFor="signup-email">
-                Email address
-              </label>
-              <input
-                id="signup-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-                className="w-full px-4 py-2.5 border border-[#DFE1E6] rounded-lg text-sm text-[#091E42] placeholder-[#97A0AF] bg-[#FAFBFC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 focus:border-[#0052CC] transition-all"
-              />
-            </div>
+            {step === 1 ? (
+              <>
+                {/* Email */}
+                <div>
+                  <label className="block text-xs font-semibold text-[#344563] mb-1.5" htmlFor="signup-email">
+                    Email address
+                  </label>
+                  <input
+                    id="signup-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    className="w-full px-4 py-2.5 border border-[#DFE1E6] rounded-lg text-sm text-[#091E42] placeholder-[#97A0AF] bg-[#FAFBFC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 focus:border-[#0052CC] transition-all"
+                  />
+                </div>
 
-            {/* Full Name / Username */}
-            <div>
-              <label className="block text-xs font-semibold text-[#344563] mb-1.5" htmlFor="signup-username">
-                Full name
-              </label>
-              <input
-                id="signup-username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Your name"
-                className="w-full px-4 py-2.5 border border-[#DFE1E6] rounded-lg text-sm text-[#091E42] placeholder-[#97A0AF] bg-[#FAFBFC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 focus:border-[#0052CC] transition-all"
-              />
-            </div>
+                {/* Full Name / Username */}
+                <div>
+                  <label className="block text-xs font-semibold text-[#344563] mb-1.5" htmlFor="signup-username">
+                    Full name
+                  </label>
+                  <input
+                    id="signup-username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Your name"
+                    className="w-full px-4 py-2.5 border border-[#DFE1E6] rounded-lg text-sm text-[#091E42] placeholder-[#97A0AF] bg-[#FAFBFC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 focus:border-[#0052CC] transition-all"
+                  />
+                </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-xs font-semibold text-[#344563] mb-1.5" htmlFor="signup-password">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  id="signup-password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create a strong password"
-                  required
-                  className="w-full px-4 py-2.5 pr-10 border border-[#DFE1E6] rounded-lg text-sm text-[#091E42] placeholder-[#97A0AF] bg-[#FAFBFC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 focus:border-[#0052CC] transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#97A0AF] hover:text-[#344563] transition-colors"
-                >
-                  <span className="material-symbols-outlined text-lg">{showPassword ? 'visibility_off' : 'visibility'}</span>
-                </button>
-              </div>
-            </div>
+                {/* Password */}
+                <div>
+                  <label className="block text-xs font-semibold text-[#344563] mb-1.5" htmlFor="signup-password">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="signup-password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Create a strong password"
+                      required
+                      className="w-full px-4 py-2.5 pr-10 border border-[#DFE1E6] rounded-lg text-sm text-[#091E42] placeholder-[#97A0AF] bg-[#FAFBFC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 focus:border-[#0052CC] transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#97A0AF] hover:text-[#344563] transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-lg">{showPassword ? 'visibility_off' : 'visibility'}</span>
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* OTP */}
+                <div>
+                  <label className="block text-xs font-semibold text-[#344563] mb-1.5" htmlFor="signup-otp">
+                    Verification Code
+                  </label>
+                  <p className="text-xs text-[#5E6C84] mb-3">We sent a 6-digit code to {email}. Please enter it below.</p>
+                  <input
+                    id="signup-otp"
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="123456"
+                    required
+                    maxLength={6}
+                    className="w-full px-4 py-2.5 border border-[#DFE1E6] rounded-lg text-sm text-[#091E42] placeholder-[#97A0AF] bg-[#FAFBFC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 focus:border-[#0052CC] transition-all text-center tracking-widest font-mono text-lg"
+                  />
+                </div>
+              </>
+            )}
 
             {/* Submit */}
             <button
@@ -258,9 +291,9 @@ const SignUp = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                   </svg>
-                  Creating account...
+                  {step === 1 ? 'Creating account...' : 'Verifying...'}
                 </>
-              ) : 'Sign Up Free'}
+              ) : (step === 1 ? 'Sign Up Free' : 'Verify Account')}
             </button>
           </form>
 
@@ -275,9 +308,6 @@ const SignUp = () => {
           <div className="space-y-3">
             {[
               { provider: 'google', label: 'Google', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDCxa1wouDWunWRFzBc6jITFhMTB8ogDeSDwJXDYu6zWaEMzA3RpvWmWpXKbNZryhNw74dw_fmDwGp8kC1wmPwgimoT14LfaE60uOm7fLjAbc7QvJcrwZfuTM7sALysFvfnvtWRhunRe1r9xQZlYSkIByfBZZrS7tWOq0m8enctZZyxTSAk-RBVrXVbjmAFjEMPEKCivMP96FUej6Nq2Ilb6xhNNoNnaKf0KCWAsZV97uMOzHM7aG85a29mIU_5MdBXFO1Hl5Jl9pEF' },
-              { provider: 'microsoft', label: 'Microsoft', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuByWG19MzemjH18wPvZKxzUkJntab2Sj308GtFdoYMjif2iHvTyB1z2HqyT7Lp_U8cEpwt0w7wZtv3JmHedFeOg4_NLdwxAS5oaDvlsu-Q-XEQFfSL0VlCI0OmaBPwUTa7jYy9OarxsRijGoDEdCZsab_pshoS9_3bjD86b1S3fKUQRP640plENQHJK7N8o9u1dyQNi_UaIFmiHcelHfEpoJgBIvW3VArNTDyHqiEemzkcd3ZKa2bDcGwrIWzpydvD43Zg6MetxOX1i' },
-              { provider: 'apple', label: 'Apple', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDDsFxtIlHzRENvjya3ZBtRivKirlIRVs7aEwVe3sBxmS8oiHNzbyns0hrPdlrih7oh3Fw6lgEOo64vXaVRUU8zE9tbp4DF_N1eOhmE8vVMeHJJdhjsHaLKMXFH8E-CcByfwcgj-HcK5F-Lkf6JdLuYHmYJ4989p1AUAQ1LosB24pjE_PFbpfO0JtPOsvSln4iS2EBvREolni67U__QIGJBfN4V12Amrx-WyYMVNcr1O-xyg60Kk1m4UWp5dHGb6YPAp-kejUPlvaNh' },
-              { provider: 'slack', label: 'Slack', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDrbHqhpJSVueBq4wbjDmgujXg5avII8p-VRIQ35iDGL9nFMoWDoAm2djWFPdfRjJiaXPUuWl6CLmG8uByojLppg3Ypkww7nkNqMDI9XMLBCvVYCV7QyTBhFEWRmsROhYFCSzFMSYJvttKl_dUQBL64KA_m-_F52t1COVRyuWPEDjniuC_I65QXi-zyD33bP2Ob1VLyCl4cdc14NmYRj-9SJvHMymQAKJS5LpHhk961jxamOIB2uGEFoIkU0EI5AhD7FDu8LoVnhjqB' },
             ].map(({ provider, label, icon }) => (
               <button
                 key={provider}
@@ -302,8 +332,8 @@ const SignUp = () => {
           {/* Terms */}
           <p className="mt-5 text-center text-xs text-[#97A0AF] leading-relaxed">
             By signing up, you agree to our{' '}
-            <a href="#" className="text-[#0052CC] hover:underline">Terms of Service</a> and{' '}
-            <a href="#" className="text-[#0052CC] hover:underline">Privacy Policy</a>.
+            <button type="button" onClick={(e) => e.preventDefault()} className="text-[#0052CC] hover:underline">Terms of Service</button> and{' '}
+            <button type="button" onClick={(e) => e.preventDefault()} className="text-[#0052CC] hover:underline">Privacy Policy</button>.
           </p>
 
           {/* Login link */}
@@ -317,9 +347,9 @@ const SignUp = () => {
 
         {/* Footer */}
         <div className="mt-8 flex gap-4 text-xs text-[#97A0AF]">
-          <a href="#" className="hover:text-[#0052CC] transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-[#0052CC] transition-colors">Terms of Service</a>
-          <a href="#" className="hover:text-[#0052CC] transition-colors">Support</a>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-[#0052CC] transition-colors">Privacy Policy</button>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-[#0052CC] transition-colors">Terms of Service</button>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-[#0052CC] transition-colors">Support</button>
         </div>
       </div>
       

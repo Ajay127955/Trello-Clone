@@ -40,6 +40,12 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (username, password, email) => {
     const response = await api.post('register/', { username, password, email });
+    // Returns OTP sent message
+    return response.data;
+  };
+
+  const verifyRegistration = async (username, password, email, otp) => {
+    const response = await api.post('verify-otp/', { username, password, email, otp });
     if (response.data.access) {
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
@@ -71,7 +77,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, googleLogin, logout, updateUser, loading }}>
+    <AuthContext.Provider value={{ user, login, register, verifyRegistration, googleLogin, logout, updateUser, loading }}>
       {children}
     </AuthContext.Provider>
   );
