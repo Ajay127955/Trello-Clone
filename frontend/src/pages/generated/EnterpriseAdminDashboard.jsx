@@ -205,8 +205,6 @@ const EnterpriseAdminDashboard = () => {
   );
 };
 
-    </>
-  );
-};
+export default EnterpriseAdminDashboard;
 
 export default EnterpriseAdminDashboard;

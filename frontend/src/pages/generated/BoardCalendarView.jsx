@@ -112,3 +112,5 @@ const BoardCalendarView = () => {
     </div>
   );
 };
+
+export default BoardCalendarView;

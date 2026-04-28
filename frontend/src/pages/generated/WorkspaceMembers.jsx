@@ -13,12 +13,31 @@ const WorkspaceMembers = () => {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   useEffect(() => {
-    fetchWorkspace();
+    if (id) {
+      fetchWorkspace(id);
+    } else {
+      fetchDefaultWorkspace();
+    }
   }, [id]);
 
-  const fetchWorkspace = async () => {
+  const fetchDefaultWorkspace = async () => {
     try {
-      const response = await api.get(`workspaces/${id}/`);
+      const response = await api.get('workspaces/');
+      if (response.data && response.data.length > 0) {
+        // Redirect to the first available workspace
+        navigate(`/workspace-members/${response.data[0].id}`, { replace: true });
+      } else {
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
+  const fetchWorkspace = async (workspaceId) => {
+    try {
+      const response = await api.get(`workspaces/${workspaceId}/`);
       setWorkspace(response.data);
     } catch (err) {
       console.error(err);
@@ -37,9 +56,27 @@ const WorkspaceMembers = () => {
     }
   };
 
-  if (loading || !workspace) return (
+  if (loading) return (
     <div className="flex items-center justify-center h-[calc(100vh-200px)]">
       <div className="w-12 h-12 rounded-full border-4 border-slate-100 dark:border-slate-800 border-t-blue-600 animate-spin"></div>
+    </div>
+  );
+
+  if (!workspace) return (
+    <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)] gap-6">
+      <div className="w-20 h-20 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+        <span className="material-symbols-outlined text-4xl text-slate-400">group_off</span>
+      </div>
+      <div className="text-center">
+        <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">No Workspace Found</h2>
+        <p className="text-slate-500 text-sm max-w-xs">You don't seem to be a member of any workspace yet. Create or join one to see collaborators.</p>
+      </div>
+      <button 
+        onClick={() => navigate('/boards-dashboard')}
+        className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-blue-600/20 active:scale-95 transition-all"
+      >
+        Go to Dashboard
+      </button>
     </div>
   );
 
@@ -124,8 +161,6 @@ const WorkspaceMembers = () => {
         targetName={workspace.name}
       />
     </div>
-  );
-};
   );
 };
 

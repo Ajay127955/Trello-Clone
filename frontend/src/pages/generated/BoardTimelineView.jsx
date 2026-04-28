@@ -116,3 +116,5 @@ const BoardTimelineView = () => {
     </div>
   );
 };
+
+export default BoardTimelineView;

@@ -149,3 +149,5 @@ const AutomationButler = () => {
     </div>
   );
 };
+
+export default AutomationButler;

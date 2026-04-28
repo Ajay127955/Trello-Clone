@@ -120,3 +120,5 @@ const OnboardingWelcome = () => {
     </div>
   );
 };
+
+export default OnboardingWelcome;

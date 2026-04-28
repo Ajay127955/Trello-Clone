@@ -186,15 +186,6 @@ const InvitationResponse = () => {
   );
 };
 
-      <ConfirmModal 
-        isOpen={confirmModal.isOpen}
-        title={confirmModal.title}
-        message={confirmModal.message}
-        onConfirm={confirmModal.onConfirm}
-        onCancel={() => setConfirmModal({ ...confirmModal, isOpen: false })}
-      />
-    </div>
-  );
-};
+export default InvitationResponse;
 
 export default InvitationResponse;

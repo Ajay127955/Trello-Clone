@@ -212,7 +212,6 @@ const LandingPage = () => {
 <span className="text-[11px] font-medium">Account</span>
 </div>
 </nav>
-
     </>
   );
 };

@@ -176,6 +176,7 @@ const EnterpriseSecurity = () => {
             </div>
           </div>
         </div>
+      </div>
     </div>
   );
 };

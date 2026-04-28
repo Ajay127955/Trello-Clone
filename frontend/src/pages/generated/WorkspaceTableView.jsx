@@ -166,3 +166,5 @@ const WorkspaceTableView = () => {
     </div>
   );
 };
+
+export default WorkspaceTableView;

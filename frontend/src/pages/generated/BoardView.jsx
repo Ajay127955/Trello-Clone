@@ -173,6 +173,7 @@ const BoardView = () => {
   };
 
   const handleListRename = (listId, currentTitle) => {
+    setActiveListMenu(null);
     openPrompt({
       title: 'Rename List',
       label: 'New Title',
@@ -185,14 +186,13 @@ const BoardView = () => {
           fetchBoard();
         } catch (err) {
           showToast('Failed to rename list.', 'error');
-        } finally {
-          setActiveListMenu(null);
         }
       }
     });
   };
 
   const handleListColor = (listId) => {
+    setActiveListMenu(null);
     openPrompt({
       title: 'Set List Color',
       label: 'Color (Hex or Name)',
@@ -204,8 +204,6 @@ const BoardView = () => {
           fetchBoard();
         } catch (err) {
           showToast('Failed to update color.', 'error');
-        } finally {
-          setActiveListMenu(null);
         }
       }
     });
@@ -266,14 +264,6 @@ const BoardView = () => {
             Share
           </button>
           
-          <button 
-            onClick={handleAiSetup}
-            disabled={isAiGenerating}
-            className={`flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-bold hover:opacity-90 transition-all ml-2 shadow-lg shadow-blue-100 ${isAiGenerating ? 'animate-pulse cursor-wait' : ''}`}
-          >
-            <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
-            {isAiGenerating ? 'AI Generating...' : 'Smart Setup'}
-          </button>
 
           {board.owner.id === user?.id && (
             <button 
@@ -316,23 +306,28 @@ const BoardView = () => {
       {viewMode === 'kanban' ? (
       <div className="flex-1 overflow-x-auto overflow-y-hidden p-4 md:p-6 custom-scrollbar">
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="flex gap-4 items-start h-full">
+          <div className="flex gap-6 items-start h-full px-6 py-4">
             {board.lists.map((list) => (
               <Droppable key={list.id} droppableId={list.id.toString()}>
                 {(provided) => (
                   <div 
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                    className="w-72 bg-slate-200/50 rounded-2xl flex flex-col max-h-full shadow-sm border border-slate-200/50"
+                    className="w-[280px] bg-[#f1f2f4] dark:bg-slate-900/50 rounded-[1.5rem] flex flex-col max-h-full shadow-sm border border-slate-200/50"
                   >
                     <div 
-                      className={`p-4 flex items-center justify-between rounded-t-2xl transition-colors ${list.wip_limit > 0 && list.cards.length > list.wip_limit ? 'bg-red-100 text-red-700' : ''}`}
-                      style={list.color ? { backgroundColor: list.color, color: 'white' } : {}}
+                      className="p-4 pr-3 flex items-center justify-between transition-colors relative"
                     >
+                      {list.color && (
+                        <div 
+                          className="absolute top-0 left-0 right-0 h-2 rounded-t-full" 
+                          style={{ backgroundColor: list.color }}
+                        />
+                      )}
                       <div className="flex items-center gap-2">
-                        <h3 className="font-black text-sm uppercase tracking-wider">{list.title}</h3>
+                        <h3 className="font-black text-[11px] uppercase tracking-[0.1em] text-slate-700 dark:text-slate-300">{list.title}</h3>
                         {list.wip_limit > 0 && (
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${list.cards.length > list.wip_limit ? 'bg-red-200' : 'bg-slate-300'}`}>
+                          <span className={`text-[9px] px-2 py-0.5 rounded-full font-black ${list.cards.length > list.wip_limit ? 'bg-red-500 text-white' : 'bg-slate-300 text-slate-600'}`}>
                             {list.cards.length}/{list.wip_limit}
                           </span>
                         )}
@@ -342,13 +337,13 @@ const BoardView = () => {
                           const rect = e.currentTarget.getBoundingClientRect();
                           setActiveListMenu({ id: list.id, title: list.title, x: rect.left, y: rect.bottom });
                         }}
-                        className="material-symbols-outlined text-slate-400 hover:text-slate-600 transition-colors"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
                       >
-                        more_horiz
+                        <span className="material-symbols-outlined text-[18px] text-slate-400">more_horiz</span>
                       </button>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto px-2 pb-2">
+                    <div className="flex-1 overflow-y-auto px-3 pb-2 space-y-3">
                       {list.cards.map((card, index) => (
                         <Draggable key={card.id} draggableId={card.id.toString()} index={index}>
                           {(provided) => (
@@ -357,32 +352,41 @@ const BoardView = () => {
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                               onClick={() => handleCardClick(card.id)}
-                              className="bg-white p-3 rounded-xl mb-2 shadow-sm border border-slate-200 hover:border-blue-400 cursor-pointer transition-all active:scale-95 group"
+                              className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-md cursor-pointer transition-all active:scale-[0.98] group"
                             >
-                              <p className="text-sm font-bold text-slate-900 group-hover:text-blue-600">{card.title}</p>
+                              {card.labels?.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mb-3">
+                                  {card.labels.map(l => (
+                                    <div key={l.id} className="h-1.5 w-10 rounded-full" style={{ backgroundColor: l.color }} />
+                                  ))}
+                                </div>
+                              )}
+                              <p className="text-[13px] font-bold text-slate-800 dark:text-slate-200 leading-snug group-hover:text-blue-600 transition-colors">{card.title}</p>
                               
-                              <div className="flex items-center justify-between mt-4">
-                                <div className="flex items-center gap-2">
-                                  {card.checklist_stats?.total > 0 && (
-                                    <div className={`flex items-center gap-1 text-[10px] font-black px-1.5 py-0.5 rounded ${card.checklist_stats.completed === card.checklist_stats.total ? 'bg-green-100 text-green-700' : 'bg-blue-50 text-blue-600'}`}>
-                                      <span className="material-symbols-outlined text-[14px]">check_box</span>
-                                      {card.checklist_stats.completed}/{card.checklist_stats.total}
-                                    </div>
-                                  )}
-                                  {card.attachments?.length > 0 && (
-                                    <div className="flex items-center gap-1 text-[10px] font-black text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">
-                                      <span className="material-symbols-outlined text-[14px]">attach_file</span>
-                                      {card.attachments.length}
-                                    </div>
-                                  )}
+                              <div className="flex items-center justify-between mt-5">
+                                <div className="flex items-center gap-3">
                                   {card.description && (
-                                    <span className="material-symbols-outlined text-[14px] text-slate-400">subject</span>
+                                    <span className="material-symbols-outlined text-[16px] text-slate-300">subject</span>
                                   )}
+                                  <div className="flex items-center gap-3">
+                                    {card.checklist_stats?.total > 0 && (
+                                      <div className={`flex items-center gap-1.5 text-[9px] font-black px-2 py-0.5 rounded-md ${card.checklist_stats.completed === card.checklist_stats.total ? 'bg-emerald-500 text-white' : 'text-slate-400'}`}>
+                                        <span className="material-symbols-outlined text-[14px]">check_box</span>
+                                        {card.checklist_stats.completed}/{card.checklist_stats.total}
+                                      </div>
+                                    )}
+                                    {card.attachments?.length > 0 && (
+                                      <div className="flex items-center gap-1 text-[9px] font-black text-slate-400">
+                                        <span className="material-symbols-outlined text-[14px]">attach_file</span>
+                                        {card.attachments.length}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
 
-                                <div className="flex -space-x-1.5">
+                                <div className="flex -space-x-2">
                                   {card.assigned_members?.slice(0, 3).map(m => (
-                                    <div key={m.id} className="h-6 w-6 rounded-full border-2 border-white bg-blue-600 flex items-center justify-center text-[8px] font-bold text-white">
+                                    <div key={m.id} className="h-7 w-7 rounded-full border-2 border-white dark:border-slate-800 bg-blue-600 flex items-center justify-center text-[9px] font-black text-white shadow-sm">
                                       {m.username?.substring(0, 2).toUpperCase() || '??'}
                                     </div>
                                   ))}
@@ -395,12 +399,12 @@ const BoardView = () => {
                       {provided.placeholder}
                     </div>
 
-                    <div className="p-2">
+                    <div className="p-3 pt-0">
                       <button 
                         onClick={() => handleAddCard(list.id)}
-                        className="w-full flex items-center gap-2 text-slate-500 hover:bg-slate-200 p-2 rounded-xl text-sm font-bold transition-all"
+                        className="w-full flex items-center gap-3 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800 p-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all group"
                       >
-                        <span className="material-symbols-outlined text-[18px]">add</span>
+                        <span className="material-symbols-outlined text-[20px] group-hover:rotate-90 transition-transform">add</span>
                         Add a card
                       </button>
                     </div>
@@ -411,10 +415,10 @@ const BoardView = () => {
 
             <button 
               onClick={handleAddList}
-              className="w-72 bg-slate-200/50 hover:bg-slate-200 text-slate-700 p-4 rounded-2xl flex items-center gap-2 text-sm font-black uppercase tracking-widest transition-all h-fit border border-dashed border-slate-300"
+              className="flex-shrink-0 w-[280px] bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-800/60 backdrop-blur-md text-slate-800 dark:text-white p-6 rounded-[1.5rem] flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.2em] transition-all h-fit border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-400 shadow-xl"
             >
-              <span className="material-symbols-outlined">add</span>
-              Add another list
+              <span className="material-symbols-outlined text-blue-600">add_circle</span>
+              Synthesize List
             </button>
           </div>
         </DragDropContext>

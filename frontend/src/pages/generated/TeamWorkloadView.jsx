@@ -188,8 +188,4 @@ const TeamWorkloadView = () => {
   );
 };
 
-    </>
-  );
-};
-
 export default TeamWorkloadView;

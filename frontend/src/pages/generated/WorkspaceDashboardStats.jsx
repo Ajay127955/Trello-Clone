@@ -179,8 +179,5 @@ const WorkspaceDashboardStats = () => {
     </div>
   );
 };
-    </div>
-  );
-};
 
 export default WorkspaceDashboardStats;

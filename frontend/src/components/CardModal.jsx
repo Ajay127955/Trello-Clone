@@ -13,6 +13,8 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
   const [showLabelMenu, setShowLabelMenu] = useState(false);
   const [boardLabels, setBoardLabels] = useState([]);
   const [isExpandingAi, setIsExpandingAi] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = React.useRef(null);
   const { showToast } = useToast();
   
   // Prompt Modal State
@@ -151,10 +153,35 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
     }
   };
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('file_name', file.name);
+    formData.append('card', cardId);
+
+    setUploading(true);
+    try {
+      await api.post('attachments/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      showToast('File attached successfully!', 'success');
+      fetchCard();
+      onCardUpdate();
+    } catch (err) {
+      console.error(err);
+      showToast('Failed to upload file.', 'error');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6">
       <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose}></div>
       
       <div className="bg-white dark:bg-slate-900 w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col relative z-10 overflow-hidden">
@@ -346,9 +373,9 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
               <div className="grid grid-cols-1 gap-2.5">
                 <button 
                   onClick={() => setShowMemberSearch(!showMemberSearch)}
-                  className="flex items-center gap-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl text-xs font-bold transition-all relative"
+                  className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-300 px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all relative group"
                 >
-                  <span className="material-symbols-outlined text-[18px]">group</span>
+                  <span className="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-blue-600 transition-colors">group</span>
                   Members
                   {showMemberSearch && (
                     <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl z-[110] p-4 animate-in fade-in zoom-in-95">
@@ -379,9 +406,9 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
 
                 <button 
                   onClick={() => setShowLabelMenu(!showLabelMenu)}
-                  className="flex items-center gap-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl text-xs font-bold transition-all relative"
+                  className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-300 px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all relative group"
                 >
-                  <span className="material-symbols-outlined text-[18px]">label</span>
+                  <span className="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-blue-600 transition-colors">label</span>
                   Labels
                   {showLabelMenu && (
                     <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl z-[110] p-4 animate-in fade-in zoom-in-95">
@@ -408,26 +435,38 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
 
                 <button 
                   onClick={handleAddChecklist}
-                  className="flex items-center gap-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl text-xs font-bold transition-all"
+                  className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-300 px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all group"
                 >
-                  <span className="material-symbols-outlined text-[18px]">check_box</span>
+                  <span className="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-blue-600 transition-colors">check_box</span>
                   Checklist
                 </button>
 
                 <button 
-                  className="flex items-center gap-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl text-xs font-bold transition-all"
-                  onClick={() => showToast('File upload coming soon!', 'info')}
+                  className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-300 px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all group disabled:opacity-50"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
                 >
-                  <span className="material-symbols-outlined text-[18px]">attach_file</span>
-                  Attachment
+                  <span className="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-blue-600 transition-colors">attach_file</span>
+                  {uploading ? 'Attaching...' : 'Attachment'}
                 </button>
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  className="hidden" 
+                  onChange={handleFileUpload}
+                />
               </div>
             </div>
 
-            <div className="p-5 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl text-white shadow-xl shadow-blue-100">
-              <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-2">AI Assistant</p>
-              <h5 className="font-bold mb-2">Gemini Pro Powered</h5>
-              <p className="text-[10px] leading-relaxed opacity-90">Use AI to generate project structures and professional card descriptions instantly.</p>
+            <div className="p-8 bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-600 rounded-[2.5rem] text-white shadow-2xl shadow-blue-100/50 relative overflow-hidden group">
+              <div className="absolute -right-6 -bottom-6 opacity-20 group-hover:scale-110 transition-transform duration-1000">
+                  <span className="material-symbols-outlined text-[100px]">auto_awesome</span>
+              </div>
+              <div className="relative z-10">
+                <p className="text-[9px] font-black uppercase tracking-[0.3em] opacity-70 mb-3">AI Assistant</p>
+                <h5 className="font-black text-xl mb-4 leading-none tracking-tight">Gemini Pro Powered</h5>
+                <p className="text-[11px] leading-relaxed font-bold opacity-80">Use AI to generate project structures and professional card descriptions instantly.</p>
+              </div>
             </div>
           </div>
         </div>
