@@ -21,7 +21,7 @@ services:
       - key: ALLOWED_HOSTS
         value: "*" # Set to your actual domain later for security
       - key: CORS_ALLOWED_ORIGINS
-        value: "https://trello-clone-frontend.onrender.com" # Placeholder
+        value: "https://trello-clone-frontend-waq0.onrender.com"
       - key: GOOGLE_API_KEY
         sync: false # Set manually in Render Dashboard
 
@@ -33,7 +33,7 @@ services:
     staticPublishPath: "frontend/dist"
     envVars:
       - key: VITE_API_URL
-        value: "https://trello-clone-backend.onrender.com/api/"
+        value: "https://trello-clone-backend-m8h7.onrender.com/api/"
     routes:
       - type: rewrite
         source: "/*"
