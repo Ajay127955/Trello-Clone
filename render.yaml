@@ -4,6 +4,7 @@ services:
     name: trello-clone-backend
     env: python
     region: oregon
+    plan: free
     buildCommand: "./render_build.sh"
     startCommand: "cd backend && gunicorn config.wsgi:application"
     envVars:
