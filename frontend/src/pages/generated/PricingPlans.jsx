@@ -190,7 +190,6 @@ const PricingPlans = () => {
 </div>
 </div>
 
-    </div>
   );
 };
 

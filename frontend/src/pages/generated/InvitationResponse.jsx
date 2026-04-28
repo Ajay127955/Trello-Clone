@@ -187,5 +187,3 @@ const InvitationResponse = () => {
 };
 
 export default InvitationResponse;
-
-export default InvitationResponse;
