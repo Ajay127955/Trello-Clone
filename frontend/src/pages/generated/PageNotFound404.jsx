@@ -41,7 +41,7 @@ const PageNotFound404 = () => {
 <span className="material-symbols-outlined text-[64px]" data-icon="map">map</span>
 </div>
 </div>
-{/*  Secondary Navigation (Implicitly guided by Trello-style Footer links)  */}
+{/*  Secondary Navigation (Implicitly guided by Productive Flow-style Footer links)  */}
 <nav className="mt-xl flex flex-wrap justify-center gap-lg">
 <a className="font-label-sm text-label-sm text-outline hover:text-primary transition-colors flex items-center gap-xs" href="#">
 <span className="material-symbols-outlined text-[16px]" data-icon="help">help</span>

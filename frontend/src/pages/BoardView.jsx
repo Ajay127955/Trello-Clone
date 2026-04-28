@@ -61,7 +61,7 @@ const BoardView = () => {
           <button onClick={() => navigate('/')} className="p-2 hover:bg-slate-50 transition-colors rounded-xl">
             <span className="material-symbols-outlined text-slate-600">grid_view</span>
           </button>
-          <h1 className="text-xl font-black tracking-tight text-slate-900 cursor-pointer" onClick={() => navigate('/')}>Trello</h1>
+          <h1 className="text-xl font-black tracking-tight text-slate-900 cursor-pointer" onClick={() => navigate('/')}>Productive Flow</h1>
           <nav className="hidden md:flex items-center gap-6 ml-4">
             <span className="text-blue-600 font-black border-b-2 border-blue-600 pb-1 cursor-pointer">Boards</span>
             <span className="text-slate-500 font-bold hover:text-slate-900 transition-colors cursor-pointer px-2 py-1 rounded-xl">Recent</span>

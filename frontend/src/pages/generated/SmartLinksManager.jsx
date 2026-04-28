@@ -104,7 +104,7 @@ const SmartLinksManager = () => {
                 <h4 className="font-black text-[9px] uppercase tracking-[0.2em] text-blue-300 mb-8 relative z-10">Bridge Hierarchy</h4>
                 <div className="space-y-6 relative z-10">
                   {[
-                    { label: 'Trello Master', icon: 'priority_high', active: true },
+                    { label: 'Productive Flow Master', icon: 'priority_high', active: true },
                     { label: 'Nexus Gateway', icon: 'mediation' },
                     { label: 'Auto-Merge Resolve', icon: 'link_off' }
                   ].map((step, i) => (

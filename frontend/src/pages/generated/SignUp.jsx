@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import SocialSimulationModal from '../../components/SocialSimulationModal';
+import { useGoogleLogin } from '@react-oauth/google';
+import { Kanban, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 import authBranding from '../../assets/auth-branding.png';
 
 const SignUp = () => {
@@ -16,9 +17,7 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [socialLoading, setSocialLoading] = useState('');
-  const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
-  const [pendingProvider, setPendingProvider] = useState('');
+  const [socialLoading, setSocialLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [otp, setOtp] = useState('');
 
@@ -45,30 +44,27 @@ const SignUp = () => {
     }
   };
 
-  const handleSocialAuth = (provider) => {
-    if (provider !== 'google') {
-      showToast(`${provider} login is not implemented in this demo. Please use Google.`, 'info');
-      return;
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setSocialLoading(true);
+      setError('');
+      try {
+        await googleLogin(tokenResponse.access_token);
+        showToast('Successfully registered!', 'success');
+        navigate('/onboarding-welcome');
+      } catch (err) {
+        console.error(err);
+        setError(`Google sign-up failed. Please try again.`);
+        showToast('Sign up failed', 'error');
+      } finally {
+        setSocialLoading(false);
+      }
+    },
+    onError: (error) => {
+      console.error('Google Login Failed', error);
+      setError('Google sign-up was cancelled or failed.');
     }
-    setPendingProvider(provider);
-    setIsSocialModalOpen(true);
-  };
-
-  const onSocialSubmit = async (email, name) => {
-    setSocialLoading(pendingProvider);
-    setError('');
-    try {
-      await googleLogin(email, name);
-      showToast('Successfully registered!', 'success');
-      navigate('/onboarding-welcome');
-    } catch (err) {
-      console.error(err);
-      setError(`${pendingProvider} sign-in failed. Please try again.`);
-      showToast('Sign up failed', 'error');
-    } finally {
-      setSocialLoading('');
-    }
-  };
+  });
 
   const testimonial = {
     text: '"Productive Flow transformed how our team collaborates. We ship 40% faster now."',
@@ -105,9 +101,7 @@ const SignUp = () => {
           {/* Logo */}
           <div className="flex items-center gap-3 mb-10">
             <div className="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm border border-white/30">
-              <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                grid_view
-              </span>
+              <Kanban className="text-white w-5 h-5" />
             </div>
             <span className="text-white font-bold text-xl tracking-tight">Productive Flow</span>
           </div>
@@ -178,9 +172,7 @@ const SignUp = () => {
 
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center gap-2 mb-8">
-          <span className="material-symbols-outlined text-[#0052CC] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-            grid_view
-          </span>
+          <Kanban className="text-[#0052CC] w-8 h-8" />
           <span className="text-[#091E42] font-bold text-xl tracking-tight">Productive Flow</span>
         </div>
 
@@ -192,7 +184,7 @@ const SignUp = () => {
 
           {error && (
             <div className="mb-5 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm font-medium flex items-center gap-2">
-              <span className="material-symbols-outlined text-base">error</span>
+              <AlertCircle className="w-5 h-5" />
               {error}
             </div>
           )}
@@ -251,7 +243,7 @@ const SignUp = () => {
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-[#97A0AF] hover:text-[#344563] transition-colors"
                     >
-                      <span className="material-symbols-outlined text-lg">{showPassword ? 'visibility_off' : 'visibility'}</span>
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
                 </div>
@@ -287,10 +279,7 @@ const SignUp = () => {
             >
               {loading ? (
                 <>
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   {step === 1 ? 'Creating account...' : 'Verifying...'}
                 </>
               ) : (step === 1 ? 'Sign Up Free' : 'Verify Account')}
@@ -306,27 +295,19 @@ const SignUp = () => {
 
           {/* Social Buttons */}
           <div className="space-y-3">
-            {[
-              { provider: 'google', label: 'Google', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDCxa1wouDWunWRFzBc6jITFhMTB8ogDeSDwJXDYu6zWaEMzA3RpvWmWpXKbNZryhNw74dw_fmDwGp8kC1wmPwgimoT14LfaE60uOm7fLjAbc7QvJcrwZfuTM7sALysFvfnvtWRhunRe1r9xQZlYSkIByfBZZrS7tWOq0m8enctZZyxTSAk-RBVrXVbjmAFjEMPEKCivMP96FUej6Nq2Ilb6xhNNoNnaKf0KCWAsZV97uMOzHM7aG85a29mIU_5MdBXFO1Hl5Jl9pEF' },
-            ].map(({ provider, label, icon }) => (
-              <button
-                key={provider}
-                type="button"
-                onClick={() => handleSocialAuth(provider)}
-                disabled={!!socialLoading || loading}
-                className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-[#DFE1E6] rounded-lg bg-white hover:bg-[#F4F5F7] text-[#091E42] font-semibold text-sm transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {socialLoading === provider ? (
-                  <svg className="w-5 h-5 animate-spin text-[#0052CC]" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
-                ) : (
-                  <img src={icon} alt={`${label} logo`} className="w-5 h-5" />
-                )}
-                {socialLoading === provider ? `Connecting to ${label}...` : `Continue with ${label}`}
-              </button>
-            ))}
+            <button
+              type="button"
+              onClick={() => handleGoogleLogin()}
+              disabled={socialLoading || loading}
+              className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-[#DFE1E6] rounded-lg bg-white hover:bg-[#F4F5F7] text-[#091E42] font-semibold text-sm transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {socialLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin text-[#0052CC]" />
+              ) : (
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCxa1wouDWunWRFzBc6jITFhMTB8ogDeSDwJXDYu6zWaEMzA3RpvWmWpXKbNZryhNw74dw_fmDwGp8kC1wmPwgimoT14LfaE60uOm7fLjAbc7QvJcrwZfuTM7sALysFvfnvtWRhunRe1r9xQZlYSkIByfBZZrS7tWOq0m8enctZZyxTSAk-RBVrXVbjmAFjEMPEKCivMP96FUej6Nq2Ilb6xhNNoNnaKf0KCWAsZV97uMOzHM7aG85a29mIU_5MdBXFO1Hl5Jl9pEF" alt="Google logo" className="w-5 h-5" />
+              )}
+              {socialLoading ? `Connecting to Google...` : `Continue with Google`}
+            </button>
           </div>
 
           {/* Terms */}
@@ -353,12 +334,7 @@ const SignUp = () => {
         </div>
       </div>
       
-      <SocialSimulationModal 
-        isOpen={isSocialModalOpen} 
-        onClose={() => setIsSocialModalOpen(false)} 
-        onSubmit={onSocialSubmit}
-        provider={pendingProvider}
-      />
+
     </div>
   );
 };

@@ -19,7 +19,7 @@ const Notifications = () => {
   onClick={() => navigate('/boards-dashboard')}
   className="font-inter text-lg font-semibold tracking-tight text-blue-600 dark:text-blue-400 font-black text-xl cursor-pointer"
 >
-  Trello
+  Productive Flow
 </h1>
 </div>
 <div className="flex items-center gap-sm">

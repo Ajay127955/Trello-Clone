@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import SocialSimulationModal from '../../components/SocialSimulationModal';
+import { useGoogleLogin } from '@react-oauth/google';
+import { Kanban, Users, Zap, BarChart2, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 import authBranding from '../../assets/auth-branding.png';
 
 const Login = () => {
@@ -15,9 +16,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [socialLoading, setSocialLoading] = useState('');
-  const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
-  const [pendingProvider, setPendingProvider] = useState('');
+  const [socialLoading, setSocialLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,36 +33,33 @@ const Login = () => {
     }
   };
 
-  const handleSocialAuth = (provider) => {
-    if (provider !== 'google') {
-      showToast(`${provider} login is not implemented in this demo. Please use Google.`, 'info');
-      return;
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setSocialLoading(true);
+      setError('');
+      try {
+        await googleLogin(tokenResponse.access_token);
+        showToast('Successfully logged in!', 'success');
+        navigate('/boards-dashboard');
+      } catch (err) {
+        console.error(err);
+        setError(`Google sign-in failed. Please try again.`);
+        showToast('Login failed', 'error');
+      } finally {
+        setSocialLoading(false);
+      }
+    },
+    onError: (error) => {
+      console.error('Google Login Failed', error);
+      setError('Google sign-in was cancelled or failed.');
     }
-    setPendingProvider(provider);
-    setIsSocialModalOpen(true);
-  };
-
-  const onSocialSubmit = async (email, name) => {
-    setSocialLoading(pendingProvider);
-    setError('');
-    try {
-      await googleLogin(email, name);
-      showToast('Successfully logged in!', 'success');
-      navigate('/boards-dashboard');
-    } catch (err) {
-      console.error(err);
-      setError(`${pendingProvider} sign-in failed. Please try again.`);
-      showToast('Login failed', 'error');
-    } finally {
-      setSocialLoading('');
-    }
-  };
+  });
 
   const features = [
-    { icon: 'view_kanban', text: 'Drag-and-drop Kanban boards' },
-    { icon: 'group', text: 'Real-time team collaboration' },
-    { icon: 'bolt', text: 'Automation & smart workflows' },
-    { icon: 'insights', text: 'Analytics & workload views' },
+    { icon: Kanban, text: 'Drag-and-drop Kanban boards' },
+    { icon: Users, text: 'Real-time team collaboration' },
+    { icon: Zap, text: 'Automation & smart workflows' },
+    { icon: BarChart2, text: 'Analytics & workload views' },
   ];
 
   return (
@@ -94,9 +90,7 @@ const Login = () => {
           {/* Logo */}
           <div className="flex items-center gap-3 mb-12">
             <div className="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm border border-white/30">
-              <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                grid_view
-              </span>
+              <Kanban className="text-white w-5 h-5" />
             </div>
             <span className="text-white font-bold text-xl tracking-tight">Productive Flow</span>
           </div>
@@ -127,15 +121,13 @@ const Login = () => {
 
             {/* Feature pills */}
             <div className="mt-8 grid grid-cols-2 gap-3 w-full max-w-sm">
-              {features.map(({ icon, text }) => (
+              {features.map(({ icon: Icon, text }, i) => (
                 <div
-                  key={icon}
+                  key={i}
                   className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/15 backdrop-blur-sm"
                   style={{ background: 'rgba(255,255,255,0.08)' }}
                 >
-                  <span className="material-symbols-outlined text-blue-300 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    {icon}
-                  </span>
+                  <Icon className="text-blue-300 w-5 h-5" />
                   <span className="text-white/80 text-xs font-medium">{text}</span>
                 </div>
               ))}
@@ -164,9 +156,7 @@ const Login = () => {
 
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center gap-2 mb-8">
-          <span className="material-symbols-outlined text-[#0052CC] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-            grid_view
-          </span>
+          <Kanban className="text-[#0052CC] w-8 h-8" />
           <span className="text-[#091E42] font-bold text-xl tracking-tight">Productive Flow</span>
         </div>
 
@@ -178,7 +168,7 @@ const Login = () => {
 
           {error && (
             <div className="mb-5 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm font-medium flex items-center gap-2">
-              <span className="material-symbols-outlined text-base">error</span>
+              <AlertCircle className="w-5 h-5" />
               {error}
             </div>
           )}
@@ -231,16 +221,13 @@ const Login = () => {
             {/* Submit */}
             <button
               type="submit"
-              disabled={loading || !!socialLoading}
+              disabled={loading || socialLoading}
               className="w-full py-2.5 rounded-lg font-semibold text-sm text-white flex items-center justify-center gap-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ background: loading ? '#0747A6' : 'linear-gradient(135deg, #0052CC, #0747A6)' }}
             >
               {loading ? (
                 <>
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   Signing in...
                 </>
               ) : 'Log In'}
@@ -256,27 +243,19 @@ const Login = () => {
 
           {/* Social Buttons */}
           <div className="space-y-3">
-            {[
-              { provider: 'google', label: 'Google', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAw949gcV1DMNZ7ThDxO9ez8niJT2Tz7hanIid5voaPDk0w9eWSu8DMv2T05Ns-CqVE_mxAkkqwuabtgI-Um6kXtvgXWqybdvQXWxM4dB4GHD9yl9OtXzEonkw8VdKUHJcor0ODrqpeP8x3RFVWMjqq72tql4Ub_1-Fl5GyAED5xs_eOqdWAhP5ZLzZ6P-DFo3PrQsxdmfuk0uTXH42UBz-HolQaOWPnlDE_tlI27uxYTklMpWvXFzVFR5MYIOcY-cV1oE-08_m_H8M' },
-            ].map(({ provider, label, icon }) => (
-              <button
-                key={provider}
-                type="button"
-                onClick={() => handleSocialAuth(provider)}
-                disabled={!!socialLoading || loading}
-                className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-[#DFE1E6] rounded-lg bg-white hover:bg-[#F4F5F7] text-[#091E42] font-semibold text-sm transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {socialLoading === provider ? (
-                  <svg className="w-5 h-5 animate-spin text-[#0052CC]" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
-                ) : (
-                  <img src={icon} alt={`${label} logo`} className="w-5 h-5" />
-                )}
-                {socialLoading === provider ? `Connecting to ${label}...` : `Continue with ${label}`}
-              </button>
-            ))}
+            <button
+              type="button"
+              onClick={() => handleGoogleLogin()}
+              disabled={socialLoading || loading}
+              className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-[#DFE1E6] rounded-lg bg-white hover:bg-[#F4F5F7] text-[#091E42] font-semibold text-sm transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {socialLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin text-[#0052CC]" />
+              ) : (
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAw949gcV1DMNZ7ThDxO9ez8niJT2Tz7hanIid5voaPDk0w9eWSu8DMv2T05Ns-CqVE_mxAkkqwuabtgI-Um6kXtvgXWqybdvQXWxM4dB4GHD9yl9OtXzEonkw8VdKUHJcor0ODrqpeP8x3RFVWMjqq72tql4Ub_1-Fl5GyAED5xs_eOqdWAhP5ZLzZ6P-DFo3PrQsxdmfuk0uTXH42UBz-HolQaOWPnlDE_tlI27uxYTklMpWvXFzVFR5MYIOcY-cV1oE-08_m_H8M" alt="Google logo" className="w-5 h-5" />
+              )}
+              {socialLoading ? `Connecting to Google...` : `Continue with Google`}
+            </button>
           </div>
 
           {/* Sign up link */}
@@ -296,12 +275,7 @@ const Login = () => {
         </div>
       </div>
       
-      <SocialSimulationModal 
-        isOpen={isSocialModalOpen} 
-        onClose={() => setIsSocialModalOpen(false)} 
-        onSubmit={onSocialSubmit}
-        provider={pendingProvider}
-      />
+
     </div>
   );
 };

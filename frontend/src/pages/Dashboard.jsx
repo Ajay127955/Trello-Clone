@@ -36,7 +36,7 @@ const Dashboard = () => {
       <header className="bg-white border-b border-slate-200 shadow-sm flex justify-between items-center w-full px-4 h-14 z-50 fixed top-0">
         <div className="flex items-center gap-4">
           <span className="material-symbols-outlined text-slate-600 cursor-pointer">grid_view</span>
-          <span className="text-xl font-black tracking-tight text-slate-900">Trello</span>
+          <span className="text-xl font-black tracking-tight text-slate-900">Productive Flow</span>
           <nav className="hidden md:flex items-center gap-1 ml-4">
             <button className="flex items-center gap-1 px-3 py-1.5 text-slate-600 font-medium hover:bg-slate-100 transition-colors rounded-lg">
               <span className="text-sm">Workspaces</span>

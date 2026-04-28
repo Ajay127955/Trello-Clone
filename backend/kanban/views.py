@@ -437,17 +437,27 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'])
     def google_login(self, request):
-        # SECURITY: In a production app, we would verify the Google ID Token here.
-        # For this demo, we use a simulation header to ensure the request came from our frontend.
-        verify_header = request.headers.get('X-Social-Verify')
-        if not verify_header == 'productive-flow-demo-secret':
-            return Response({"error": "Unauthorized social login attempt"}, status=status.HTTP_401_UNAUTHORIZED)
-
-        email = request.data.get('email')
-        name = request.data.get('name', '')
-        
-        if not email:
-            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+        import requests
+        access_token = request.data.get('access_token')
+        if not access_token:
+            return Response({"error": "Access token is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            response = requests.get(
+                'https://www.googleapis.com/oauth2/v3/userinfo',
+                headers={'Authorization': f'Bearer {access_token}'}
+            )
+            if response.status_code != 200:
+                return Response({"error": "Invalid Google token"}, status=status.HTTP_400_BAD_REQUEST)
+                
+            user_info = response.json()
+            email = user_info.get('email')
+            name = user_info.get('name', '')
+            
+            if not email:
+                return Response({"error": "Email not provided by Google"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": "Failed to verify Google token"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
         # Check if user exists but was created via regular signup
         existing_user = User.objects.filter(email=email).first()

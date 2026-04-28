@@ -47,7 +47,7 @@ const SearchResults = () => {
 <button onClick={() => navigate('/boards-dashboard')} className="text-slate-600 dark:text-slate-400 active:scale-95 duration-150 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-lg">
 <span className="material-symbols-outlined" data-icon="menu">menu</span>
 </button>
-<h1 onClick={() => navigate('/')} className="text-blue-600 dark:text-blue-400 font-black text-xl font-inter tracking-tight cursor-pointer">Trello</h1>
+<h1 onClick={() => navigate('/')} className="text-blue-600 dark:text-blue-400 font-black text-xl font-inter tracking-tight cursor-pointer">Productive Flow</h1>
 </div>
 <div className="flex-1 max-w-2xl px-8 hidden md:block">
 <form onSubmit={onSearchSubmit} className="relative group">
