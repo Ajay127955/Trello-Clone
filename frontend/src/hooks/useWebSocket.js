@@ -8,7 +8,11 @@ const useWebSocket = (boardId, onMessage) => {
 
         const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
         // In production, use your actual domain. In dev, localhost:8000.
-        const host = import.meta.env.VITE_WS_URL || 'localhost:8000';
+        let host = import.meta.env.VITE_WS_URL || 'localhost:8000';
+        
+        // Remove protocol if present
+        host = host.replace(/^https?:\/\//, '');
+        
         const url = `${protocol}://${host}/ws/board/${boardId}/`;
 
         console.log(`Connecting to WebSocket: ${url}`);
