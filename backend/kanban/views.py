@@ -6,8 +6,10 @@ from .models import Board, List, Card, Workspace, Checklist, ChecklistItem, Invi
 from .serializers import (
     BoardSerializer, ListSerializer, CardSerializer, RegisterSerializer, 
     WorkspaceSerializer, ChecklistSerializer, ChecklistItemSerializer,
-    InvitationSerializer, NotificationSerializer, LabelSerializer, AttachmentSerializer
+    InvitationSerializer, NotificationSerializer, LabelSerializer, AttachmentSerializer,
+    WorkspaceMemberSerializer
 )
+from .permissions import IsWorkspaceManager, IsWorkspaceMember, CanMoveCard
 from .utils import send_productive_flow_email
 from .ai_service import generate_board_structure, analyze_card_content, chat_with_assistant
 from django.contrib.auth.models import User
@@ -64,19 +66,33 @@ class AIViewSet(viewsets.ViewSet):
 
 class BoardViewSet(viewsets.ModelViewSet):
     serializer_class = BoardSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsWorkspaceMember]
 
     def get_queryset(self):
         user = self.request.user
-        return Board.objects.filter(models.Q(owner=user) | models.Q(members=user)).distinct()
+        return Board.objects.filter(
+            models.Q(owner=user) | 
+            models.Q(members=user) | 
+            models.Q(workspace__members=user)
+        ).distinct()
 
     def perform_create(self, serializer):
         workspace_id = self.request.data.get('workspace_id')
         if workspace_id:
-            workspace = Workspace.objects.get(id=workspace_id, members=self.request.user)
-            serializer.save(owner=self.request.user, workspace=workspace)
+            from .models import Workspace
+            workspace = Workspace.objects.get(id=workspace_id)
+            board = serializer.save(owner=self.request.user, workspace=workspace)
         else:
-            serializer.save(owner=self.request.user)
+            board = serializer.save(owner=self.request.user)
+        
+        # Ensure default lists (Phase 2 Upgrade)
+        self.ensure_default_lists(board)
+
+    def ensure_default_lists(self, board):
+        DEFAULT_LISTS = ["Task Assigned", "Working", "Completed"]
+        if not board.lists.exists():
+            for i, title in enumerate(DEFAULT_LISTS):
+                List.objects.create(board=board, title=title, position=i)
 
     @action(detail=True, methods=['post'])
     def remove_member(self, request, pk=None):
@@ -131,8 +147,10 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
         return Workspace.objects.filter(models.Q(owner=user) | models.Q(members=user)).distinct()
 
     def perform_create(self, serializer):
+        from .models import WorkspaceMember
         workspace = serializer.save(owner=self.request.user)
-        workspace.members.add(self.request.user)
+        # Create the 'manager' record for the owner
+        WorkspaceMember.objects.create(user=self.request.user, workspace=workspace, role='manager')
 
     @action(detail=True, methods=['post'])
     def remove_member(self, request, pk=None):
@@ -197,11 +215,89 @@ class ListViewSet(viewsets.ModelViewSet):
 
 class CardViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsWorkspaceMember]
 
     def get_queryset(self):
         user = self.request.user
-        return Card.objects.filter(models.Q(list__board__owner=user) | models.Q(list__board__members=user)).distinct()
+        return Card.objects.filter(
+            models.Q(list__board__owner=user) | 
+            models.Q(list__board__members=user) |
+            models.Q(list__board__workspace__members=user)
+        ).distinct()
+
+    def perform_create(self, serializer):
+        serializer.save(assigned_by=self.request.user)
+
+    def update(self, request, *args, **kwargs):
+        card = self.get_object()
+        # RBAC Check: Only manager or assigned user can update (move) card
+        is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
+        if not is_manager and card.assigned_to != request.user:
+            return Response({"error": "Only the manager or the assigned user can update this card"}, status=status.HTTP_403_FORBIDDEN)
+        
+        response = super().update(request, *args, **kwargs)
+        if response.status_code == 200:
+            from .utils import broadcast_kanban_event
+            broadcast_kanban_event(card.list.board.id, 'card_updated', f"Card '{card.title}' updated", response.data)
+        return response
+
+    def partial_update(self, request, *args, **kwargs):
+        card = self.get_object()
+        # RBAC Check: Only manager or assigned user can update (move) card
+        is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
+        if not is_manager and card.assigned_to != request.user:
+            return Response({"error": "Only the manager or the assigned user can update this card"}, status=status.HTTP_403_FORBIDDEN)
+        
+        response = super().partial_update(request, *args, **kwargs)
+        if response.status_code == 200:
+            from .utils import broadcast_kanban_event
+            broadcast_kanban_event(card.list.board.id, 'card_updated', f"Card '{card.title}' partially updated", response.data)
+        return response
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated, IsWorkspaceManager])
+    def assign(self, request, pk=None):
+        card = self.get_object()
+        user_id = request.data.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            assignee = User.objects.get(id=user_id)
+            # Verify assignee is a member of the workspace
+            workspace = card.list.board.workspace
+            if not workspace.members.filter(id=assignee.id).exists():
+                return Response({"error": "Assignee must be a member of the workspace"}, status=status.HTTP_400_BAD_REQUEST)
+                
+            card.assigned_to = assignee
+            card.assigned_by = request.user
+            card.save()
+            
+            card_data = CardSerializer(card).data
+            from .utils import broadcast_kanban_event
+            broadcast_kanban_event(card.list.board.id, 'card_assigned', f"Card assigned to {assignee.username}", card_data)
+            
+            # Phase 3: Trigger async email notification
+            from .signals import send_async_email
+            send_async_email(
+                subject=f"New Task Assigned: {card.title}",
+                template_name="notification",
+                context={
+                    "message": f"You have been assigned to the task '{card.title}' by {request.user.username} on board '{card.list.board.title}'."
+                },
+                to_email=assignee.email
+            )
+
+            # Create in-app notification
+            from .models import Notification
+            Notification.objects.create(
+                user=assignee,
+                message=f"You were assigned to '{card.title}'",
+                type="card_assigned"
+            )
+            
+            return Response(card_data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=True, methods=['post'])
     def expand_ai(self, request, pk=None):
@@ -254,7 +350,8 @@ class InvitationViewSet(viewsets.ModelViewSet):
 
         # Add user to workspace/board
         if invitation.workspace:
-            invitation.workspace.members.add(user)
+            from .models import WorkspaceMember
+            WorkspaceMember.objects.get_or_create(user=user, workspace=invitation.workspace, defaults={'role': 'member'})
         if invitation.board:
             invitation.board.members.add(user)
         
@@ -410,7 +507,8 @@ class AuthViewSet(viewsets.GenericViewSet):
                 invites = Invitation.objects.filter(email=user.email, status='pending')
                 for invite in invites:
                     if invite.workspace:
-                        invite.workspace.members.add(user)
+                        from .models import WorkspaceMember
+                        WorkspaceMember.objects.get_or_create(user=user, workspace=invite.workspace, defaults={'role': 'member'})
                     if invite.board:
                         invite.board.members.add(user)
                     invite.status = 'accepted'
@@ -489,7 +587,8 @@ class AuthViewSet(viewsets.GenericViewSet):
             invites = Invitation.objects.filter(email=user.email, status='pending')
             for invite in invites:
                 if invite.workspace:
-                    invite.workspace.members.add(user)
+                    from .models import WorkspaceMember
+                    WorkspaceMember.objects.get_or_create(user=user, workspace=invite.workspace, defaults={'role': 'member'})
                 if invite.board:
                     invite.board.members.add(user)
                 invite.status = 'accepted'

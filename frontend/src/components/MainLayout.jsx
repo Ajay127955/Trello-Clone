@@ -180,6 +180,41 @@ const MainLayout = () => {
                 <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse"></span>
               )}
             </button>
+            <AnimatePresence>
+              {showNotifications && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  className="absolute top-full right-0 mt-2 w-80 bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 rounded-[24px] z-[100] overflow-hidden"
+                >
+                  <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <h3 className="font-black text-slate-900 dark:text-white tracking-tight uppercase text-xs">Notifications</h3>
+                    <button onClick={handleMarkAllRead} className="text-[10px] font-black text-blue-600 hover:underline">Mark all as read</button>
+                  </div>
+                  <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+                    {notifications.length === 0 ? (
+                      <div className="p-10 text-center text-slate-400">
+                        <span className="material-symbols-outlined text-4xl mb-2 opacity-20">notifications_off</span>
+                        <p className="text-xs font-bold">All caught up!</p>
+                      </div>
+                    ) : (
+                      notifications.map(n => (
+                        <div key={n.id} className={`p-4 border-b border-slate-50 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex gap-3 ${!n.read ? 'bg-blue-50/30 dark:bg-blue-900/5' : ''}`}>
+                          <div className={`w-8 h-8 rounded-xl flex-shrink-0 flex items-center justify-center ${n.type === 'card_assigned' ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'}`}>
+                            <span className="material-symbols-outlined text-sm">{n.type === 'card_assigned' ? 'assignment_ind' : 'info'}</span>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-snug">{n.message}</p>
+                            <span className="text-[10px] text-slate-400 font-medium">{new Date(n.created_at).toLocaleTimeString()}</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <button 
               onClick={() => navigate('/help-center')}

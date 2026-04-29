@@ -6,11 +6,27 @@ class Workspace(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_workspaces')
-    members = models.ManyToManyField(User, related_name='workspaces', blank=True)
+    members = models.ManyToManyField(User, through='WorkspaceMember', related_name='workspaces', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
+
+class WorkspaceMember(models.Model):
+    ROLE_CHOICES = [
+        ('manager', 'Manager'),
+        ('member', 'Member'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='member')
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'workspace')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.workspace.name} ({self.role})"
 
 class Board(models.Model):
     title = models.CharField(max_length=255)
@@ -50,7 +66,8 @@ class Card(models.Model):
     description = models.TextField(blank=True)
     list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='cards')
     position = models.IntegerField(default=0)
-    assigned_members = models.ManyToManyField(User, related_name='assigned_cards', blank=True)
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_tasks', db_index=True)
+    assigned_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_tasks', db_index=True)
     labels = models.ManyToManyField(Label, related_name='cards', blank=True)
     due_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

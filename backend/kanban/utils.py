@@ -23,3 +23,23 @@ def send_productive_flow_email(subject, template_name, context, to_email):
     except Exception as e:
         print(f"Error sending email: {e}")
         return False
+
+def broadcast_kanban_event(board_id, msg_type, message, data=None):
+    """
+    Broadcasting helper for real-time updates.
+    """
+    from channels.layers import get_channel_layer
+    from asgiref.sync import async_to_sync
+    
+    channel_layer = get_channel_layer()
+    group_name = f'board_{board_id}'
+    
+    async_to_sync(channel_layer.group_send)(
+        group_name,
+        {
+            'type': 'kanban_message',
+            'msg_type': msg_type,
+            'message': message,
+            'data': data or {}
+        }
+    )

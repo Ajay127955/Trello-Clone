@@ -4,6 +4,7 @@ import api from '../services/api';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { useAuth } from '../context/AuthContext';
 import CardDetailModal from '../components/CardDetailModal';
+import useWebSocket from '../hooks/useWebSocket';
 
 const BoardView = () => {
   const { id } = useParams();
@@ -12,6 +13,32 @@ const BoardView = () => {
   const [board, setBoard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedCard, setSelectedCard] = useState(null);
+
+  // Phase 4: Real-time WebSocket integration
+  const { sendMessage } = useWebSocket(id, (message) => {
+    handleWebSocketMessage(message);
+  });
+
+  const handleWebSocketMessage = (msg) => {
+    if (msg.msg_type === 'card_updated' || msg.msg_type === 'card_assigned') {
+      const updatedCard = msg.data;
+      setBoard(prevBoard => {
+        const newBoard = { ...prevBoard };
+        newBoard.lists = newBoard.lists.map(list => ({
+          ...list,
+          cards: list.cards.map(card => card.id === updatedCard.id ? updatedCard : card)
+        }));
+        return newBoard;
+      });
+      
+      // Update selected card if it's the one that changed
+      if (selectedCard && selectedCard.id === updatedCard.id) {
+        setSelectedCard(updatedCard);
+      }
+    } else if (msg.msg_type === 'list_updated') {
+        fetchBoard(); // Reload full board for structural changes
+    }
+  };
 
   useEffect(() => {
     fetchBoard();
@@ -111,6 +138,11 @@ const BoardView = () => {
           <div className="px-8 py-6 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <h2 className="text-2xl font-black text-slate-900 tracking-tight">{board.title}</h2>
+              {board.members.find(m => m.user.id === user.id)?.role === 'manager' ? (
+                <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-md text-[10px] font-black uppercase tracking-tighter shadow-sm border border-amber-200">Manager</span>
+              ) : (
+                <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-black uppercase tracking-tighter shadow-sm border border-slate-200">Member</span>
+              )}
               <button className="p-1 hover:bg-slate-100 rounded-xl">
                 <span className="material-symbols-outlined text-slate-400">star</span>
               </button>
@@ -165,15 +197,21 @@ const BoardView = () => {
                                   <span className="h-1.5 w-8 bg-blue-400 rounded-full"></span>
                                 </div>
                                 <p className="text-sm font-black text-slate-800 group-hover:text-primary transition-colors leading-snug">{card.title}</p>
-                                <div className="mt-4 flex items-center justify-between">
-                                  <div className="flex items-center gap-3 text-slate-400 text-[10px] font-black uppercase tracking-wider">
-                                    <div className="flex items-center gap-1">
-                                      <span className="material-symbols-outlined text-sm">schedule</span>
-                                      <span>Oct 24</span>
-                                    </div>
-                                  </div>
-                                  <div className="h-6 w-6 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 font-black text-[10px] border border-slate-100">JD</div>
-                                </div>
+                                  <div className="mt-4 flex items-center justify-between">
+                                   <div className="flex items-center gap-3 text-slate-400 text-[10px] font-black uppercase tracking-wider">
+                                     <div className="flex items-center gap-1">
+                                       <span className="material-symbols-outlined text-sm">schedule</span>
+                                       <span>Oct 24</span>
+                                     </div>
+                                   </div>
+                                   {card.assigned_to ? (
+                                     <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-[10px] border border-white shadow-sm" title={`Assigned to ${card.assigned_to.username}`}>
+                                       {card.assigned_to.username.substring(0, 2).toUpperCase()}
+                                     </div>
+                                   ) : (
+                                     <div className="h-6 w-6 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 font-black text-[10px] border border-slate-100">?</div>
+                                   )}
+                                 </div>
                               </div>
                             )}
                           </Draggable>
@@ -204,6 +242,17 @@ const BoardView = () => {
           card={selectedCard} 
           onClose={() => setSelectedCard(null)} 
           listName={board.lists.find(l => l.cards.some(c => c.id === selectedCard.id))?.title}
+          boardMembers={board.members}
+          isManager={board.members.find(m => m.user.id === user.id)?.role === 'manager'}
+          onAssign={(userId) => {
+             // Handle assignment here or inside modal
+             api.post(`cards/${selectedCard.id}/assign/`, { user_id: userId })
+               .then(res => {
+                  // The handleWebSocketMessage will update the board automatically,
+                  // but we can also update local state for instant feel.
+                  handleWebSocketMessage({ msg_type: 'card_assigned', data: res.data });
+               });
+          }}
         />
       )}
     </div>

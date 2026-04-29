@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Board, List, Card, Workspace, Checklist, ChecklistItem, Invitation, Notification, Label, Attachment
+from .models import Board, List, Card, Workspace, WorkspaceMember, Checklist, ChecklistItem, Invitation, Notification, Label, Attachment
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -50,10 +50,11 @@ class LabelSerializer(serializers.ModelSerializer):
 class CardSerializer(serializers.ModelSerializer):
     checklists = ChecklistSerializer(many=True, read_only=True)
     attachments = AttachmentSerializer(many=True, read_only=True)
-    assigned_members = UserSerializer(many=True, read_only=True)
-    assigned_member_ids = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=User.objects.all(), write_only=True, source='assigned_members', required=False
+    assigned_to = UserSerializer(read_only=True)
+    assigned_to_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), write_only=True, source='assigned_to', required=False, allow_null=True
     )
+    assigned_by = UserSerializer(read_only=True)
     labels = LabelSerializer(many=True, read_only=True)
     label_ids = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Label.objects.all(), write_only=True, source='labels', required=False
@@ -66,7 +67,7 @@ class CardSerializer(serializers.ModelSerializer):
         model = Card
         fields = [
             'id', 'title', 'description', 'list', 'position', 
-            'checklists', 'attachments', 'assigned_members', 'assigned_member_ids',
+            'checklists', 'attachments', 'assigned_to', 'assigned_to_id', 'assigned_by',
             'labels', 'label_ids', 'due_date', 'created_at', 'updated_at',
             'checklist_stats'
         ]
@@ -84,8 +85,14 @@ class ListSerializer(serializers.ModelSerializer):
         model = List
         fields = ['id', 'title', 'board', 'position', 'cards', 'wip_limit', 'color']
 
+class WorkspaceMemberSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    class Meta:
+        model = WorkspaceMember
+        fields = ['id', 'user', 'role', 'joined_at']
+
 class WorkspaceSerializer(serializers.ModelSerializer):
-    members = UserSerializer(many=True, read_only=True)
+    members = WorkspaceMemberSerializer(source='workspacemember_set', many=True, read_only=True)
     owner = UserSerializer(read_only=True)
 
     class Meta:

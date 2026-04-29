@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CardDetailModal = ({ card, onClose, listName }) => {
+const CardDetailModal = ({ card, onClose, listName, boardMembers = [], isManager = false, onAssign }) => {
   if (!card) return null;
 
   return (
@@ -30,14 +30,38 @@ const CardDetailModal = ({ card, onClose, listName }) => {
             {/* Badges Row */}
             <section className="flex flex-wrap gap-8">
               <div className="space-y-2">
-                <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Members</h3>
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Assignee</h3>
                 <div className="flex gap-1 items-center">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs border-2 border-white shadow-sm">
-                    JD
-                  </div>
-                  <button className="h-8 w-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
-                    <span className="material-symbols-outlined text-sm">add</span>
-                  </button>
+                  {card.assigned_to ? (
+                    <div className="flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs border-2 border-white shadow-sm">
+                        {card.assigned_to.username.substring(0, 2).toUpperCase()}
+                        </div>
+                        <span className="text-xs font-bold text-slate-700">{card.assigned_to.username}</span>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-slate-400 italic">No one assigned</span>
+                  )}
+                  {isManager && (
+                    <div className="relative group/menu ml-2">
+                        <button className="h-8 w-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
+                            <span className="material-symbols-outlined text-sm">add</span>
+                        </button>
+                        <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-xl border border-slate-100 rounded-xl hidden group-hover/menu:block z-50 p-2">
+                            <p className="text-[10px] font-black text-slate-400 p-2 uppercase tracking-widest">Assign Member</p>
+                            {boardMembers.map(m => (
+                                <button 
+                                    key={m.user.id}
+                                    onClick={() => onAssign(m.user.id)}
+                                    className="w-full text-left px-3 py-2 hover:bg-slate-50 rounded-lg text-xs font-bold text-slate-700 flex items-center gap-2"
+                                >
+                                    <div className="h-5 w-5 rounded-full bg-slate-100 flex items-center justify-center text-[8px] font-black">{m.user.username.substring(0, 2).toUpperCase()}</div>
+                                    {m.user.username}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="space-y-2">

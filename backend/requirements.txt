@@ -10,3 +10,6 @@ whitenoise
 requests
 google-generativeai
 google-auth
+channels
+channels_redis
+daphne
