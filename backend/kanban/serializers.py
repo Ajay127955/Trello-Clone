@@ -22,13 +22,19 @@ class NotificationSerializer(serializers.ModelSerializer):
 
 class InvitationSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)
-    workspace_name = serializers.CharField(source='workspace.name', read_only=True)
-    board_name = serializers.CharField(source='board.title', read_only=True)
+    workspace_name = serializers.SerializerMethodField()
+    board_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Invitation
         fields = ['id', 'sender', 'email', 'workspace', 'board', 'message', 'token', 'status', 'created_at', 'workspace_name', 'board_name']
         read_only_fields = ['token', 'status']
+
+    def get_workspace_name(self, obj):
+        return obj.workspace.name if obj.workspace else None
+
+    def get_board_name(self, obj):
+        return obj.board.title if obj.board else None
 
 class ChecklistItemSerializer(serializers.ModelSerializer):
     class Meta:
