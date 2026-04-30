@@ -3,10 +3,14 @@ from .models import WorkspaceMember
 
 class IsWorkspaceManager(permissions.BasePermission):
     """
-    Allows access only to workspace managers.
+    Allows access only to workspace managers or the owner of the object.
     """
     def has_object_permission(self, request, view, obj):
-        # Determine the workspace from the object
+        # 1. Always allow the owner
+        if hasattr(obj, 'owner') and obj.owner == request.user:
+            return True
+        
+        # 2. Determine the workspace
         workspace = None
         if hasattr(obj, 'workspace') and obj.workspace:
             workspace = obj.workspace
@@ -17,7 +21,11 @@ class IsWorkspaceManager(permissions.BasePermission):
         elif hasattr(obj, 'card') and obj.card:
             workspace = obj.card.list.board.workspace
         
+        # If no workspace, fall back to owner check (already done) or board members
         if not workspace:
+            # If it's a board, check if they are the board owner
+            if hasattr(obj, 'owner') and obj.owner == request.user:
+                return True
             return False
             
         return WorkspaceMember.objects.filter(
@@ -28,9 +36,18 @@ class IsWorkspaceManager(permissions.BasePermission):
 
 class IsWorkspaceMember(permissions.BasePermission):
     """
-    Allows access to any member of the workspace.
+    Allows access to any member of the workspace, board members, or the owner.
     """
     def has_object_permission(self, request, view, obj):
+        # 1. Always allow the owner
+        if hasattr(obj, 'owner') and obj.owner == request.user:
+            return True
+
+        # 2. If it's a board, check board-specific members
+        if hasattr(obj, 'members') and obj.members.filter(id=request.user.id).exists():
+            return True
+            
+        # 3. Determine the workspace
         workspace = None
         if hasattr(obj, 'workspace') and obj.workspace:
             workspace = obj.workspace
@@ -42,6 +59,11 @@ class IsWorkspaceMember(permissions.BasePermission):
             workspace = obj.card.list.board.workspace
             
         if not workspace:
+            # Fallback for cards/lists without workspaces (check via board owner/members)
+            if hasattr(obj, 'board'):
+                return obj.board.owner == request.user or obj.board.members.filter(id=request.user.id).exists()
+            if hasattr(obj, 'list'):
+                return obj.list.board.owner == request.user or obj.list.board.members.filter(id=request.user.id).exists()
             return False
             
         return WorkspaceMember.objects.filter(
@@ -51,20 +73,23 @@ class IsWorkspaceMember(permissions.BasePermission):
 
 class CanMoveCard(permissions.BasePermission):
     """
-    Only managers or the user assigned to the card can move it.
+    Only managers, board owners, or the user assigned to the card can move it.
     """
     def has_object_permission(self, request, view, obj):
-        # If it's a card
         from .models import Card
         if isinstance(obj, Card):
-            # Check if manager
-            is_manager = WorkspaceMember.objects.filter(
-                user=request.user, 
-                workspace=obj.list.board.workspace, 
-                role='manager'
-            ).exists()
-            if is_manager:
+            # Check if board owner
+            if obj.list.board.owner == request.user:
                 return True
+            # Check if manager
+            if obj.list.board.workspace:
+                is_manager = WorkspaceMember.objects.filter(
+                    user=request.user, 
+                    workspace=obj.list.board.workspace, 
+                    role='manager'
+                ).exists()
+                if is_manager:
+                    return True
             # Check if assigned to
             return obj.assigned_to == request.user
         return False
