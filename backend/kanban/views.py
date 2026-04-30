@@ -230,15 +230,20 @@ class CardViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         card = self.get_object()
-        # RBAC Check: Allow if Board Owner, Board Member, Workspace Manager, or Assigned User
-        is_board_owner = card.list.board.owner == request.user
-        is_board_member = card.list.board.members.filter(id=request.user.id).exists()
-        is_manager = False
-        if card.list.board.workspace:
-            is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
-        
-        if not (is_board_owner or is_board_member or is_manager or card.assigned_to == request.user):
-            return Response({"error": "Only authorized members can update this card"}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            # RBAC Check: Allow if Board Owner, Board Member, Workspace Manager, or Assigned User
+            is_board_owner = card.list.board.owner == request.user
+            is_board_member = card.list.board.members.filter(id=request.user.id).exists()
+            is_manager = False
+            if card.list.board.workspace:
+                is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
+            
+            if not (is_board_owner or is_board_member or is_manager or card.assigned_to == request.user):
+                return Response({"error": "Only authorized members can update this card"}, status=status.HTTP_403_FORBIDDEN)
+        except Exception as e:
+            # If the check itself fails (e.g. DB lock), default to allowing the owner as a safety measure
+            if card.list.board.owner != request.user:
+                return Response({"error": "Security check failed, please try again."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         response = super().update(request, *args, **kwargs)
         if response.status_code == 200:
@@ -255,15 +260,20 @@ class CardViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         card = self.get_object()
-        # RBAC Check: Allow if Board Owner, Board Member, Workspace Manager, or Assigned User
-        is_board_owner = card.list.board.owner == request.user
-        is_board_member = card.list.board.members.filter(id=request.user.id).exists()
-        is_manager = False
-        if card.list.board.workspace:
-            is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
-            
-        if not (is_board_owner or is_board_member or is_manager or card.assigned_to == request.user):
-            return Response({"error": "Only authorized members can update this card"}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            # RBAC Check: Allow if Board Owner, Board Member, Workspace Manager, or Assigned User
+            is_board_owner = card.list.board.owner == request.user
+            is_board_member = card.list.board.members.filter(id=request.user.id).exists()
+            is_manager = False
+            if card.list.board.workspace:
+                is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
+                
+            if not (is_board_owner or is_board_member or is_manager or card.assigned_to == request.user):
+                return Response({"error": "Only authorized members can update this card"}, status=status.HTTP_403_FORBIDDEN)
+        except Exception as e:
+            # Safety fallback
+            if card.list.board.owner != request.user:
+                 return Response({"error": "Security check failed, please try again."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         response = super().partial_update(request, *args, **kwargs)
         if response.status_code == 200:
@@ -343,22 +353,31 @@ class InvitationViewSet(viewsets.ModelViewSet):
         invitation = serializer.save(sender=self.request.user)
         
         # Send Email
-        target_name = invitation.workspace.name if invitation.workspace else invitation.board.title
-        accept_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}"
-        decline_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}?action=decline"
-        
-        send_productive_flow_email(
-            subject="You're Invited to Join a Workspace",
-            template_name="invitation",
-            context={
-                "inviter_name": self.request.user.username,
-                "target_name": target_name,
-                "message": invitation.message,
-                "accept_url": accept_url,
-                "decline_url": decline_url
-            },
-            to_email=invitation.email
-        )
+        try:
+            target_name = "Productive Flow"
+            if invitation.workspace:
+                target_name = invitation.workspace.name
+            elif invitation.board:
+                target_name = invitation.board.title
+                
+            accept_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}"
+            decline_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}?action=decline"
+            
+            send_productive_flow_email(
+                subject=f"Invitation to join {target_name}",
+                template_name="invitation",
+                context={
+                    "inviter_name": self.request.user.username,
+                    "target_name": target_name,
+                    "message": invitation.message,
+                    "accept_url": accept_url,
+                    "decline_url": decline_url
+                },
+                to_email=invitation.email
+            )
+        except Exception as e:
+            # Never let email failure crash the invitation creation
+            print(f"Invitation Email Error: {e}")
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
     def accept(self, request, token=None):
