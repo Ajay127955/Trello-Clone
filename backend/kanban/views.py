@@ -14,7 +14,10 @@ from .utils import send_productive_flow_email
 from .ai_service import generate_board_structure, analyze_card_content, chat_with_assistant
 from django.contrib.auth.models import User
 from django.db.models import Count
+import logging
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 class SearchViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
@@ -241,6 +244,7 @@ class CardViewSet(viewsets.ModelViewSet):
             if not (is_board_owner or is_board_member or is_manager or card.assigned_to == request.user):
                 return Response({"error": "Only authorized members can update this card"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
+            logger.error(f"Card update security check failed: {e}", exc_info=True)
             # If the check itself fails (e.g. DB lock), default to allowing the owner as a safety measure
             if card.list.board.owner != request.user:
                 return Response({"error": "Security check failed, please try again."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -377,7 +381,7 @@ class InvitationViewSet(viewsets.ModelViewSet):
             )
         except Exception as e:
             # Never let email failure crash the invitation creation
-            print(f"Invitation Email Error: {e}")
+            logger.error(f"Invitation Email Error: {e}", exc_info=True)
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
     def accept(self, request, token=None):
