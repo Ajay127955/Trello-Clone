@@ -242,8 +242,15 @@ class CardViewSet(viewsets.ModelViewSet):
         
         response = super().update(request, *args, **kwargs)
         if response.status_code == 200:
-            from .utils import broadcast_kanban_event
-            broadcast_kanban_event(card.list.board.id, 'card_updated', f"Card '{card.title}' updated", response.data)
+            try:
+                card.refresh_from_db()
+                from .utils import broadcast_kanban_event
+                board_id = card.list.board.id if card.list and card.list.board else None
+                if board_id:
+                    broadcast_kanban_event(board_id, 'card_updated', f"Card '{card.title}' updated", response.data)
+            except Exception as e:
+                # Log error but don't fail the request. Real-time sync is secondary to data persistence.
+                print(f"WebSocket Broadcast Error: {e}")
         return response
 
     def partial_update(self, request, *args, **kwargs):
@@ -260,8 +267,15 @@ class CardViewSet(viewsets.ModelViewSet):
         
         response = super().partial_update(request, *args, **kwargs)
         if response.status_code == 200:
-            from .utils import broadcast_kanban_event
-            broadcast_kanban_event(card.list.board.id, 'card_updated', f"Card '{card.title}' partially updated", response.data)
+            try:
+                card.refresh_from_db()
+                from .utils import broadcast_kanban_event
+                board_id = card.list.board.id if card.list and card.list.board else None
+                if board_id:
+                    broadcast_kanban_event(board_id, 'card_updated', f"Card '{card.title}' partially updated", response.data)
+            except Exception as e:
+                # Log error but don't fail the request
+                print(f"WebSocket Broadcast Error: {e}")
         return response
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated, IsWorkspaceManager])

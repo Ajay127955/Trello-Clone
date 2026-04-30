@@ -34,12 +34,15 @@ def broadcast_kanban_event(board_id, msg_type, message, data=None):
     channel_layer = get_channel_layer()
     group_name = f'board_{board_id}'
     
-    async_to_sync(channel_layer.group_send)(
-        group_name,
-        {
-            'type': 'kanban_message',
-            'msg_type': msg_type,
-            'message': message,
-            'data': data or {}
-        }
-    )
+    try:
+        async_to_sync(channel_layer.group_send)(
+            group_name,
+            {
+                'type': 'kanban_message',
+                'msg_type': msg_type,
+                'message': message,
+                'data': data or {}
+            }
+        )
+    except Exception as e:
+        print(f"Failed to broadcast message to {group_name}: {e}")
