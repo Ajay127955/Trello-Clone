@@ -2,7 +2,7 @@ from django.db import models
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Board, List, Card, Workspace, Checklist, ChecklistItem, Invitation, Notification, Label, Attachment, OTPVerification
+from .models import Board, List, Card, Workspace, WorkspaceMember, Checklist, ChecklistItem, Invitation, Notification, Label, Attachment, OTPVerification
 from .serializers import (
     BoardSerializer, ListSerializer, CardSerializer, RegisterSerializer, 
     WorkspaceSerializer, ChecklistSerializer, ChecklistItemSerializer,
