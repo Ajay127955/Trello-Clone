@@ -33,15 +33,16 @@ const LandingPage = () => {
             <a className="text-slate-600 font-medium hover:text-blue-600 transition-colors" href="#" onClick={(e) => { e.preventDefault(); navigate('/pricing-plans'); }}>Plans</a>
           </nav>
         </div>
-        <div className="flex items-center gap-4">
-          <button className="hidden sm:block text-slate-600 font-medium px-3 py-2 hover:bg-slate-100 transition-colors rounded-lg" onClick={() => navigate('/login')}>Log in</button>
+        <div className="flex items-center gap-2 sm:gap-4">
+          <button className="hidden sm:block text-slate-600 font-medium px-3 py-2 hover:bg-slate-100 transition-colors rounded-lg text-sm sm:text-base" onClick={() => navigate('/login')}>Log in</button>
           <motion.button 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-blue-600 text-white font-semibold px-5 py-2.5 rounded-lg shadow-md hover:bg-blue-700 transition-colors" 
+            className="bg-blue-600 text-white font-bold px-3 sm:px-6 py-2 sm:py-3 rounded-xl shadow-lg hover:bg-blue-700 transition-all text-xs sm:text-sm whitespace-nowrap" 
             onClick={() => navigate('/sign-up')}
           >
-            Get Productive Flow for free
+            <span className="hidden xs:inline">Get Productive Flow for free</span>
+            <span className="xs:hidden">Get Started</span>
           </motion.button>
         </div>
       </header>

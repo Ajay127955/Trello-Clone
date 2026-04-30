@@ -230,10 +230,14 @@ class CardViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         card = self.get_object()
-        # RBAC Check: Only manager or assigned user can update (move) card
-        is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
-        if not is_manager and card.assigned_to != request.user:
-            return Response({"error": "Only the manager or the assigned user can update this card"}, status=status.HTTP_403_FORBIDDEN)
+        # RBAC Check: Allow if Board Owner, Workspace Manager, or Assigned User
+        is_board_owner = card.list.board.owner == request.user
+        is_manager = False
+        if card.list.board.workspace:
+            is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
+        
+        if not (is_board_owner or is_manager or card.assigned_to == request.user):
+            return Response({"error": "Only the manager, board owner, or the assigned user can update this card"}, status=status.HTTP_403_FORBIDDEN)
         
         response = super().update(request, *args, **kwargs)
         if response.status_code == 200:
@@ -243,10 +247,14 @@ class CardViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         card = self.get_object()
-        # RBAC Check: Only manager or assigned user can update (move) card
-        is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
-        if not is_manager and card.assigned_to != request.user:
-            return Response({"error": "Only the manager or the assigned user can update this card"}, status=status.HTTP_403_FORBIDDEN)
+        # RBAC Check: Allow if Board Owner, Workspace Manager, or Assigned User
+        is_board_owner = card.list.board.owner == request.user
+        is_manager = False
+        if card.list.board.workspace:
+            is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
+            
+        if not (is_board_owner or is_manager or card.assigned_to == request.user):
+            return Response({"error": "Only the manager, board owner, or the assigned user can update this card"}, status=status.HTTP_403_FORBIDDEN)
         
         response = super().partial_update(request, *args, **kwargs)
         if response.status_code == 200:
