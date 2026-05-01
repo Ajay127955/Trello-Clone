@@ -347,11 +347,20 @@ class CardViewSet(viewsets.ModelViewSet):
 
 class InvitationViewSet(viewsets.ModelViewSet):
     serializer_class = InvitationSerializer
-    permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'token'
 
+    def get_permissions(self):
+        if self.action in ['retrieve', 'accept', 'decline']:
+            return [permissions.AllowAny()]  # ✅ No login needed for invite links
+        return [permissions.IsAuthenticated()]
+
     def get_queryset(self):
-        return Invitation.objects.filter(models.Q(sender=self.request.user) | models.Q(email=self.request.user.email))
+        if self.action == 'retrieve':
+            return Invitation.objects.all()
+        return Invitation.objects.filter(
+            models.Q(sender=self.request.user) | 
+            models.Q(email=self.request.user.email)
+        )
 
     def perform_create(self, serializer):
         invitation = serializer.save(sender=self.request.user)

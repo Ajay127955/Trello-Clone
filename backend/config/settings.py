@@ -42,7 +42,7 @@ CHANNEL_LAYERS = {
 }
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # ✅ Must be FIRST
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -123,22 +123,26 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+# ─── Security Headers ───────────────────────────────
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+
+# ─── CORS Config ────────────────────────────────────
+from corsheaders.defaults import default_headers
+
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "https://trello-clone-frontend-waq0.onrender.com",
     "http://localhost:5173",
 ]
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
+CORS_ALLOW_HEADERS = list(default_headers) + [
     'x-csrftoken',
-    'x-requested-with',
+]
+
+# ─── CSRF ───────────────────────────────────────────
+CSRF_TRUSTED_ORIGINS = [
+    "https://trello-clone-frontend-waq0.onrender.com",
+    "http://localhost:5173",
 ]
 
 # Render Proxy Settings
