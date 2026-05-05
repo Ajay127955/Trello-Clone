@@ -295,42 +295,55 @@ class InvitationViewSet(viewsets.ModelViewSet):
         return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
+        user = self.request.user
+        if not user or user.is_anonymous:
+            if self.action == 'retrieve':
+                return Invitation.objects.all()
+            return Invitation.objects.none()
+            
         if self.action == 'retrieve':
             return Invitation.objects.all()
+            
+        # For authenticated users, show invites they sent or received
+        user_email = getattr(user, 'email', '')
         return Invitation.objects.filter(
-            models.Q(sender=self.request.user) | 
-            models.Q(email=self.request.user.email)
+            models.Q(sender=user) | 
+            (models.Q(email=user_email) if user_email else models.Q(id=-1))
         )
 
     def perform_create(self, serializer):
-        invitation = serializer.save(sender=self.request.user)
-        
-        # Send Email
         try:
-            target_name = "Productive Flow"
-            if invitation.workspace:
-                target_name = invitation.workspace.name
-            elif invitation.board:
-                target_name = invitation.board.title
-                
-            accept_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}"
-            decline_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}?action=decline"
+            invitation = serializer.save(sender=self.request.user)
             
-            send_productive_flow_email(
-                subject=f"Invitation to join {target_name}",
-                template_name="invitation",
-                context={
-                    "inviter_name": self.request.user.username,
-                    "target_name": target_name,
-                    "message": invitation.message,
-                    "accept_url": accept_url,
-                    "decline_url": decline_url
-                },
-                to_email=invitation.email
-            )
+            # Send Email
+            try:
+                target_name = "Productive Flow"
+                if invitation.workspace:
+                    target_name = invitation.workspace.name
+                elif invitation.board:
+                    target_name = invitation.board.title
+                    
+                accept_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}"
+                decline_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}?action=decline"
+                
+                send_productive_flow_email(
+                    subject=f"Invitation to join {target_name}",
+                    template_name="invitation",
+                    context={
+                        "inviter_name": self.request.user.username,
+                        "target_name": target_name,
+                        "message": invitation.message,
+                        "accept_url": accept_url,
+                        "decline_url": decline_url
+                    },
+                    to_email=invitation.email
+                )
+            except Exception as email_err:
+                logger.error(f"Invitation Email Error: {email_err}", exc_info=True)
+                
         except Exception as e:
-            # Never let email failure crash the invitation creation
-            logger.error(f"Invitation Email Error: {e}", exc_info=True)
+            logger.error(f"Critical Invitation Error: {e}", exc_info=True)
+            raise e
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
     def accept(self, request, token=None):
