@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Board, List, Card, Workspace, WorkspaceMember, Checklist, ChecklistItem, Invitation, Notification, Label, Attachment
+from .models import Board, List, Card, Workspace, WorkspaceMember, Checklist, ChecklistItem, Invitation, Notification, Label
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -10,10 +10,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email']
 
-class AttachmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Attachment
-        fields = ['id', 'file', 'file_name', 'created_at']
 
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -55,7 +51,7 @@ class LabelSerializer(serializers.ModelSerializer):
 
 class CardSerializer(serializers.ModelSerializer):
     checklists = ChecklistSerializer(many=True, read_only=True)
-    attachments = AttachmentSerializer(many=True, read_only=True)
+
     assigned_to = UserSerializer(read_only=True)
     assigned_to_id = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), write_only=True, source='assigned_to', required=False, allow_null=True
@@ -73,7 +69,7 @@ class CardSerializer(serializers.ModelSerializer):
         model = Card
         fields = [
             'id', 'title', 'description', 'list', 'position', 
-            'checklists', 'attachments', 'assigned_to', 'assigned_to_id', 'assigned_by',
+            'checklists', 'assigned_to', 'assigned_to_id', 'assigned_by',
             'labels', 'label_ids', 'due_date', 'created_at', 'updated_at',
             'checklist_stats'
         ]

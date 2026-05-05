@@ -118,14 +118,6 @@ class Invitation(models.Model):
     def __str__(self):
         return f"Invite to {self.email} for {self.workspace or self.board}"
 
-class Attachment(models.Model):
-    card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='attachments')
-    file = models.FileField(upload_to='attachments/')
-    file_name = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.file_name
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')

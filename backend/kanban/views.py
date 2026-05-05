@@ -2,16 +2,15 @@ from django.db import models
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Board, List, Card, Workspace, WorkspaceMember, Checklist, ChecklistItem, Invitation, Notification, Label, Attachment, OTPVerification
+from .models import Board, List, Card, Workspace, WorkspaceMember, Checklist, ChecklistItem, Invitation, Notification, Label, OTPVerification
 from .serializers import (
     BoardSerializer, ListSerializer, CardSerializer, RegisterSerializer, 
     WorkspaceSerializer, ChecklistSerializer, ChecklistItemSerializer,
-    InvitationSerializer, NotificationSerializer, LabelSerializer, AttachmentSerializer,
+    InvitationSerializer, NotificationSerializer, LabelSerializer,
     WorkspaceMemberSerializer
 )
 from .permissions import IsWorkspaceManager, IsWorkspaceMember, CanMoveCard
 from .utils import send_productive_flow_email
-from .ai_service import generate_board_structure, analyze_card_content, chat_with_assistant
 from django.contrib.auth.models import User
 from django.db.models import Count
 import logging
@@ -43,29 +42,6 @@ class SearchViewSet(viewsets.ViewSet):
             "cards": CardSerializer(cards, many=True).data
         })
 
-class AIViewSet(viewsets.ViewSet):
-    permission_classes = [permissions.IsAuthenticated]
-
-    @action(detail=False, methods=['post'])
-    def chat(self, request):
-        message = request.data.get('message', '')
-        if not message:
-            return Response({"error": "Message is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Build context
-        user = request.user
-        boards = Board.objects.filter(models.Q(owner=user) | models.Q(members=user)).distinct()
-        board_data = []
-        for b in boards:
-            board_data.append({
-                "title": b.title,
-                "lists": [{"title": l.title, "cards": [{"title": c.title, "assigned_to_me": user in c.assigned_members.all()} for c in l.cards.all()]} for l in b.lists.all()]
-            })
-        
-        context = f"User: {user.username}. Boards: {board_data}"
-        
-        response_text = chat_with_assistant(message, context)
-        return Response({"reply": response_text}, status=status.HTTP_200_OK)
 
 class BoardViewSet(viewsets.ModelViewSet):
     serializer_class = BoardSerializer
@@ -118,28 +94,6 @@ class BoardViewSet(viewsets.ModelViewSet):
         board.members.remove(member)
         return Response({"message": "Member removed successfully"}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['post'])
-    def generate_ai(self, request, pk=None):
-        board = self.get_object()
-        prompt = request.data.get('prompt')
-        if not prompt:
-            return Response({"error": "Prompt is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        structure = generate_board_structure(prompt)
-        if not structure:
-            return Response({"error": "AI failed to generate structure"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
-        for list_data in structure.get('lists', []):
-            lst = List.objects.create(title=list_data['title'], board=board, position=999)
-            for card_data in list_data.get('cards', []):
-                Card.objects.create(
-                    title=card_data['title'], 
-                    description=card_data.get('description', ''), 
-                    list=lst, 
-                    position=999
-                )
-                
-        return Response({"message": "Board generated successfully"}, status=status.HTTP_200_OK)
 
 class WorkspaceViewSet(viewsets.ModelViewSet):
     serializer_class = WorkspaceSerializer
@@ -192,13 +146,6 @@ class ChecklistItemViewSet(viewsets.ModelViewSet):
         user = self.request.user
         return ChecklistItem.objects.filter(models.Q(checklist__card__list__board__owner=user) | models.Q(checklist__card__list__board__members=user)).distinct()
 
-class AttachmentViewSet(viewsets.ModelViewSet):
-    serializer_class = AttachmentSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Attachment.objects.filter(models.Q(card__list__board__owner=user) | models.Q(card__list__board__members=user)).distinct()
 
 class LabelViewSet(viewsets.ModelViewSet):
     serializer_class = LabelSerializer
@@ -337,13 +284,6 @@ class CardViewSet(viewsets.ModelViewSet):
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    @action(detail=True, methods=['post'])
-    def expand_ai(self, request, pk=None):
-        card = self.get_object()
-        expanded_text = analyze_card_content(card.title, card.description)
-        card.description = expanded_text
-        card.save()
-        return Response({"description": expanded_text}, status=status.HTTP_200_OK)
 
 class InvitationViewSet(viewsets.ModelViewSet):
     serializer_class = InvitationSerializer

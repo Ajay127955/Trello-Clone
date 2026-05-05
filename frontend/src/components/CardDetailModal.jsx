@@ -130,7 +130,7 @@ const CardDetailModal = ({ card, onClose, listName, boardMembers = [], isManager
               <ActionButton icon="label" label="Labels" />
               <ActionButton icon="check_box" label="Checklist" />
               <ActionButton icon="schedule" label="Dates" />
-              <ActionButton icon="attachment" label="Attachment" />
+
             </div>
           </section>
           <section className="space-y-3">

@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     BoardViewSet, ListViewSet, CardViewSet, AuthViewSet, 
     WorkspaceViewSet, ChecklistViewSet, ChecklistItemViewSet,
-    InvitationViewSet, NotificationViewSet, LabelViewSet, AIViewSet, AttachmentViewSet, SearchViewSet
+    InvitationViewSet, NotificationViewSet, LabelViewSet, SearchViewSet
 )
 
 router = DefaultRouter()
@@ -16,8 +16,8 @@ router.register(r'checklist-items', ChecklistItemViewSet, basename='checklist-it
 router.register(r'invitations', InvitationViewSet, basename='invitation')
 router.register(r'notifications', NotificationViewSet, basename='notification')
 router.register(r'labels', LabelViewSet, basename='label')
-router.register(r'attachments', AttachmentViewSet, basename='attachment')
-router.register(r'ai', AIViewSet, basename='ai')
+
+
 router.register(r'search', SearchViewSet, basename='search')
 
 urlpatterns = [

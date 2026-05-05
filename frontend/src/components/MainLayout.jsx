@@ -35,14 +35,6 @@ const MainLayout = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // AI Chat State
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: `Hi ${user?.username || 'there'}! I'm your Productive Flow AI. How can I help you manage your boards today?` }
-  ]);
-  const [inputValue, setInputValue] = useState('');
-  const [isAiTyping, setIsAiTyping] = useState(false);
-  const chatEndRef = useRef(null);
 
   useEffect(() => {
     fetchNotifications();
@@ -50,11 +42,6 @@ const MainLayout = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages]);
 
   useEffect(() => {
     // Close sidebar on mobile when navigating
@@ -96,24 +83,6 @@ const MainLayout = () => {
     }`;
   };
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!inputValue.trim()) return;
-
-    const userMessage = inputValue.trim();
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
-    setInputValue('');
-    setIsAiTyping(true);
-
-    try {
-      const response = await api.post('ai/chat/', { message: userMessage });
-      setMessages(prev => [...prev, { role: 'assistant', content: response.data.reply }]);
-    } catch (err) {
-      setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I'm having trouble connecting to my brain right now. Please check your API key." }]);
-    } finally {
-      setIsAiTyping(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950 font-body">
@@ -283,10 +252,6 @@ const MainLayout = () => {
                 <DynamicIcon name="admin_panel_settings" isActive={location.pathname === '/enterprise-admin-dashboard'} />
                 <span>Admin Console</span>
               </Link>
-              <Link to="/ai-command-center" className={getNavLinkClass('/ai-command-center')}>
-                <DynamicIcon name="psychology" isActive={location.pathname === '/ai-command-center'} />
-                <span>AI Insights</span>
-              </Link>
               <Link to="/strategic-roadmap" className={getNavLinkClass('/strategic-roadmap')}>
                 <DynamicIcon name="map" isActive={location.pathname === '/strategic-roadmap'} />
                 <span>Roadmap</span>
@@ -306,10 +271,6 @@ const MainLayout = () => {
               <Link to="/team-workload-view" className={getNavLinkClass('/team-workload-view')}>
                 <DynamicIcon name="groups" isActive={location.pathname === '/team-workload-view'} />
                 <span>Team Insights</span>
-              </Link>
-              <Link to="/automation-butler" className={getNavLinkClass('/automation-butler')}>
-                <DynamicIcon name="robot_2" isActive={location.pathname === '/automation-butler'} />
-                <span>Butler AI</span>
               </Link>
             </div>
 
@@ -344,91 +305,6 @@ const MainLayout = () => {
         </main>
       </div>
 
-      {/* Floating AI Assistant */}
-      <div className="fixed bottom-8 right-8 z-[1000]">
-        <AnimatePresence>
-          {isChatOpen && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              className="w-96 h-[600px] bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden mb-6"
-            >
-              <div className="p-6 bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex justify-between items-center shadow-lg shadow-blue-500/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md">
-                    <span className="material-symbols-outlined">auto_awesome</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-base font-heading tracking-tight">Productive AI</h3>
-                    <p className="text-[10px] text-white/70 font-bold uppercase tracking-wider">Neural Assistant</p>
-                  </div>
-                </div>
-                <button onClick={() => setIsChatOpen(false)} className="hover:bg-white/20 p-2 rounded-xl transition-colors">
-                  <span className="material-symbols-outlined">close</span>
-                </button>
-              </div>
-              
-              <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50 dark:bg-slate-950 custom-scrollbar">
-                {messages.map((m, i) => (
-                  <motion.div 
-                    initial={{ opacity: 0, x: m.role === 'user' ? 10 : -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    key={i} 
-                    className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${m.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-tl-none'}`}>
-                      {m.content}
-                    </div>
-                  </motion.div>
-                ))}
-                {isAiTyping && (
-                  <div className="flex justify-start">
-                    <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl rounded-tl-none shadow-sm flex gap-1.5">
-                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-2 h-2 bg-blue-500 rounded-full" />
-                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-2 h-2 bg-blue-500 rounded-full" />
-                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-2 h-2 bg-blue-500 rounded-full" />
-                    </div>
-                  </div>
-                )}
-                <div ref={chatEndRef} />
-              </div>
-
-              <form onSubmit={handleSendMessage} className="p-6 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-3">
-                <input 
-                  type="text" 
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1 bg-slate-100 dark:bg-slate-800 border-none rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all font-body"
-                />
-                <motion.button 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  type="submit" 
-                  className="bg-blue-600 text-white p-3 rounded-2xl shadow-lg shadow-blue-200"
-                >
-                  <span className="material-symbols-outlined">send</span>
-                </motion.button>
-              </form>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        
-        <motion.button 
-          whileHover={{ scale: 1.1, rotate: 5 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setIsChatOpen(!isChatOpen)}
-          className={`w-16 h-16 rounded-[24px] flex items-center justify-center text-white shadow-2xl transition-all relative ${isChatOpen ? 'bg-slate-800' : 'bg-gradient-to-br from-blue-600 to-indigo-700 shadow-blue-200 shadow-lg'}`}
-        >
-          <span className="material-symbols-outlined text-3xl">
-            {isChatOpen ? 'close' : 'auto_awesome'}
-          </span>
-          {!isChatOpen && (
-            <span className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full border-4 border-white dark:border-slate-950 animate-pulse"></span>
-          )}
-        </motion.button>
-      </div>
 
       {/* Mobile Bottom Nav */}
       {!isSearchOpen && (
