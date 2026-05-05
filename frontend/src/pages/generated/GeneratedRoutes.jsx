@@ -17,11 +17,8 @@ const Login                     = lazy(() => import('./Login'));
 const SignUp                    = lazy(() => import('./SignUp'));
 const CreateBoard               = lazy(() => import('./CreateBoard'));
 const ActivityLog               = lazy(() => import('./ActivityLog'));
-const PricingPlans              = lazy(() => import('./PricingPlans'));
-const BillingInvoices           = lazy(() => import('./BillingInvoices'));
 const WorkspaceMembers          = lazy(() => import('./WorkspaceMembers'));
 const ArchivedItems             = lazy(() => import('./ArchivedItems'));
-const PowerUpsDirectory         = lazy(() => import('./PowerUpsDirectory'));
 const HelpCenter                = lazy(() => import('./HelpCenter'));
 const WorkspaceTableView        = lazy(() => import('./WorkspaceTableView'));
 const WorkspaceDashboardStats   = lazy(() => import('./WorkspaceDashboardStats'));
@@ -35,14 +32,9 @@ const ExportBoardData           = lazy(() => import('./ExportBoardData'));
 const InvitationResponse      = lazy(() => import('./InvitationResponse'));
 const PageNotFound404           = lazy(() => import('./PageNotFound404'));
 const KeyboardShortcuts         = lazy(() => import('./KeyboardShortcuts'));
-const EnterpriseAdminDashboard  = lazy(() => import('./EnterpriseAdminDashboard'));
 const AdvancedCardDetail        = lazy(() => import('./AdvancedCardDetail'));
 const SmartLinksManager         = lazy(() => import('./SmartLinksManager'));
-const TeamWorkloadView          = lazy(() => import('./TeamWorkloadView'));
 const ViewsGallery              = lazy(() => import('./ViewsGallery'));
-const PowerUpDetails            = lazy(() => import('./PowerUpDetails'));
-const StrategicRoadmap          = lazy(() => import('./StrategicRoadmap'));
-const EnterpriseSecurity        = lazy(() => import('./EnterpriseSecurity'));
 
 // ─── Subtle top-level loader ──────────────
 const PageSpinner = () => (
@@ -103,11 +95,8 @@ export const GeneratedRoutes = () => {
             <Route path="/template-library"         element={<PageTransition><TemplateLibrary /></PageTransition>} />
             <Route path="/create-board"             element={<PageTransition><CreateBoard /></PageTransition>} />
             <Route path="/activity-log"             element={<PageTransition><ActivityLog /></PageTransition>} />
-            <Route path="/pricing-plans"            element={<PageTransition><PricingPlans /></PageTransition>} />
-            <Route path="/billing-invoices"         element={<PageTransition><BillingInvoices /></PageTransition>} />
             <Route path="/workspace-members/:id?"   element={<PageTransition><WorkspaceMembers /></PageTransition>} />
             <Route path="/archived-items"           element={<PageTransition><ArchivedItems /></PageTransition>} />
-            <Route path="/power-ups-directory"      element={<PageTransition><PowerUpsDirectory /></PageTransition>} />
             <Route path="/help-center"              element={<PageTransition><HelpCenter /></PageTransition>} />
             <Route path="/workspace-table-view"     element={<PageTransition><WorkspaceTableView /></PageTransition>} />
             <Route path="/workspace-dashboard-stats" element={<PageTransition><WorkspaceDashboardStats /></PageTransition>} />
@@ -118,14 +107,9 @@ export const GeneratedRoutes = () => {
             <Route path="/invite-to-workspace"      element={<PageTransition><InviteToWorkspace /></PageTransition>} />
             <Route path="/export-board-data"        element={<PageTransition><ExportBoardData /></PageTransition>} />
             <Route path="/keyboard-shortcuts"       element={<PageTransition><KeyboardShortcuts /></PageTransition>} />
-            <Route path="/enterprise-admin-dashboard" element={<PageTransition><EnterpriseAdminDashboard /></PageTransition>} />
             <Route path="/advanced-card-detail"     element={<PageTransition><AdvancedCardDetail /></PageTransition>} />
             <Route path="/smart-links-manager"      element={<PageTransition><SmartLinksManager /></PageTransition>} />
-            <Route path="/team-workload-view"       element={<PageTransition><TeamWorkloadView /></PageTransition>} />
             <Route path="/views-gallery"            element={<PageTransition><ViewsGallery /></PageTransition>} />
-            <Route path="/power-up-details"         element={<PageTransition><PowerUpDetails /></PageTransition>} />
-            <Route path="/strategic-roadmap"        element={<PageTransition><StrategicRoadmap /></PageTransition>} />
-            <Route path="/enterprise-security"      element={<PageTransition><EnterpriseSecurity /></PageTransition>} />
           </Route>
 
           <Route path="/onboarding-welcome"       element={<ProtectedRoute><PageTransition><OnboardingWelcome /></PageTransition></ProtectedRoute>} />

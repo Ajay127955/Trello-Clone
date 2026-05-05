@@ -240,38 +240,6 @@ const MainLayout = () => {
                 <DynamicIcon name="settings" isActive={location.pathname === '/workspace-settings'} />
                 <span>Workspace Settings</span>
               </Link>
-              <Link to="/billing-invoices" className={getNavLinkClass('/billing-invoices')}>
-                <DynamicIcon name="payments" isActive={location.pathname === '/billing-invoices'} />
-                <span>Billing & Plans</span>
-              </Link>
-            </div>
-
-            <div className="mt-10 mb-2 px-3 text-[11px] font-black text-slate-400 uppercase tracking-widest font-heading">Enterprise</div>
-            <div className="space-y-1">
-              <Link to="/enterprise-admin-dashboard" className={getNavLinkClass('/enterprise-admin-dashboard')}>
-                <DynamicIcon name="admin_panel_settings" isActive={location.pathname === '/enterprise-admin-dashboard'} />
-                <span>Admin Console</span>
-              </Link>
-              <Link to="/strategic-roadmap" className={getNavLinkClass('/strategic-roadmap')}>
-                <DynamicIcon name="map" isActive={location.pathname === '/strategic-roadmap'} />
-                <span>Roadmap</span>
-              </Link>
-              <Link to="/enterprise-security" className={getNavLinkClass('/enterprise-security')}>
-                <DynamicIcon name="verified_user" isActive={location.pathname === '/enterprise-security'} />
-                <span>Security</span>
-              </Link>
-            </div>
-
-            <div className="mt-10 mb-2 px-3 text-[11px] font-black text-slate-400 uppercase tracking-widest font-heading">Resources</div>
-            <div className="space-y-1">
-              <Link to="/power-ups-directory" className={getNavLinkClass('/power-ups-directory')}>
-                <DynamicIcon name="bolt" isActive={location.pathname === '/power-ups-directory'} />
-                <span>Power-Ups</span>
-              </Link>
-              <Link to="/team-workload-view" className={getNavLinkClass('/team-workload-view')}>
-                <DynamicIcon name="groups" isActive={location.pathname === '/team-workload-view'} />
-                <span>Team Insights</span>
-              </Link>
             </div>
 
             <div className="mt-auto pt-8">
