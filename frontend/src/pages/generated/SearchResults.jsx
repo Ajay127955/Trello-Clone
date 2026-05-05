@@ -1,160 +1,139 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import api from '../../services/api';
-import { useAuth } from '../../context/AuthContext';
 
 const SearchResults = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const { user } = useAuth();
-  const query = searchParams.get('q') || '';
-  
+  const query = new URLSearchParams(location.search).get('q') || '';
   const [results, setResults] = useState({ boards: [], cards: [] });
-  const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(query);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (query) {
-      handleSearch(query);
+      fetchResults();
+    } else {
+      setLoading(false);
     }
   }, [query]);
 
-  const handleSearch = async (q) => {
+  const fetchResults = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`search/?q=${q}`);
+      const response = await api.get(`search/?q=${encodeURIComponent(query)}`);
       setResults(response.data);
     } catch (err) {
-      console.error('Search failed', err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const onSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      navigate(`/search?q=${searchTerm}`);
-    }
-  };
+  if (loading) {
+    return (
+      <div className="max-w-[1400px] mx-auto px-6 py-12">
+        <div className="h-12 w-64 bg-slate-100 dark:bg-slate-800 rounded-2xl animate-pulse mb-8" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-40 bg-slate-100 dark:bg-slate-800 rounded-[2rem] animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      
-{/*  TopAppBar  */}
-<header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-4 h-14">
-<div className="flex items-center gap-4">
-<button onClick={() => navigate('/boards-dashboard')} className="text-slate-600 dark:text-slate-400 active:scale-95 duration-150 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-lg">
-<span className="material-symbols-outlined" data-icon="menu">menu</span>
-</button>
-<h1 onClick={() => navigate('/')} className="text-blue-600 dark:text-blue-400 font-black text-xl font-inter tracking-tight cursor-pointer">Productive Flow</h1>
-</div>
-<div className="flex-1 max-w-2xl px-8 hidden md:block">
-<form onSubmit={onSearchSubmit} className="relative group">
-<span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-body-md" data-icon="search">search</span>
-<input 
-  className="w-full bg-slate-100 border-none rounded-xl py-2 pl-10 pr-4 focus:ring-2 focus:ring-blue-500 text-sm transition-all" 
-  placeholder="Search for cards, boards..." 
-  type="text"
-  value={searchTerm}
-  onChange={(e) => setSearchTerm(e.target.value)}
-/>
-</form>
-</div>
-<div className="flex items-center gap-2">
-<div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">
-                {user?.username?.substring(0, 2).toUpperCase() || '??'}
+    <div className="max-w-[1400px] mx-auto px-6 py-12 pb-24">
+      <header className="mb-16">
+        <h1 className="font-headline-xl text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tighter">
+          Search Results
+        </h1>
+        <p className="font-label-sm text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">
+          Showing matches for: <span className="text-blue-600">"{query}"</span>
+        </p>
+      </header>
+
+      {/* BOARDS SECTION */}
+      <section className="mb-16">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+            <span className="material-symbols-outlined text-blue-600">grid_view</span>
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Boards ({results.boards.length})</h2>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {results.boards.map(board => (
+            <Link 
+              key={board.id}
+              to={`/board-view/${board.id}`}
+              className="group h-40 p-6 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all relative overflow-hidden"
+            >
+               <div 
+                className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity"
+                style={{ backgroundColor: board.background_color || '#475569' }}
+              />
+              <div className="relative z-10 h-full flex flex-col justify-between">
+                <h3 className="font-black text-slate-900 dark:text-white text-lg leading-tight tracking-tight">{board.title}</h3>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Open Board →</span>
+              </div>
+            </Link>
+          ))}
+          {results.boards.length === 0 && (
+            <div className="col-span-full py-12 text-center bg-slate-50 dark:bg-slate-800/20 rounded-[2rem] border border-dashed border-slate-200 dark:border-slate-800">
+              <p className="text-slate-400 font-bold text-sm">No boards found matching your query.</p>
             </div>
-</div>
-</header>
+          )}
+        </div>
+      </section>
 
-<main className="mt-14 mb-16 flex-1 w-full max-w-7xl mx-auto p-6">
-<div className="mb-8">
-<div className="flex items-baseline justify-between gap-4">
-<h2 className="text-2xl font-black text-slate-900 dark:text-white">Search Results for <span className="text-blue-600">"{query}"</span></h2>
-<span className="text-sm text-slate-500">{results.boards.length + results.cards.length} results found</span>
-</div>
-</div>
+      {/* CARDS SECTION */}
+      <section>
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
+            <span className="material-symbols-outlined text-emerald-600">layers</span>
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Cards ({results.cards.length})</h2>
+        </div>
 
-{loading ? (
-  <div className="flex justify-center py-20">
-    <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
-  </div>
-) : (
-  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-  <section className="lg:col-span-8 flex flex-col gap-6">
-  <div>
-  <h3 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-4">Boards</h3>
-  {results.boards.length > 0 ? (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    {results.boards.map(board => (
-      <div 
-        key={board.id}
-        onClick={() => navigate(`/board-view/${board.id}`)}
-        className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all cursor-pointer group"
-      >
-      <div className="flex items-start justify-between mb-4">
-      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-inner">
-      <span className="material-symbols-outlined">dashboard</span>
-      </div>
-      </div>
-      <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{board.title}</h4>
-      <p className="text-xs text-slate-500">{board.workspace_name || 'My Workspace'}</p>
-      </div>
-    ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {results.cards.map(card => (
+            <div 
+              key={card.id}
+              onClick={() => navigate(`/board-view/${card.list_details?.board_id}`)}
+              className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all cursor-pointer group"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">{card.title}</h3>
+                <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-[9px] font-black text-slate-400 uppercase tracking-widest rounded-lg">
+                  {card.list_details?.title || 'Card'}
+                </span>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 italic mb-4">
+                {card.description || 'No description provided.'}
+              </p>
+              <div className="flex items-center gap-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <span className="flex items-center gap-1">
+                   <span className="material-symbols-outlined text-sm">dashboard</span>
+                   {card.list_details?.board_title || 'Board'}
+                </span>
+                {card.due_date && (
+                  <span className="flex items-center gap-1 text-blue-600">
+                    <span className="material-symbols-outlined text-sm">event</span>
+                    {new Date(card.due_date).toLocaleDateString()}
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
+          {results.cards.length === 0 && (
+            <div className="col-span-full py-12 text-center bg-slate-50 dark:bg-slate-800/20 rounded-[2rem] border border-dashed border-slate-200 dark:border-slate-800">
+              <p className="text-slate-400 font-bold text-sm">No cards found matching your query.</p>
+            </div>
+          )}
+        </div>
+      </section>
     </div>
-  ) : (
-    <p className="text-slate-400 italic">No boards found.</p>
-  )}
-  </div>
-
-  <div className="mt-8">
-  <h3 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-4">Cards</h3>
-  {results.cards.length > 0 ? (
-    <div className="flex flex-col gap-3">
-    {results.cards.map(card => (
-      <div 
-        key={card.id}
-        onClick={() => navigate(`/board-view/${card.board_id}?cardId=${card.id}`)}
-        className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-blue-300 transition-all cursor-pointer flex items-center justify-between group"
-      >
-      <div className="flex flex-col gap-1">
-      <h5 className="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">{card.title}</h5>
-      <div className="flex items-center gap-3">
-      <span className="text-xs text-slate-500 flex items-center gap-1">
-      <span className="material-symbols-outlined text-[14px]">list</span> In: <span className="font-medium">{card.list_name}</span>
-      </span>
-      </div>
-      </div>
-      <div className="flex items-center gap-4">
-      <div className="flex items-center gap-3 text-slate-400">
-      {card.description && <span className="material-symbols-outlined text-[18px]">description</span>}
-      </div>
-      </div>
-      </div>
-    ))}
-    </div>
-  ) : (
-    <p className="text-slate-400 italic">No cards found.</p>
-  )}
-  </div>
-  </section>
-
-  <aside className="lg:col-span-4 flex flex-col gap-8">
-  <section className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
-  <h3 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-4">Search Tips</h3>
-  <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-3">
-    <li className="flex gap-2"><span className="text-blue-600 font-bold">•</span> Search for board titles to find projects</li>
-    <li className="flex gap-2"><span className="text-blue-600 font-bold">•</span> Search for card titles or descriptions</li>
-    <li className="flex gap-2"><span className="text-blue-600 font-bold">•</span> Use specific keywords for better results</li>
-  </ul>
-  </section>
-  </aside>
-  </div>
-)}
-</main>
-
-    </>
   );
 };
 

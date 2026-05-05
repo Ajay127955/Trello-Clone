@@ -13,6 +13,10 @@ const BoardView = () => {
   const [board, setBoard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [newListTitle, setNewListTitle] = useState('');
+  const [isAddingList, setIsAddingList] = useState(false);
+  const [addingCardToList, setAddingCardToList] = useState(null); // ID of list being added to
+  const [newCardTitle, setNewCardTitle] = useState('');
 
   // Phase 4: Real-time WebSocket integration
   const { sendMessage } = useWebSocket(id, (message) => {
@@ -76,6 +80,40 @@ const BoardView = () => {
     } catch (err) {
       console.error(err);
       fetchBoard();
+    }
+  };
+
+  const handleAddList = async (e) => {
+    e.preventDefault();
+    if (!newListTitle.trim()) return;
+    try {
+      await api.post('lists/', { 
+        title: newListTitle, 
+        board: parseInt(id),
+        position: board.lists.length 
+      });
+      setNewListTitle('');
+      setIsAddingList(false);
+      fetchBoard();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleAddCard = async (listId) => {
+    if (!newCardTitle.trim()) return;
+    try {
+      const list = board.lists.find(l => l.id === listId);
+      await api.post('cards/', { 
+        title: newCardTitle, 
+        list: listId,
+        position: list.cards.length
+      });
+      setNewCardTitle('');
+      setAddingCardToList(null);
+      fetchBoard();
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -220,18 +258,88 @@ const BoardView = () => {
                       </div>
                     )}
                   </Droppable>
-                  <button className="m-3 p-3 flex items-center gap-2 text-slate-400 hover:bg-slate-200 rounded-xl transition-colors text-xs font-black uppercase tracking-widest">
-                    <span className="material-symbols-outlined text-lg">add</span>
-                    Add a card
-                  </button>
+                  {addingCardToList === list.id ? (
+                    <div className="p-3 space-y-2">
+                      <textarea
+                        autoFocus
+                        className="w-full p-3 text-sm font-medium bg-white border border-blue-400 rounded-xl focus:ring-0 resize-none shadow-lg"
+                        placeholder="What needs to be done?"
+                        value={newCardTitle}
+                        onChange={(e) => setNewCardTitle(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleAddCard(list.id);
+                          }
+                          if (e.key === 'Escape') setAddingCardToList(null);
+                        }}
+                      />
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => handleAddCard(list.id)}
+                          className="px-4 py-2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-sm"
+                        >
+                          Add Card
+                        </button>
+                        <button 
+                          onClick={() => setAddingCardToList(null)}
+                          className="p-2 text-slate-400 hover:text-slate-600"
+                        >
+                          <span className="material-symbols-outlined text-lg">close</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button 
+                      onClick={() => setAddingCardToList(list.id)}
+                      className="m-3 p-3 flex items-center gap-2 text-slate-400 hover:bg-slate-200 rounded-xl transition-colors text-xs font-black uppercase tracking-widest"
+                    >
+                      <span className="material-symbols-outlined text-lg">add</span>
+                      Add a card
+                    </button>
+                  )}
                 </div>
               ))}
             </DragDropContext>
             <div className="w-80 shrink-0">
-              <button className="w-full p-4 flex items-center gap-2 bg-slate-50 border-2 border-dashed border-slate-200 hover:border-primary hover:bg-white transition-all rounded-2xl font-black text-slate-400 text-xs uppercase tracking-widest">
-                <span className="material-symbols-outlined">add</span>
-                Add another list
-              </button>
+              {isAddingList ? (
+                <div className="bg-slate-50 p-4 rounded-2xl border border-blue-400 shadow-xl">
+                  <input
+                    autoFocus
+                    type="text"
+                    className="w-full p-3 text-sm font-black bg-white border-none rounded-xl focus:ring-0 mb-3"
+                    placeholder="Enter list title..."
+                    value={newListTitle}
+                    onChange={(e) => setNewListTitle(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleAddList(e);
+                      if (e.key === 'Escape') setIsAddingList(false);
+                    }}
+                  />
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={handleAddList}
+                      className="px-6 py-2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg"
+                    >
+                      Add List
+                    </button>
+                    <button 
+                      onClick={() => setIsAddingList(false)}
+                      className="p-2 text-slate-400 hover:text-slate-600"
+                    >
+                      <span className="material-symbols-outlined">close</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => setIsAddingList(true)}
+                  className="w-full p-4 flex items-center gap-2 bg-slate-50 border-2 border-dashed border-slate-200 hover:border-primary hover:bg-white transition-all rounded-2xl font-black text-slate-400 text-xs uppercase tracking-widest"
+                >
+                  <span className="material-symbols-outlined">add</span>
+                  Add another list
+                </button>
+              )}
             </div>
           </div>
         </section>

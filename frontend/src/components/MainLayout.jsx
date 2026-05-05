@@ -69,7 +69,7 @@ const MainLayout = () => {
   const handleSearchSubmit = (e) => {
     if (e) e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      navigate(`/search-results?q=${encodeURIComponent(searchQuery)}`);
       setIsSearchOpen(false);
     }
   };

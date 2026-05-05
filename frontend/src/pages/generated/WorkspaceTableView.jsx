@@ -1,9 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 
 const WorkspaceTableView = () => {
   const navigate = useNavigate();
-  const [filterActive, setFilterActive] = React.useState(false);
+  const [cards, setCards] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filterActive, setFilterActive] = useState(false);
+  const [sortConfig, setSortConfig] = useState({ key: 'due_date', direction: 'asc' });
+
+  useEffect(() => {
+    fetchCards();
+  }, []);
+
+  const fetchCards = async () => {
+    try {
+      const response = await api.get('cards/');
+      setCards(response.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedCards = [...cards].sort((a, b) => {
+    if (!a[sortConfig.key]) return 1;
+    if (!b[sortConfig.key]) return -1;
+    
+    if (a[sortConfig.key] < b[sortConfig.key]) {
+      return sortConfig.direction === 'asc' ? -1 : 1;
+    }
+    if (a[sortConfig.key] > b[sortConfig.key]) {
+      return sortConfig.direction === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
+
+  if (loading) return (
+    <div className="max-w-[1400px] mx-auto px-8 py-12">
+        <div className="h-12 w-64 bg-slate-100 dark:bg-slate-800 rounded-2xl animate-pulse mb-12" />
+        <div className="space-y-4">
+            {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-20 bg-slate-50 dark:bg-slate-800/50 rounded-2xl animate-pulse" />
+            ))}
+        </div>
+    </div>
+  );
 
   return (
     <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-12">
@@ -40,10 +91,6 @@ const WorkspaceTableView = () => {
             <span className="material-symbols-outlined text-lg">tune</span>
             <span>Refine</span>
           </button>
-          <button className="bg-slate-900 dark:bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 shadow-2xl active:scale-95 transition-all">
-            <span className="material-symbols-outlined text-lg">add_circle</span>
-            Task
-          </button>
         </div>
       </div>
 
@@ -53,61 +100,74 @@ const WorkspaceTableView = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
-                <th className="px-10 py-8 font-black text-[10px] text-slate-400 uppercase tracking-[0.2em] w-[40%]">Resource</th>
-                <th className="px-6 py-8 font-black text-[10px] text-slate-400 uppercase tracking-[0.2em]">State</th>
-                <th className="px-6 py-8 font-black text-[10px] text-slate-400 uppercase tracking-[0.2em]">Tags</th>
+                <th 
+                  className="px-10 py-8 font-black text-[10px] text-slate-400 uppercase tracking-[0.2em] w-[40%] cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('title')}
+                >
+                  Resource {sortConfig.key === 'title' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                </th>
+                <th className="px-6 py-8 font-black text-[10px] text-slate-400 uppercase tracking-[0.2em]">List</th>
+                <th className="px-6 py-8 font-black text-[10px] text-slate-400 uppercase tracking-[0.2em]">Board</th>
                 <th className="px-6 py-8 font-black text-[10px] text-slate-400 uppercase tracking-[0.2em]">Ownership</th>
-                <th className="px-10 py-8 font-black text-[10px] text-slate-400 uppercase tracking-[0.2em]">ETA</th>
+                <th 
+                  className="px-10 py-8 font-black text-[10px] text-slate-400 uppercase tracking-[0.2em] cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('due_date')}
+                >
+                  ETA {sortConfig.key === 'due_date' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 dark:divide-slate-800/50">
-              {[
-                { name: 'System Architecture Audit', status: 'In Flux', statusColor: 'blue', date: 'Oct 24', members: 2 },
-                { name: 'Marketing Strategy Phase II', status: 'Pending', statusColor: 'slate', date: 'Oct 18', members: 1, urgent: true },
-                { name: 'API Schema Optimization', status: 'Deployed', statusColor: 'green', date: 'Oct 12', members: 3, done: true },
-                { name: 'User Experience Research', status: 'In Flux', statusColor: 'blue', date: 'Oct 28', members: 1 }
-              ].map((row, i) => (
-                <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all group cursor-pointer">
+              {sortedCards.map((card) => (
+                <tr 
+                  key={card.id} 
+                  className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all group cursor-pointer"
+                  onClick={() => navigate(`/board-view/${card.list_details?.board_id}`)}
+                >
                   <td className="px-10 py-8">
                     <div className="flex items-center gap-6">
                       <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-blue-600 transition-all shadow-sm">
                         <span className="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors">layers</span>
                       </div>
-                      <span className={`font-headline-md text-lg font-black text-slate-900 dark:text-white tracking-tight ${row.done ? 'line-through opacity-30' : ''}`}>{row.name}</span>
+                      <span className="font-headline-md text-lg font-black text-slate-900 dark:text-white tracking-tight">{card.title}</span>
                     </div>
                   </td>
                   <td className="px-6 py-8">
-                    <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm ${
-                      row.statusColor === 'blue' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/30' :
-                      row.statusColor === 'green' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30' :
-                      'bg-slate-50 dark:bg-slate-800 text-slate-500 border-slate-100 dark:border-slate-700'
-                    }`}>
-                      {row.status}
+                    <span className="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm bg-slate-50 dark:bg-slate-800 text-slate-500 border-slate-100 dark:border-slate-700">
+                      {card.list_details?.title || 'No List'}
                     </span>
                   </td>
                   <td className="px-6 py-8">
-                    <div className="flex gap-2">
-                      <div className="w-3 h-3 rounded-full bg-blue-500 shadow-lg shadow-blue-500/30"></div>
-                      <div className={`w-3 h-3 rounded-full ${row.urgent ? 'bg-rose-500 shadow-rose-500/30' : 'bg-slate-200 dark:bg-slate-700'} shadow-lg`}></div>
-                    </div>
+                     <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{card.list_details?.board_title || 'No Board'}</span>
                   </td>
                   <td className="px-6 py-8">
                     <div className="flex -space-x-3">
-                      {[...Array(row.members)].map((_, j) => (
-                        <div key={j} className="w-10 h-10 rounded-2xl bg-slate-200 dark:bg-slate-700 border-4 border-white dark:border-slate-900 flex items-center justify-center shadow-xl overflow-hidden grayscale hover:grayscale-0 transition-all">
-                            <img src={`https://i.pravatar.cc/150?u=${row.name}${j}`} alt="Member" className="w-full h-full object-cover" />
+                      {card.assigned_to ? (
+                         <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white border-4 border-white dark:border-slate-900 flex items-center justify-center shadow-xl font-black text-xs">
+                             {card.assigned_to.username.substring(0, 2).toUpperCase()}
+                         </div>
+                      ) : (
+                        <div className="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 border-4 border-white dark:border-slate-900 flex items-center justify-center text-slate-300">
+                            <span className="material-symbols-outlined text-sm">person</span>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </td>
                   <td className="px-10 py-8">
-                    <div className={`flex items-center gap-3 font-black text-[10px] uppercase tracking-widest ${row.urgent ? 'text-rose-500' : row.done ? 'text-slate-300' : 'text-slate-400'}`}>
-                      <span className="material-symbols-outlined text-[16px]">{row.urgent ? 'bolt' : row.done ? 'verified' : 'timer'}</span>
-                      {row.date}
+                    <div className={`flex items-center gap-3 font-black text-[10px] uppercase tracking-widest ${card.due_date ? 'text-blue-600' : 'text-slate-300'}`}>
+                      <span className="material-symbols-outlined text-[16px]">timer</span>
+                      {card.due_date ? new Date(card.due_date).toLocaleDateString() : 'No ETA'}
                     </div>
                   </td>
                 </tr>
               ))}
+              {sortedCards.length === 0 && (
+                <tr>
+                    <td colSpan="5" className="py-20 text-center">
+                        <p className="text-slate-400 font-bold">No tasks found across your infrastructure.</p>
+                    </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -120,46 +180,12 @@ const WorkspaceTableView = () => {
              <span className="material-symbols-outlined text-[180px] text-white">dataset</span>
           </div>
           <div className="relative z-10">
-            <h3 className="font-black text-[10px] text-white/50 uppercase tracking-[0.2em] mb-4">Total Velocity</h3>
-            <p className="text-7xl font-black tracking-tighter">42<span className="text-2xl opacity-40 uppercase ml-2">Units</span></p>
+            <h3 className="font-black text-[10px] text-white/50 uppercase tracking-[0.2em] mb-4">Total Nodes</h3>
+            <p className="text-7xl font-black tracking-tighter">{cards.length}<span className="text-2xl opacity-40 uppercase ml-2">Cards</span></p>
           </div>
           <div className="relative z-10 mt-12 flex items-center gap-2 font-black text-[10px] text-emerald-400 uppercase tracking-widest bg-emerald-400/10 w-fit px-5 py-2.5 rounded-2xl">
             <span className="material-symbols-outlined text-sm">trending_up</span>
-            <span>+18% efficiency spike</span>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-900 p-12 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-sm">
-          <h3 className="font-black text-[10px] text-slate-400 uppercase tracking-[0.2em] mb-10">Domain Saturation</h3>
-          <div className="space-y-8">
-            {[
-              { label: 'Cloud Architecture', val: '85%', color: 'blue' },
-              { label: 'Interface Design', val: '64%', color: 'emerald' },
-              { label: 'Security Protocols', val: '92%', color: 'rose' }
-            ].map(stat => (
-              <div key={stat.label}>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] font-black text-slate-900 dark:text-white uppercase tracking-wider">{stat.label}</span>
-                  <span className={`text-[11px] font-black text-${stat.color}-500`}>{stat.val}</span>
-                </div>
-                <div className="w-full bg-slate-50 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                  <div className={`bg-${stat.color}-500 h-full rounded-full transition-all duration-1000 shadow-lg shadow-${stat.color}-500/20`} style={{ width: stat.val }}></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-indigo-600 p-10 rounded-[3rem] shadow-2xl relative overflow-hidden group text-white">
-          <div className="absolute -right-8 -bottom-8 opacity-20 group-hover:scale-110 transition-transform duration-1000">
-            <span className="material-symbols-outlined text-[200px] text-white">rocket_launch</span>
-          </div>
-          <div className="relative z-10">
-            <h3 className="font-black text-[10px] text-white/40 uppercase tracking-[0.2em] mb-4">Milestone Pulse</h3>
-            <p className="text-4xl font-black tracking-tight leading-none mb-6">Product Launch Phase III</p>
-            <p className="text-indigo-100 font-bold text-[13px] opacity-70 leading-relaxed max-w-[200px]">
-              Final integration cycle active. 48 hours to production cutoff.
-            </p>
+            <span>Real-time monitoring active</span>
           </div>
         </div>
       </div>
