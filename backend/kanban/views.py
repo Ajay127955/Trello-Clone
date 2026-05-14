@@ -1,98 +1,363 @@
-from django.db import models
-from rest_framework import viewsets, permissions, status
-from rest_framework.response import Response
+from rest_framework import viewsets, permissions, status, views
 from rest_framework.decorators import action
-from .models import Board, List, Card, Workspace, WorkspaceMember, Checklist, ChecklistItem, Invitation, Notification, Label, OTPVerification
-from .serializers import (
-    BoardSerializer, ListSerializer, CardSerializer, RegisterSerializer, 
-    WorkspaceSerializer, ChecklistSerializer, ChecklistItemSerializer,
-    InvitationSerializer, NotificationSerializer, LabelSerializer,
-    WorkspaceMemberSerializer
-)
-from .permissions import IsWorkspaceManager, IsWorkspaceMember, CanMoveCard
-from .utils import send_productive_flow_email
+from rest_framework.response import Response
 from django.contrib.auth.models import User
-from django.db.models import Count
+from django.contrib.auth import authenticate
+from django.db import models
+from .models import Board, ProjectCategory, Task, TaskAssignment, Workspace, Activity, Invitation, Notification, OTPVerification
+from .serializers import (
+    BoardSerializer, ProjectCategorySerializer, TaskSerializer, 
+    TaskAssignmentSerializer, UserSerializer, RegisterSerializer,
+    WorkspaceSerializer, ActivitySerializer, InvitationSerializer, NotificationSerializer
+)
+from rest_framework_simplejwt.tokens import RefreshToken
+import requests
 import logging
+import random
+import string
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-class SearchViewSet(viewsets.ViewSet):
+
+class MeView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
-
-    def list(self, request):
-        query = request.query_params.get('q', '')
-        if not query:
-            return Response({"boards": [], "cards": []})
-
-        user = request.user
-        boards = Board.objects.filter(
-            (models.Q(owner=user) | models.Q(members=user)) &
-            models.Q(title__icontains=query)
-        ).distinct()
-
-        cards = Card.objects.filter(
-            (models.Q(list__board__owner=user) | models.Q(list__board__members=user)) &
-            (models.Q(title__icontains=query) | models.Q(description__icontains=query))
-        ).distinct()
-
-        return Response({
-            "boards": BoardSerializer(boards, many=True).data,
-            "cards": CardSerializer(cards, many=True).data
-        })
+    def get(self, request):
+        return Response(UserSerializer(request.user).data)
 
 
 class BoardViewSet(viewsets.ModelViewSet):
     serializer_class = BoardSerializer
-    permission_classes = [permissions.IsAuthenticated, IsWorkspaceMember]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         return Board.objects.filter(
             models.Q(owner=user) | 
             models.Q(members=user) | 
+            models.Q(workspace__owner=user) |
             models.Q(workspace__members=user)
         ).distinct()
 
     def perform_create(self, serializer):
-        workspace_id = self.request.data.get('workspace_id')
-        if workspace_id:
-            from .models import Workspace
-            workspace = Workspace.objects.get(id=workspace_id)
-            board = serializer.save(owner=self.request.user, workspace=workspace)
-        else:
-            board = serializer.save(owner=self.request.user)
-        
-        # Ensure default lists (Phase 2 Upgrade)
-        self.ensure_default_lists(board)
+        serializer.save(owner=self.request.user)
 
-    def ensure_default_lists(self, board):
-        DEFAULT_LISTS = ["Task Assigned", "Working", "Completed"]
-        if not board.lists.exists():
-            for i, title in enumerate(DEFAULT_LISTS):
-                List.objects.create(board=board, title=title, position=i)
 
-    @action(detail=True, methods=['post'])
-    def remove_member(self, request, pk=None):
-        board = self.get_object()
-        if board.owner != request.user:
-            return Response({"error": "Only the owner can remove members"}, status=status.HTTP_403_FORBIDDEN)
-        
-        user_id = request.data.get('user_id')
-        if not user_id:
-            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
+class ProjectCategoryViewSet(viewsets.ModelViewSet):
+    serializer_class = ProjectCategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        board_id = self.request.query_params.get('board_id')
+        if board_id:
+            return ProjectCategory.objects.filter(board_id=board_id)
+        return ProjectCategory.objects.all()
+
+
+class TaskViewSet(viewsets.ModelViewSet):
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        category_id = self.request.query_params.get('category_id')
+        if category_id:
+            return Task.objects.filter(category_id=category_id)
+        return Task.objects.all()
+
+    def perform_create(self, serializer):
+        task = serializer.save(created_by=self.request.user)
+
+        # Create a TaskAssignment for every assigned user and notify them
+        assigned_users = task.assigned_users.all()
+        for assigned_user in assigned_users:
+            TaskAssignment.objects.get_or_create(task=task, user=assigned_user)
+
+            # In-app notification
+            Notification.objects.create(
+                user=assigned_user,
+                message=f"{self.request.user.username} assigned you to: {task.title}",
+                type="task_assigned"
+            )
+
+            # Email notification
+            try:
+                from .utils import send_productive_flow_email
+                board = task.category.board
+                send_productive_flow_email(
+                    subject=f"New Task Assigned: {task.title}",
+                    template_name='task_assigned',
+                    context={
+                        'assigned_to': assigned_user,
+                        'assigned_by': self.request.user,
+                        'task': task,
+                        'board': board,
+                        'board_url': f"{settings.FRONTEND_URL}/board-view/{board.id}",
+                    },
+                    to_email=assigned_user.email
+                )
+            except Exception as e:
+                logger.error(f"[Task] Email notification failed for {assigned_user.email}: {e}")
+
+        # Broadcast real-time event
         try:
-            member = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-            
-        if member == board.owner:
-            return Response({"error": "Owner cannot be removed from board"}, status=status.HTTP_400_BAD_REQUEST)
-            
-        board.members.remove(member)
-        return Response({"message": "Member removed successfully"}, status=status.HTTP_200_OK)
+            from .utils import broadcast_kanban_event
+            board = task.category.board
+            Activity.objects.create(
+                user=self.request.user,
+                board=board,
+                task=task,
+                action_type="assigned",
+                to_state=task.title[:50]
+            )
+            broadcast_kanban_event(
+                board.id,
+                'task_assigned',
+                f"{self.request.user.username} created and assigned '{task.title}'",
+                {"task_id": task.id, "board_id": board.id},
+                user=self.request.user
+            )
+        except Exception as e:
+            logger.error(f"[Task] Broadcast failed: {e}")
+
+
+
+class TaskAssignmentViewSet(viewsets.ModelViewSet):
+    serializer_class = TaskAssignmentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return TaskAssignment.objects.filter(user=self.request.user)
+
+    def partial_update(self, request, *args, **kwargs):
+        assignment = self.get_object()
+        old_status = assignment.status
+        new_status = request.data.get('status')
+        response = super().partial_update(request, *args, **kwargs)
+        if new_status and new_status != old_status:
+            from .utils import broadcast_kanban_event
+            Activity.objects.create(
+                user=request.user,
+                board=assignment.task.category.board,
+                task=assignment.task,
+                action_type="moved",
+                from_state=old_status,
+                to_state=new_status
+            )
+            broadcast_kanban_event(
+                assignment.task.category.board.id, 
+                'task_moved', 
+                f"{request.user.username} moved task to {new_status}",
+                {"task_id": assignment.task.id, "user_id": request.user.id, "status": new_status},
+                user=request.user
+            )
+
+            # 🎉 Send completion congratulation email
+            if new_status == 'completed':
+                try:
+                    from .utils import send_productive_flow_email
+                    import datetime
+                    send_productive_flow_email(
+                        subject=f"🎉 Task Completed — Well Done, {request.user.username}!",
+                        template_name='task_completed',
+                        context={
+                            'user': request.user,
+                            'task': assignment.task,
+                            'board': assignment.task.category.board,
+                            'completed_date': datetime.date.today().strftime('%B %d, %Y'),
+                            'board_url': f"{settings.FRONTEND_URL}/board-view/{assignment.task.category.board.id}",
+                        },
+                        to_email=request.user.email
+                    )
+                    logger.info(f"[Task] Completion email sent to {request.user.email}")
+                except Exception as e:
+                    logger.error(f"[Task] Completion email failed: {e}")
+
+        return response
+
+
+class ActivityViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ActivitySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        board_id = self.request.query_params.get('board_id')
+        qs = Activity.objects.all()
+        if board_id:
+            qs = qs.filter(board_id=board_id)
+        return qs.filter(models.Q(board__owner=user) | models.Q(board__members=user)).distinct()
+
+
+class AuthViewSet(viewsets.GenericViewSet):
+    permission_classes = [permissions.AllowAny]
+
+    def _handle_invitation(self, user, token):
+        """Claim an invitation token: add user to board/workspace and mark accepted."""
+        if not token:
+            return
+        try:
+            invitation = Invitation.objects.get(token=token, status='pending')
+            logger.info(f"[Invitation] Claiming token={token} for user={user.email}")
+            if invitation.board:
+                invitation.board.members.add(user)
+                logger.info(f"[Invitation] Added {user.email} to board: {invitation.board.title}")
+            if invitation.workspace:
+                invitation.workspace.members.add(user)
+                logger.info(f"[Invitation] Added {user.email} to workspace: {invitation.workspace.name}")
+            invitation.status = 'accepted'
+            invitation.save()
+            logger.info(f"[Invitation] Token {token} marked as accepted")
+        except Invitation.DoesNotExist:
+            logger.warning(f"[Invitation] Token {token} not found or already accepted")
+        except Exception as e:
+            logger.error(f"[Invitation] Error claiming token {token}: {str(e)}")
+
+    def _make_tokens(self, user):
+        refresh = RefreshToken.for_user(user)
+        return {
+            'user': UserSerializer(user).data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
+    # ── Step 1: Send OTP + store pending registration ──────────────────────
+    @action(detail=False, methods=['post'])
+    def register(self, request):
+        """
+        Step 1 of registration: validate data, send OTP.
+        Does NOT create the user yet.
+        """
+        email = request.data.get('email', '').strip().lower()
+        password = request.data.get('password', '')
+        username = request.data.get('username', '').strip()
+
+        if not email or not password:
+            return Response({'error': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if User.objects.filter(email=email).exists():
+            return Response({'error': 'An account with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Generate and store OTP
+        otp = ''.join(random.choices(string.digits, k=6))
+        OTPVerification.objects.update_or_create(email=email, defaults={'otp': otp})
+
+        # Send OTP email
+        from .utils import send_productive_flow_email
+        send_productive_flow_email(
+            subject='Your Verification Code',
+            template_name='otp',
+            context={'otp': otp, 'email': email},
+            to_email=email
+        )
+        logger.info(f"[Register] OTP sent to {email}")
+        return Response({'message': 'OTP sent to your email. Please verify.'}, status=status.HTTP_200_OK)
+
+    # ── Step 2: Verify OTP + create user + claim invitation ────────────────
+    @action(detail=False, methods=['post'])
+    def verify_otp(self, request):
+        """
+        Step 2 of registration: verify OTP, create user, claim invitation token.
+        """
+        email = request.data.get('email', '').strip().lower()
+        otp = request.data.get('otp', '').strip()
+        password = request.data.get('password', '')
+        username = request.data.get('username', '').strip()
+        invitation_token = request.data.get('token')
+
+        if not email or not otp or not password:
+            return Response({'error': 'Email, OTP, and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            otp_record = OTPVerification.objects.get(email=email, otp=otp)
+        except OTPVerification.DoesNotExist:
+            return Response({'error': 'Invalid or expired OTP.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # OTP valid — create user
+        if User.objects.filter(email=email).exists():
+            return Response({'error': 'Account already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not username:
+            username = email.split('@')[0]
+
+        # Ensure unique username
+        base = username
+        counter = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{base}{counter}"
+            counter += 1
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        Workspace.objects.create(name=f"{user.username}'s Workspace", owner=user)
+
+        # Clean up OTP
+        otp_record.delete()
+
+        # Claim invitation if token provided
+        self._handle_invitation(user, invitation_token)
+
+        logger.info(f"[Register] User created: {email}")
+        return Response(self._make_tokens(user), status=status.HTTP_201_CREATED)
+
+    # ── Custom login: validates credentials + claims invitation ─────────────
+    @action(detail=False, methods=['post'])
+    def login(self, request):
+        """
+        Custom login endpoint that supports invitation token claiming.
+        Accepts email or username as the identifier.
+        """
+        identifier = request.data.get('username', '').strip()
+        password = request.data.get('password', '')
+        invitation_token = request.data.get('token')
+
+        if not identifier or not password:
+            return Response({'error': 'Credentials required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Support login with email
+        if '@' in identifier:
+            try:
+                user_obj = User.objects.get(email=identifier)
+                identifier = user_obj.username
+            except User.DoesNotExist:
+                return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        user = authenticate(username=identifier, password=password)
+        if not user:
+            return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Claim invitation
+        self._handle_invitation(user, invitation_token)
+
+        return Response(self._make_tokens(user))
+
+    # ── Google OAuth ────────────────────────────────────────────────────────
+    @action(detail=False, methods=['post'])
+    def google_login(self, request):
+        access_token = request.data.get('access_token')
+        invitation_token = request.data.get('token')
+        if not access_token:
+            return Response({'error': 'access_token required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        r = requests.get(f'https://www.googleapis.com/oauth2/v3/userinfo?access_token={access_token}')
+        if r.status_code != 200:
+            return Response({'error': 'Invalid Google token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        data = r.json()
+        email = data.get('email')
+        username = data.get('name', email.split('@')[0])
+
+        user, created = User.objects.get_or_create(email=email, defaults={'username': username})
+        if created:
+            user.set_unusable_password()
+            user.save()
+            Workspace.objects.create(name=f"{user.username}'s Workspace", owner=user)
+
+        self._handle_invitation(user, invitation_token)
+        return Response(self._make_tokens(user))
+
+    # ── Logout ──────────────────────────────────────────────────────────────
+    @action(detail=False, methods=['post'])
+    def logout(self, request):
+        return Response({'message': 'Logged out successfully.'})
 
 
 class WorkspaceViewSet(viewsets.ModelViewSet):
@@ -103,312 +368,46 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
         user = self.request.user
         return Workspace.objects.filter(models.Q(owner=user) | models.Q(members=user)).distinct()
 
-    def perform_create(self, serializer):
-        from .models import WorkspaceMember
-        workspace = serializer.save(owner=self.request.user)
-        # Create the 'manager' record for the owner
-        WorkspaceMember.objects.create(user=self.request.user, workspace=workspace, role='manager')
-
-    @action(detail=True, methods=['post'])
-    def remove_member(self, request, pk=None):
-        workspace = self.get_object()
-        if workspace.owner != request.user:
-            return Response({"error": "Only the owner can remove members"}, status=status.HTTP_403_FORBIDDEN)
-        
-        user_id = request.data.get('user_id')
-        if not user_id:
-            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            member = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-            
-        if member == workspace.owner:
-            return Response({"error": "Owner cannot be removed from workspace"}, status=status.HTTP_400_BAD_REQUEST)
-            
-        workspace.members.remove(member)
-        return Response({"message": "Member removed successfully"}, status=status.HTTP_200_OK)
-
-class ChecklistViewSet(viewsets.ModelViewSet):
-    serializer_class = ChecklistSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Checklist.objects.filter(models.Q(card__list__board__owner=user) | models.Q(card__list__board__members=user)).distinct()
-
-class ChecklistItemViewSet(viewsets.ModelViewSet):
-    serializer_class = ChecklistItemSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return ChecklistItem.objects.filter(models.Q(checklist__card__list__board__owner=user) | models.Q(checklist__card__list__board__members=user)).distinct()
-
-
-class LabelViewSet(viewsets.ModelViewSet):
-    serializer_class = LabelSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Label.objects.filter(models.Q(board__owner=user) | models.Q(board__members=user)).distinct()
-
-class ListViewSet(viewsets.ModelViewSet):
-    serializer_class = ListSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return List.objects.filter(models.Q(board__owner=user) | models.Q(board__members=user)).distinct()
-
-class CardViewSet(viewsets.ModelViewSet):
-    serializer_class = CardSerializer
-    permission_classes = [permissions.IsAuthenticated, IsWorkspaceMember]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Card.objects.filter(
-            models.Q(list__board__owner=user) | 
-            models.Q(list__board__members=user) |
-            models.Q(list__board__workspace__members=user)
-        ).distinct()
-
-    def perform_create(self, serializer):
-        serializer.save(assigned_by=self.request.user)
-
-    def update(self, request, *args, **kwargs):
-        card = self.get_object()
-        try:
-            # RBAC Check: Allow if Board Owner, Board Member, Workspace Manager, or Assigned User
-            is_board_owner = card.list.board.owner == request.user
-            is_board_member = card.list.board.members.filter(id=request.user.id).exists()
-            is_manager = False
-            if card.list.board.workspace:
-                is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
-            
-            if not (is_board_owner or is_board_member or is_manager or card.assigned_to == request.user):
-                return Response({"error": "Only authorized members can update this card"}, status=status.HTTP_403_FORBIDDEN)
-        except Exception as e:
-            logger.error(f"Card update security check failed: {e}", exc_info=True)
-            # If the check itself fails (e.g. DB lock), default to allowing the owner as a safety measure
-            if card.list.board.owner != request.user:
-                return Response({"error": "Security check failed, please try again."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-        response = super().update(request, *args, **kwargs)
-        if response.status_code == 200:
-            try:
-                card.refresh_from_db()
-                from .utils import broadcast_kanban_event
-                board_id = card.list.board.id if card.list and card.list.board else None
-                if board_id:
-                    broadcast_kanban_event(board_id, 'card_updated', f"Card '{card.title}' updated", response.data)
-            except Exception as e:
-                # Log error but don't fail the request. Real-time sync is secondary to data persistence.
-                print(f"WebSocket Broadcast Error: {e}")
-        return response
-
-    def partial_update(self, request, *args, **kwargs):
-        card = self.get_object()
-        try:
-            # RBAC Check: Allow if Board Owner, Board Member, Workspace Manager, or Assigned User
-            is_board_owner = card.list.board.owner == request.user
-            is_board_member = card.list.board.members.filter(id=request.user.id).exists()
-            is_manager = False
-            if card.list.board.workspace:
-                is_manager = WorkspaceMember.objects.filter(user=request.user, workspace=card.list.board.workspace, role='manager').exists()
-                
-            if not (is_board_owner or is_board_member or is_manager or card.assigned_to == request.user):
-                return Response({"error": "Only authorized members can update this card"}, status=status.HTTP_403_FORBIDDEN)
-        except Exception as e:
-            # Safety fallback
-            if card.list.board.owner != request.user:
-                 return Response({"error": "Security check failed, please try again."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-        response = super().partial_update(request, *args, **kwargs)
-        if response.status_code == 200:
-            try:
-                card.refresh_from_db()
-                from .utils import broadcast_kanban_event
-                board_id = card.list.board.id if card.list and card.list.board else None
-                if board_id:
-                    broadcast_kanban_event(board_id, 'card_updated', f"Card '{card.title}' partially updated", response.data)
-            except Exception as e:
-                # Log error but don't fail the request
-                print(f"WebSocket Broadcast Error: {e}")
-        return response
-
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated, IsWorkspaceManager])
-    def assign(self, request, pk=None):
-        card = self.get_object()
-        user_id = request.data.get('user_id')
-        if not user_id:
-            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            assignee = User.objects.get(id=user_id)
-            # Verify assignee is a member of the workspace
-            workspace = card.list.board.workspace
-            if not workspace.members.filter(id=assignee.id).exists():
-                return Response({"error": "Assignee must be a member of the workspace"}, status=status.HTTP_400_BAD_REQUEST)
-                
-            card.assigned_to = assignee
-            card.assigned_by = request.user
-            card.save()
-            
-            card_data = CardSerializer(card).data
-            from .utils import broadcast_kanban_event
-            broadcast_kanban_event(card.list.board.id, 'card_assigned', f"Card assigned to {assignee.username}", card_data)
-            
-            # Phase 3: Trigger async email notification
-            from .signals import send_async_email
-            send_async_email(
-                subject=f"New Task Assigned: {card.title}",
-                template_name="notification",
-                context={
-                    "message": f"You have been assigned to the task '{card.title}' by {request.user.username} on board '{card.list.board.title}'."
-                },
-                to_email=assignee.email
-            )
-
-            # Create in-app notification
-            from .models import Notification
-            Notification.objects.create(
-                user=assignee,
-                message=f"You were assigned to '{card.title}'",
-                type="card_assigned"
-            )
-            
-            return Response(card_data, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
 
 class InvitationViewSet(viewsets.ModelViewSet):
     serializer_class = InvitationSerializer
-    lookup_field = 'token'
-
-    def get_permissions(self):
-        if self.action in ['retrieve', 'accept', 'decline']:
-            return [permissions.AllowAny()]  # ✅ No login needed for invite links
-        return [permissions.IsAuthenticated()]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        if not user or user.is_anonymous:
-            if self.action == 'retrieve':
-                return Invitation.objects.all()
-            return Invitation.objects.none()
-            
-        if self.action == 'retrieve':
-            return Invitation.objects.all()
-            
-        # For authenticated users, show invites they sent or received
-        user_email = getattr(user, 'email', '')
         return Invitation.objects.filter(
-            models.Q(sender=user) | 
-            (models.Q(email=user_email) if user_email else models.Q(id=-1))
-        )
+            models.Q(board__owner=user) | models.Q(email=user.email)
+        ).distinct()
 
     def perform_create(self, serializer):
-        try:
-            invitation = serializer.save(sender=self.request.user)
-            
-            # Send Email
-            try:
-                target_name = "Productive Flow"
-                if invitation.workspace:
-                    target_name = invitation.workspace.name
-                elif invitation.board:
-                    target_name = invitation.board.title
-                    
-                accept_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}"
-                decline_url = f"{settings.FRONTEND_URL}/invite/{invitation.token}?action=decline"
-                
-                send_productive_flow_email(
-                    subject=f"Invitation to join {target_name}",
-                    template_name="invitation",
-                    context={
-                        "inviter_name": self.request.user.username,
-                        "target_name": target_name,
-                        "message": invitation.message,
-                        "accept_url": accept_url,
-                        "decline_url": decline_url
-                    },
-                    to_email=invitation.email
-                )
-            except Exception as email_err:
-                logger.error(f"Invitation Email Error: {email_err}", exc_info=True)
-                
-        except Exception as e:
-            logger.error(f"Critical Invitation Error: {e}", exc_info=True)
-            raise e
-
-    @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
-    def accept(self, request, token=None):
-        invitation = Invitation.objects.get(token=token)
-        if invitation.status != 'pending':
-            return Response({"error": "Invitation already processed"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        email = invitation.email
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response({"message": "Please register to accept invitation", "email": email}, status=status.HTTP_200_OK)
-
-        # Add user to workspace/board
-        if invitation.workspace:
-            from .models import WorkspaceMember
-            WorkspaceMember.objects.get_or_create(user=user, workspace=invitation.workspace, defaults={'role': 'member'})
-        if invitation.board:
-            invitation.board.members.add(user)
-        
-        invitation.status = 'accepted'
-        invitation.save()
-
-        # Notify Sender
-        Notification.objects.create(
-            user=invitation.sender,
-            message=f"{user.username} accepted your invitation to {invitation.workspace or invitation.board}",
-            type="invite_accepted"
-        )
-        
-        # Confirmation Email to User
+        invitation = serializer.save(sender=self.request.user)
+        user_exists = User.objects.filter(email=invitation.email).exists()
+        target_path = "/login" if user_exists else "/sign-up"
+        from .utils import send_productive_flow_email
+        board_title = invitation.board.title if invitation.board else "Workspace"
+        context = {
+            'invitation': invitation,
+            'accept_url': f"{settings.FRONTEND_URL}{target_path}?token={invitation.token}&email={invitation.email}",
+            'decline_url': f"{settings.FRONTEND_URL}/invitation/decline?token={invitation.token}",
+            'sender_name': self.request.user.username,
+            'board_title': board_title,
+        }
         send_productive_flow_email(
-            subject="You've successfully joined!",
-            template_name="notification",
-            context={"message": f"You are now a member of {invitation.workspace or invitation.board}"},
-            to_email=user.email
+            f"You're invited to join {board_title}",
+            'invitation',
+            context,
+            invitation.email
         )
+        if user_exists:
+            invitee = User.objects.get(email=invitation.email)
+            Notification.objects.create(
+                user=invitee,
+                message=f"{self.request.user.username} invited you to {board_title}",
+                type="invitation"
+            )
+            logger.info(f"[Invite] Notification created for {invitation.email}")
+        logger.info(f"[Invite] Invitation sent to {invitation.email} → {target_path}")
 
-        return Response({"message": "Invitation accepted successfully"}, status=status.HTTP_200_OK)
-
-    @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
-    def decline(self, request, token=None):
-        invitation = Invitation.objects.get(token=token)
-        if invitation.status != 'pending':
-            return Response({"error": "Invitation already processed"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        invitation.status = 'declined'
-        invitation.save()
-
-        # Notify Sender
-        Notification.objects.create(
-            user=invitation.sender,
-            message=f"{invitation.email} declined your invitation to {invitation.workspace or invitation.board}",
-            type="invite_declined"
-        )
-        
-        # Email to Inviter
-        send_productive_flow_email(
-            subject="User declined your invitation",
-            template_name="notification",
-            context={"message": f"{invitation.email} has declined your invitation to join {invitation.workspace or invitation.board}"},
-            to_email=invitation.sender.email
-        )
-
-        return Response({"message": "Invitation declined"}, status=status.HTTP_200_OK)
 
 class NotificationViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationSerializer
@@ -419,208 +418,5 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def mark_all_read(self, request):
-        Notification.objects.filter(user=self.request.user, read=False).update(read=True)
-        return Response({"message": "All notifications marked as read"}, status=status.HTTP_200_OK)
-
-class AuthViewSet(viewsets.GenericViewSet):
-    permission_classes = [permissions.AllowAny]
-
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
-    def me(self, request):
-        user = request.user
-        # Get Stats
-        board_count = Board.objects.filter(models.Q(owner=user) | models.Q(members=user)).distinct().count()
-        card_count = Card.objects.filter(models.Q(list__board__owner=user) | models.Q(list__board__members=user)).count()
-        
-        return Response({
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "stats": {
-                "boards": board_count,
-                "cards": card_count,
-                "activity": 42 # Mock for now
-            }
-        })
-
-    @action(detail=False, methods=['post'])
-    def register(self, request):
-        import random
-        from django.utils import timezone
-        
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            email = serializer.validated_data.get('email')
-            
-            # Generate 6-digit OTP
-            otp = str(random.randint(100000, 999999))
-            
-            # Store/Update OTP
-            OTPVerification.objects.filter(email=email).delete()
-            OTPVerification.objects.create(email=email, otp=otp)
-            
-            # Send OTP Email
-            send_productive_flow_email(
-                subject="Your Verification Code",
-                template_name="notification",
-                context={
-                    "message": f"Your verification code is: {otp}. It will expire in 10 minutes."
-                },
-                to_email=email
-            )
-            
-            return Response({
-                "message": "OTP sent to email",
-                "email": email
-            }, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=False, methods=['post'])
-    def verify_otp(self, request):
-        from django.utils import timezone
-        import datetime
-        
-        email = request.data.get('email')
-        otp = request.data.get('otp')
-        
-        if not email or not otp:
-            return Response({"error": "Email and OTP are required"}, status=status.HTTP_400_BAD_REQUEST)
-            
-        try:
-            verification = OTPVerification.objects.get(email=email, otp=otp)
-            # Check if expired (10 minutes)
-            if timezone.now() > verification.created_at + datetime.timedelta(minutes=10):
-                verification.delete()
-                return Response({"error": "OTP has expired"}, status=status.HTTP_400_BAD_REQUEST)
-                
-            # Valid OTP, now register the user
-            serializer = RegisterSerializer(data=request.data)
-            if serializer.is_valid():
-                user = serializer.save()
-                verification.delete()
-                
-                # Welcome Email
-                send_productive_flow_email(
-                    subject="Welcome to Productive Flow 🚀",
-                    template_name="welcome",
-                    context={
-                        "user_name": user.username,
-                        "dashboard_url": f"{settings.FRONTEND_URL}/boards-dashboard"
-                    },
-                    to_email=user.email
-                )
-
-                # Check for pending invitations
-                invites = Invitation.objects.filter(email=user.email, status='pending')
-                for invite in invites:
-                    if invite.workspace:
-                        from .models import WorkspaceMember
-                        WorkspaceMember.objects.get_or_create(user=user, workspace=invite.workspace, defaults={'role': 'member'})
-                    if invite.board:
-                        invite.board.members.add(user)
-                    invite.status = 'accepted'
-                    invite.save()
-                    
-                    Notification.objects.create(
-                        user=invite.sender,
-                        message=f"{user.username} joined via your invitation!",
-                        type="invite_accepted"
-                    )
-
-                from rest_framework_simplejwt.tokens import RefreshToken
-                refresh = RefreshToken.for_user(user)
-
-                return Response({
-                    "message": "User registered successfully",
-                    "access": str(refresh.access_token),
-                    "refresh": str(refresh),
-                    "user": serializer.data
-                }, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
-        except OTPVerification.DoesNotExist:
-            return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=False, methods=['post'])
-    def google_login(self, request):
-        import requests
-        access_token = request.data.get('access_token')
-        if not access_token:
-            return Response({"error": "Access token is required"}, status=status.HTTP_400_BAD_REQUEST)
-            
-        try:
-            response = requests.get(
-                'https://www.googleapis.com/oauth2/v3/userinfo',
-                headers={'Authorization': f'Bearer {access_token}'}
-            )
-            if response.status_code != 200:
-                return Response({"error": "Invalid Google token"}, status=status.HTTP_400_BAD_REQUEST)
-                
-            user_info = response.json()
-            email = user_info.get('email')
-            name = user_info.get('name', '')
-            
-            if not email:
-                return Response({"error": "Email not provided by Google"}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({"error": "Failed to verify Google token"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
-        # Check if user exists but was created via regular signup
-        existing_user = User.objects.filter(email=email).first()
-        if existing_user and not existing_user.has_usable_password():
-             # This is a bit complex for a demo, so we'll just allow it for now
-             # but in reality you'd check a 'social_id' field.
-             pass
-
-        user, created = User.objects.get_or_create(email=email, defaults={
-            'username': email.split('@')[0] + '_' + User.objects.count().__str__(),
-            'first_name': name.split(' ')[0] if ' ' in name else name,
-            'last_name': name.split(' ')[1] if ' ' in name else ''
-        })
-        
-        if created:
-            # Welcome Email for new Google users
-            send_productive_flow_email(
-                subject="Welcome to Productive Flow 🚀",
-                template_name="welcome",
-                context={
-                    "user_name": user.username,
-                    "dashboard_url": f"{settings.FRONTEND_URL}/boards-dashboard"
-                },
-                to_email=user.email
-            )
-            
-            # Auto-join from pending invites
-            invites = Invitation.objects.filter(email=user.email, status='pending')
-            for invite in invites:
-                if invite.workspace:
-                    from .models import WorkspaceMember
-                    WorkspaceMember.objects.get_or_create(user=user, workspace=invite.workspace, defaults={'role': 'member'})
-                if invite.board:
-                    invite.board.members.add(user)
-                invite.status = 'accepted'
-                invite.save()
-
-        # Log in the user and return token
-        from rest_framework_simplejwt.tokens import RefreshToken
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-            'user': {
-                'id': user.id,
-                'username': user.username,
-                'email': user.email
-            }
-        })
-
-    @action(detail=False, methods=['patch'], permission_classes=[permissions.IsAuthenticated])
-    def update_profile(self, request):
-        from .serializers import UserUpdateSerializer
-        serializer = UserUpdateSerializer(request.user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        Notification.objects.filter(user=request.user, read=False).update(read=True)
+        return Response({'message': 'All marked as read'})

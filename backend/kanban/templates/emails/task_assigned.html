@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Task Assigned</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#0747A6,#0052CC);padding:40px 48px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <p style="margin:0 0 4px;color:rgba(255,255,255,0.7);font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;">Productive Flow</p>
+                    <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:800;letter-spacing:-0.5px;">New Task Assigned</h1>
+                  </td>
+                  <td align="right" style="vertical-align:middle;">
+                    <div style="width:52px;height:52px;background:rgba(255,255,255,0.15);border-radius:14px;display:inline-block;text-align:center;line-height:52px;">
+                      <span style="font-size:26px;">📋</span>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 48px;">
+              <p style="margin:0 0 24px;color:#5E6C84;font-size:15px;line-height:1.6;">
+                Hi <strong style="color:#091E42;">{{ assigned_to.username }}</strong>, you have a new task assignment from <strong style="color:#0052CC;">{{ assigned_by.username }}</strong>.
+              </p>
+
+              <!-- Task Card -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;background:#f8f9fa;border-radius:12px;border:1px solid #ebecf0;overflow:hidden;">
+                <tr>
+                  <td style="padding:24px 28px;">
+                    <p style="margin:0 0 6px;font-size:11px;font-weight:700;color:#97A0AF;text-transform:uppercase;letter-spacing:0.08em;">Task</p>
+                    <h2 style="margin:0 0 12px;font-size:20px;font-weight:800;color:#091E42;letter-spacing:-0.3px;">{{ task.title }}</h2>
+                    {% if task.description %}
+                    <p style="margin:0 0 16px;font-size:14px;color:#5E6C84;line-height:1.6;">{{ task.description }}</p>
+                    {% endif %}
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding-right:16px;">
+                          <p style="margin:0;font-size:11px;font-weight:700;color:#97A0AF;text-transform:uppercase;letter-spacing:0.08em;">Board</p>
+                          <p style="margin:4px 0 0;font-size:14px;font-weight:600;color:#344563;">{{ board.title }}</p>
+                        </td>
+                        <td>
+                          <p style="margin:0;font-size:11px;font-weight:700;color:#97A0AF;text-transform:uppercase;letter-spacing:0.08em;">Status</p>
+                          <p style="margin:4px 0 0;font-size:14px;font-weight:600;color:#344563;">To Do</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
+                <tr>
+                  <td align="center">
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="background:#0052CC;border-radius:10px;padding:0;">
+                          <a href="{{ board_url }}"
+                             style="display:inline-block;padding:16px 40px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:10px;letter-spacing:0.01em;">
+                            View Task on Board →
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0;color:#97A0AF;font-size:12px;line-height:1.6;text-align:center;">
+                You received this because you were assigned to a task on Productive Flow.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f8f9fa;padding:20px 48px;border-top:1px solid #ebecf0;text-align:center;">
+              <p style="margin:0;color:#97A0AF;font-size:12px;">© 2025 Productive Flow · All rights reserved</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

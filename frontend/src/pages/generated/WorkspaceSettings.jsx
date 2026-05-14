@@ -105,7 +105,7 @@ const WorkspaceSettings = () => {
             <form className="space-y-8">
               <div className="flex flex-col md:flex-row gap-8 items-start">
                 <div className="h-28 w-28 rounded-3xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-4xl font-black shadow-inner border-2 border-indigo-100 dark:border-indigo-800 shrink-0">
-                  {workspace ? workspace.name[0].toUpperCase() : 'W'}
+                  {workspace?.name ? workspace.name[0].toUpperCase() : 'W'}
                 </div>
                 <div className="flex-1 w-full space-y-6">
                   <div>
@@ -164,7 +164,7 @@ const WorkspaceSettings = () => {
                     </div>
                     <div>
                       <div className="font-black text-slate-900 dark:text-white text-sm tracking-tight">{member.username}</div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{member.email.split('@')[0]}</div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{member.email?.split('@')[0] || 'Associate'}</div>
                     </div>
                   </div>
                   <span className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${member.username === workspace?.owner?.username ? 'bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'}`}>

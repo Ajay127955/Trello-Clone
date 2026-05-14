@@ -132,7 +132,7 @@ const InvitationResponse = () => {
           </div>
           <h1 className="font-headline-xl text-5xl font-black mb-6 tracking-tighter relative z-10">Nexus Access</h1>
           <p className="font-bold text-lg opacity-80 leading-relaxed relative z-10">
-            <span className="text-blue-400 font-black">@{invitation.sender.username}</span> is requesting your synchronization with
+            <span className="text-blue-400 font-black">@{invitation.sender?.username || 'unknown'}</span> is requesting your synchronization with
             <br />
             <span className="text-3xl font-black block mt-4 text-white uppercase tracking-tighter">
               {invitation.workspace_name || invitation.board_name}

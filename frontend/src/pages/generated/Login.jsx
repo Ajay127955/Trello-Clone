@@ -23,7 +23,8 @@ const Login = () => {
     setLoading(true);
     setError('');
     try {
-      await login(email, password);
+      const invitationToken = searchParams.get('token');
+      await login(email, password, invitationToken);
       navigate('/boards-dashboard');
     } catch (err) {
       console.error(err);
@@ -38,7 +39,8 @@ const Login = () => {
       setSocialLoading(true);
       setError('');
       try {
-        await googleLogin(tokenResponse.access_token);
+        const invitationToken = searchParams.get('token');
+        await googleLogin(tokenResponse.access_token, invitationToken);
         showToast('Successfully logged in!', 'success');
         navigate('/boards-dashboard');
       } catch (err) {

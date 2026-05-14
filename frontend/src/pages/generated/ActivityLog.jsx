@@ -1,104 +1,277 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import api from '../../services/api';
+import { Search, Clock, Zap, UserPlus, CheckCircle, X, Users } from 'lucide-react';
 
+/* ─── Helpers ─────────────────────────────────────── */
+const formatRelative = (dateStr) => {
+  const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return new Date(dateStr).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+};
+
+const statusColor = {
+  todo: 'bg-slate-100 text-slate-600 border-slate-200',
+  doing: 'bg-blue-50 text-blue-700 border-blue-200',
+  completed: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+};
+
+const formatMessage = (item) => {
+  const name = item.user?.username || 'Someone';
+  const task = item.task_title ? `"${item.task_title}"` : 'a task';
+
+  switch (item.action_type) {
+    case 'moved':
+      return (
+        <>
+          <span className="font-black text-slate-900">{name}</span>
+          <span className="text-slate-500"> moved card </span>
+          <span className="font-bold text-slate-800">{task}</span>
+          <span className="text-slate-500"> from </span>
+          <span className={`inline-flex items-center px-2 py-0.5 rounded-md border text-[10px] font-black uppercase ${statusColor[item.from_state?.toLowerCase()] || statusColor.todo}`}>
+            {item.from_state || 'TODO'}
+          </span>
+          <span className="text-slate-400 mx-1">→</span>
+          <span className={`inline-flex items-center px-2 py-0.5 rounded-md border text-[10px] font-black uppercase ${statusColor[item.to_state?.toLowerCase()] || statusColor.todo}`}>
+            {item.to_state || '—'}
+          </span>
+        </>
+      );
+    case 'assigned':
+      return (
+        <>
+          <span className="font-black text-slate-900">{name}</span>
+          <span className="text-slate-500"> was assigned </span>
+          <span className="font-bold text-slate-800">{task}</span>
+        </>
+      );
+    default:
+      return (
+        <>
+          <span className="font-black text-slate-900">{name}</span>
+          <span className="text-slate-500"> {item.action_type} </span>
+          <span className="font-bold text-slate-800">{task}</span>
+        </>
+      );
+  }
+};
+
+const getActionIcon = (type) => {
+  switch (type) {
+    case 'moved': return <Zap size={18} className="text-amber-500" />;
+    case 'assigned': return <UserPlus size={18} className="text-blue-500" />;
+    case 'completed': return <CheckCircle size={18} className="text-emerald-500" />;
+    default: return <Clock size={18} className="text-slate-400" />;
+  }
+};
+
+/* ─── Component ───────────────────────────────────── */
 const ActivityLog = () => {
-  const navigate = useNavigate();
-  const [activities] = React.useState([
-    { id: 1, user: 'Sarah Jenkins', action: 'initialized a new board', target: 'Q3 Marketing Strategy', time: '2m ago', type: 'board', avatar: 'https://i.pravatar.cc/150?u=1' },
-    { id: 2, user: 'Alex Rivera', action: 'synchronized API Documentation node', target: 'API Documentation', time: '15m ago', type: 'move', avatar: 'https://i.pravatar.cc/150?u=2' },
-    { id: 3, user: 'Emma Watson', action: 'broadcasted update on Homepage Redesign', target: 'Homepage Redesign', time: '1h ago', type: 'comment', content: 'The infrastructure migration for the priority nodes is complete. Standing by for QA handshake.', avatar: 'https://i.pravatar.cc/150?u=3' }
-  ]);
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedMember, setSelectedMember] = useState(null);
+
+  const fetchActivities = useCallback(async () => {
+    try {
+      const res = await api.get('activities/');
+      setActivities(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchActivities();
+    const interval = setInterval(fetchActivities, 10000);
+    return () => clearInterval(interval);
+  }, [fetchActivities]);
+
+  /* Unique member list derived from activities */
+  const members = [...new Map(activities.map(a => [a.user?.id, a.user])).values()].filter(Boolean);
+
+  /* Members matching the search query */
+  const matchedMembers = searchQuery.trim()
+    ? members.filter(m => m.username.toLowerCase().includes(searchQuery.toLowerCase()))
+    : [];
+
+  /* Activities to display: filtered by selected member, or all */
+  const displayedActivities = selectedMember
+    ? activities.filter(a => a.user?.id === selectedMember.id)
+    : activities;
+
+  /* Member stats for the selected member panel */
+  const memberStats = selectedMember
+    ? {
+        total: displayedActivities.length,
+        todo: activities.filter(a => a.user?.id === selectedMember.id && a.action_type === 'assigned').length,
+        doing: activities.filter(a => a.user?.id === selectedMember.id && a.to_state?.toLowerCase() === 'doing').length,
+        completed: activities.filter(a => a.user?.id === selectedMember.id && a.to_state?.toLowerCase() === 'completed').length,
+      }
+    : null;
 
   return (
-    <div className="max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-12">
-      {/* Screen Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16">
-        <div>
-          <h1 className="font-headline-xl text-5xl font-black text-slate-900 dark:text-white mb-2 tracking-tighter">Stream</h1>
-          <p className="font-label-sm text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">Real-time operational activity</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest hover:border-blue-600 transition-all shadow-sm">
-            <span className="material-symbols-outlined text-sm">tune</span>
-            Filters
-          </button>
-          <button onClick={() => window.location.reload()} className="flex items-center gap-3 px-8 py-4 bg-slate-900 dark:bg-blue-600 text-white rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest shadow-2xl active:scale-95 transition-all">
-            <span className="material-symbols-outlined text-sm">sync</span>
-            Refresh
-          </button>
-        </div>
+    <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-24 md:pb-12">
+
+      {/* ── Header ──────────────────────────────────── */}
+      <div className="mb-10">
+        <h1 className="text-4xl font-black text-slate-900 tracking-tighter mb-1">Activity Stream</h1>
+        <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">
+          Real-time team operational log
+        </p>
       </div>
 
-      {/* Timeline Content */}
-      <div className="space-y-16">
-        {/* Today Section */}
-        <div className="relative">
-          <div className="flex items-center gap-6 mb-12">
-            <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] whitespace-nowrap bg-blue-600/5 px-4 py-1.5 rounded-lg border border-blue-600/10">Today</span>
-            <div className="h-[2px] w-full bg-slate-50 dark:bg-slate-800/50"></div>
+      {/* ── Search Bar ──────────────────────────────── */}
+      <div className="relative mb-6">
+        <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={e => { setSearchQuery(e.target.value); setSelectedMember(null); }}
+          placeholder="Search a team member by name to view their activity..."
+          className="w-full pl-14 pr-12 py-4 bg-white border-2 border-slate-100 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 shadow-sm transition-all"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => { setSearchQuery(''); setSelectedMember(null); }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors"
+          >
+            <X size={18} />
+          </button>
+        )}
+      </div>
+
+      {/* ── Search Results Dropdown ──────────────────── */}
+      {searchQuery && matchedMembers.length > 0 && (
+        <div className="bg-white border border-slate-100 rounded-2xl shadow-xl mb-6 overflow-hidden">
+          <p className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-50">
+            {matchedMembers.length} member{matchedMembers.length > 1 ? 's' : ''} found
+          </p>
+          {matchedMembers.map(member => {
+            const memberActivityCount = activities.filter(a => a.user?.id === member.id).length;
+            return (
+              <button
+                key={member.id}
+                onClick={() => { setSelectedMember(member); setSearchQuery(''); }}
+                className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-50 transition-colors text-left border-b border-slate-50 last:border-0"
+              >
+                <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-xs shadow-sm shrink-0">
+                  {member.username.substring(0, 2).toUpperCase()}
+                </div>
+                <div className="flex-1">
+                  <p className="font-bold text-slate-900 text-sm">{member.username}</p>
+                  <p className="text-[10px] text-slate-400 font-semibold">{memberActivityCount} activities recorded</p>
+                </div>
+                <span className="text-slate-300 text-xs">View →</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {searchQuery && matchedMembers.length === 0 && (
+        <div className="bg-white border border-slate-100 rounded-2xl px-6 py-8 text-center mb-6 shadow-sm">
+          <Users size={28} className="text-slate-200 mx-auto mb-3" />
+          <p className="text-slate-400 font-bold text-sm">No member found matching "<span className="text-slate-700">{searchQuery}</span>"</p>
+        </div>
+      )}
+
+      {/* ── Selected Member Panel ────────────────────── */}
+      {selectedMember && (
+        <div className="bg-white border border-slate-100 rounded-2xl p-6 mb-8 shadow-sm">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-sm shadow-md">
+                {selectedMember.username.substring(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <p className="font-black text-slate-900 text-lg tracking-tight">{selectedMember.username}</p>
+                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Member Activity View</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setSelectedMember(null)}
+              className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-900 bg-slate-50 px-4 py-2 rounded-xl transition-all hover:bg-slate-100"
+            >
+              <X size={14} /> Clear Filter
+            </button>
           </div>
 
-          <div className="space-y-10 relative">
-            {/* Main Timeline Spine */}
-            <div className="absolute left-[27px] top-4 bottom-4 w-[2px] bg-slate-50 dark:bg-slate-800/50"></div>
+          {/* Stats Row */}
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: 'Assigned', value: memberStats.todo, color: 'bg-slate-50 text-slate-700 border-slate-200' },
+              { label: 'In Progress', value: memberStats.doing, color: 'bg-blue-50 text-blue-700 border-blue-200' },
+              { label: 'Completed', value: memberStats.completed, color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+            ].map(stat => (
+              <div key={stat.label} className={`rounded-xl border px-4 py-3 text-center ${stat.color}`}>
+                <p className="text-2xl font-black">{stat.value}</p>
+                <p className="text-[9px] font-black uppercase tracking-widest mt-0.5 opacity-70">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-            {activities.map(item => (
-              <div key={item.id} className="relative pl-20 group">
-                {/* User Avatar Hub */}
-                <div className="absolute left-0 top-0 z-10">
-                  <div className="w-14 h-14 rounded-2xl border-4 border-white dark:border-slate-900 shadow-xl overflow-hidden bg-slate-100 dark:bg-slate-800 transition-transform group-hover:scale-110 duration-500">
-                    <img src={item.avatar} alt={item.user} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
-                  </div>
-                  <div className="absolute -right-2 -bottom-2 w-7 h-7 rounded-xl bg-slate-900 dark:bg-blue-600 border-4 border-white dark:border-slate-900 flex items-center justify-center shadow-lg">
-                    <span className="material-symbols-outlined text-[12px] text-white">
-                      {item.type === 'board' ? 'grid_view' : item.type === 'move' ? 'sync' : 'chat_bubble'}
-                    </span>
-                  </div>
+      {/* ── Activity Timeline ────────────────────────── */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-50">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
+              <Zap size={16} className="text-indigo-500" />
+            </div>
+            <div>
+              <p className="font-black text-slate-900 text-sm">
+                {selectedMember ? `${selectedMember.username}'s Activity` : 'All Activity'}
+              </p>
+              <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">
+                {displayedActivities.length} events
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={fetchActivities}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all active:scale-95"
+          >
+            {loading ? 'Updating...' : 'Refresh'}
+          </button>
+        </div>
+
+        {displayedActivities.length === 0 ? (
+          <div className="py-20 text-center">
+            <Clock size={36} className="text-slate-200 mx-auto mb-4" />
+            <p className="text-slate-400 font-bold text-sm">No activity recorded yet</p>
+          </div>
+        ) : (
+          <div className="relative px-6 py-6 space-y-6">
+            {/* Timeline spine */}
+            <div className="absolute left-[42px] top-8 bottom-8 w-[2px] bg-slate-50" />
+
+            {displayedActivities.map((item) => (
+              <div key={item.id} className="relative flex gap-5 group">
+                {/* Icon */}
+                <div className="relative z-10 shrink-0 w-10 h-10 rounded-xl bg-white border-2 border-slate-100 shadow-sm flex items-center justify-center group-hover:border-blue-200 group-hover:scale-110 transition-all duration-200">
+                  {getActionIcon(item.action_type)}
                 </div>
 
-                <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 p-8 shadow-sm group-hover:shadow-2xl transition-all group-hover:-translate-x-1">
-                  <div className="flex justify-between items-start gap-8">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="font-headline-md text-sm font-black text-slate-900 dark:text-white tracking-tight uppercase group-hover:text-blue-600 transition-colors">{item.user}</span>
-                        <span className="text-[10px] font-black text-slate-300 dark:text-slate-700 uppercase tracking-widest">• {item.time}</span>
-                      </div>
-                      <p className="text-slate-500 dark:text-slate-400 font-bold text-sm leading-relaxed mb-6">
-                        {item.action}{' '}
-                        <span onClick={() => navigate('/boards-dashboard')} className="text-slate-900 dark:text-white font-black hover:text-blue-600 cursor-pointer decoration-blue-600/30 decoration-2 underline-offset-4 hover:underline">
-                          {item.target}
-                        </span>
-                      </p>
-                      {item.content && (
-                        <div className="mb-8 p-6 bg-slate-50 dark:bg-slate-950/50 rounded-[1.5rem] border border-slate-100 dark:border-slate-800 italic text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed relative overflow-hidden group/content">
-                          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-600"></div>
-                          "{item.content}"
-                        </div>
-                      )}
-                      <div className="flex items-center gap-8">
-                        <button className="flex items-center gap-2.5 font-black text-[10px] text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-all">
-                          <span className="material-symbols-outlined text-lg">reply</span>
-                          Reply
-                        </button>
-                        <button className="flex items-center gap-2.5 font-black text-[10px] text-slate-400 uppercase tracking-widest hover:text-emerald-500 transition-all">
-                          <span className="material-symbols-outlined text-lg">thumb_up_off</span>
-                          Boost
-                        </button>
-                        <button className="flex items-center gap-2.5 font-black text-[10px] text-slate-400 uppercase tracking-widest hover:text-rose-500 transition-all">
-                          <span className="material-symbols-outlined text-lg">bookmark</span>
-                          Save
-                        </button>
-                      </div>
+                {/* Card */}
+                <div className="flex-1 bg-slate-50/60 hover:bg-white border border-slate-100 hover:border-blue-100 rounded-2xl px-5 py-4 transition-all hover:shadow-md group-hover:-translate-y-px">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 text-[13px] leading-relaxed">
+                      {formatMessage(item)}
                     </div>
-                    <button className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-                      <span className="material-symbols-outlined">more_horiz</span>
-                    </button>
+                    <span className="shrink-0 text-[9px] font-black text-slate-400 uppercase tracking-wider whitespace-nowrap mt-0.5">
+                      {formatRelative(item.timestamp)}
+                    </span>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

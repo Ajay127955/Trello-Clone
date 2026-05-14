@@ -108,7 +108,9 @@ const WorkspaceMembers = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
-            {workspace.members && workspace.members.map(member => (
+            {workspace.members && workspace.members.map(memberObj => {
+              const member = memberObj.user;
+              return (
               <tr key={member.id} className="hover:bg-slate-50/30 dark:hover:bg-slate-800/30 transition-colors group">
                 <td className="px-8 py-6">
                   <div className="flex items-center gap-5">
@@ -123,7 +125,7 @@ const WorkspaceMembers = () => {
                 </td>
                 <td className="px-8 py-6">
                   <span className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${member.username === workspace.owner.username ? 'bg-blue-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'}`}>
-                    {member.username === workspace.owner.username ? 'Owner' : 'Member'}
+                    {member.username === workspace.owner.username ? 'Owner' : memberObj.role || 'Member'}
                   </span>
                 </td>
                 <td className="px-8 py-6 text-right">
@@ -139,7 +141,7 @@ const WorkspaceMembers = () => {
                   )}
                 </td>
               </tr>
-            ))}
+            )})}
           </tbody>
         </table>
         

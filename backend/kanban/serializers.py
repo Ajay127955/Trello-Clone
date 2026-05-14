@@ -1,91 +1,67 @@
 from rest_framework import serializers
-from .models import Board, List, Card, Workspace, WorkspaceMember, Checklist, ChecklistItem, Invitation, Notification, Label
+from .models import Board, ProjectCategory, Task, TaskAssignment, Workspace, WorkspaceMember, Invitation, Notification, Activity, Presence
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
-from django.contrib.auth import authenticate
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
 
-
-class NotificationSerializer(serializers.ModelSerializer):
+class TaskAssignmentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
     class Meta:
-        model = Notification
-        fields = ['id', 'user', 'message', 'type', 'read', 'created_at']
+        model = TaskAssignment
+        fields = ['id', 'user', 'status', 'updated_at']
 
-class InvitationSerializer(serializers.ModelSerializer):
-    sender = UserSerializer(read_only=True)
-    workspace_name = serializers.SerializerMethodField()
-    board_name = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Invitation
-        fields = ['id', 'sender', 'email', 'workspace', 'board', 'message', 'token', 'status', 'created_at', 'workspace_name', 'board_name']
-        read_only_fields = ['token', 'status']
-
-    def get_workspace_name(self, obj):
-        return obj.workspace.name if obj.workspace else None
-
-    def get_board_name(self, obj):
-        return obj.board.title if obj.board else None
-
-class ChecklistItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ChecklistItem
-        fields = ['id', 'text', 'completed', 'position', 'checklist']
-
-class ChecklistSerializer(serializers.ModelSerializer):
-    items = ChecklistItemSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Checklist
-        fields = ['id', 'title', 'items', 'card']
-
-class LabelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Label
-        fields = ['id', 'title', 'color', 'board']
-
-class CardSerializer(serializers.ModelSerializer):
-    checklists = ChecklistSerializer(many=True, read_only=True)
-
-    assigned_to = UserSerializer(read_only=True)
-    assigned_to_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), write_only=True, source='assigned_to', required=False, allow_null=True
+class TaskSerializer(serializers.ModelSerializer):
+    assigned_users = UserSerializer(many=True, read_only=True)
+    assignments = TaskAssignmentSerializer(many=True, read_only=True)
+    created_by = UserSerializer(read_only=True)
+    # Write-only field: list of user IDs to assign
+    assigned_user_ids = serializers.ListField(
+        child=serializers.IntegerField(), write_only=True, required=False, default=list
     )
-    assigned_by = UserSerializer(read_only=True)
-    labels = LabelSerializer(many=True, read_only=True)
-    label_ids = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Label.objects.all(), write_only=True, source='labels', required=False
-    )
-    
-    # Stats for card preview
-    checklist_stats = serializers.SerializerMethodField()
 
     class Meta:
-        model = Card
+        model = Task
         fields = [
-            'id', 'title', 'description', 'list', 'position', 
-            'checklists', 'assigned_to', 'assigned_to_id', 'assigned_by',
-            'labels', 'label_ids', 'due_date', 'created_at', 'updated_at',
-            'checklist_stats'
+            'id', 'title', 'description', 'category', 'assigned_users', 
+            'assignments', 'created_by', 'created_at', 'updated_at',
+            'assigned_user_ids'
         ]
 
-    def get_checklist_stats(self, obj):
-        all_items = ChecklistItem.objects.filter(checklist__card=obj)
-        total = all_items.count()
-        completed = all_items.filter(completed=True).count()
-        return {"total": total, "completed": completed}
+    def create(self, validated_data):
+        assigned_user_ids = validated_data.pop('assigned_user_ids', [])
+        task = super().create(validated_data)
+        if assigned_user_ids:
+            users = User.objects.filter(id__in=assigned_user_ids)
+            task.assigned_users.set(users)
+        return task
 
-class ListSerializer(serializers.ModelSerializer):
-    cards = CardSerializer(many=True, read_only=True)
+    def update(self, instance, validated_data):
+        assigned_user_ids = validated_data.pop('assigned_user_ids', None)
+        task = super().update(instance, validated_data)
+        if assigned_user_ids is not None:
+            users = User.objects.filter(id__in=assigned_user_ids)
+            task.assigned_users.set(users)
+        return task
 
+class ProjectCategorySerializer(serializers.ModelSerializer):
+    tasks = TaskSerializer(many=True, read_only=True)
+    
     class Meta:
-        model = List
-        fields = ['id', 'title', 'board', 'position', 'cards', 'wip_limit', 'color']
+        model = ProjectCategory
+        fields = ['id', 'name', 'board', 'position', 'tasks']
+
+class BoardSerializer(serializers.ModelSerializer):
+    categories = ProjectCategorySerializer(many=True, read_only=True)
+    owner = UserSerializer(read_only=True)
+    members = UserSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Board
+        fields = ['id', 'title', 'owner', 'members', 'workspace', 'created_at', 'categories']
 
 class WorkspaceMemberSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -101,73 +77,56 @@ class WorkspaceSerializer(serializers.ModelSerializer):
         model = Workspace
         fields = ['id', 'name', 'description', 'owner', 'members', 'created_at']
 
-class BoardSerializer(serializers.ModelSerializer):
-    lists = ListSerializer(many=True, read_only=True)
-    owner = UserSerializer(read_only=True)
-    members = UserSerializer(many=True, read_only=True)
-    workspace = WorkspaceSerializer(read_only=True)
-    workspace_id = serializers.IntegerField(write_only=True, required=False, allow_null=True)
-
+class ActivitySerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    task_title = serializers.ReadOnlyField(source='task.title')
+    
     class Meta:
-        model = Board
-        fields = ['id', 'title', 'owner', 'members', 'workspace', 'workspace_id', 'created_at', 'lists', 'background_color', 'background_image']
+        model = Activity
+        fields = [
+            'id', 'user', 'board', 'task', 'task_title', 
+            'action_type', 'from_state', 'to_state', 'timestamp'
+        ]
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-
     class Meta:
         model = User
         fields = ['username', 'password', 'email']
-        extra_kwargs = {'username': {'required': False}}
-
-    def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("A user with this email already exists.")
-        return value
 
     def create(self, validated_data):
-        # Use email as username if no username provided
-        email = validated_data.get('email', '')
-        username = validated_data.get('username') or email.split('@')[0] + '_' + User.objects.count().__str__()
-        user = User.objects.create_user(
-            username=username,
-            password=validated_data['password'],
-            email=email
-        )
-        # Create a default workspace for the new user
-        from .models import Workspace
-        Workspace.objects.create(name=f"{username}'s Workspace", owner=user)
+        user = User.objects.create_user(**validated_data)
+        Workspace.objects.create(name=f"{user.username}'s Workspace", owner=user)
         return user
 
-
-class UserUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'first_name', 'last_name']
-        extra_kwargs = {
-            'username': {'required': False},
-            'email': {'required': False},
-        }
-
 class EmailOrUsernameTokenSerializer(TokenObtainPairSerializer):
-    """
-    Custom JWT serializer that accepts either username or email as the login identifier.
-    The frontend sends { username: <email_or_username>, password }.
-    If the value looks like an email, we resolve it to the actual Django username.
-    """
     def validate(self, attrs):
         identifier = attrs.get('username', '')
-        # If the identifier looks like an email, try to resolve it to the real username
         if identifier and '@' in identifier:
             try:
                 user = User.objects.get(email=identifier)
                 attrs['username'] = user.username
             except User.DoesNotExist:
-                # We don't raise an error here to prevent email enumeration
-                # and to ensure the base class handles the failed authentication (returning 401)
                 pass
         return super().validate(attrs)
+class InvitationSerializer(serializers.ModelSerializer):
+    sender = UserSerializer(read_only=True)
+    class Meta:
+        model = Invitation
+        fields = ['id', 'sender', 'email', 'workspace', 'board', 'token', 'status', 'created_at']
 
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ['id', 'user', 'message', 'type', 'read', 'created_at']
+
+class PresenceSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    class Meta:
+        model = Presence
+        fields = ['user', 'is_online', 'last_seen', 'current_board']
+
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 class EmailOrUsernameTokenView(TokenObtainPairView):
     serializer_class = EmailOrUsernameTokenSerializer

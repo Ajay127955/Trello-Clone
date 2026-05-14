@@ -21,6 +21,7 @@ class WorkspaceMember(models.Model):
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='member')
     joined_at = models.DateTimeField(auto_now_add=True)
+    last_active = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('user', 'workspace')
@@ -40,64 +41,61 @@ class Board(models.Model):
     def __str__(self):
         return self.title
 
-class List(models.Model):
-    title = models.CharField(max_length=255)
-    board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='lists')
+class ProjectCategory(models.Model):
+    name = models.CharField(max_length=255)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='categories')
     position = models.IntegerField(default=0)
-    wip_limit = models.IntegerField(default=0) # 0 means no limit
-    color = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         ordering = ['position']
+        verbose_name_plural = "Project Categories"
 
     def __str__(self):
-        return f"{self.board.title} - {self.title}"
+        return f"{self.board.title} - {self.name}"
 
-class Label(models.Model):
-    title = models.CharField(max_length=100)
-    color = models.CharField(max_length=20) # e.g. 'green', 'red', hex codes
-    board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='labels')
-
-    def __str__(self):
-        return self.title
-
-class Card(models.Model):
+class Task(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='cards')
-    position = models.IntegerField(default=0)
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_tasks', db_index=True)
-    assigned_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_tasks', db_index=True)
-    labels = models.ManyToManyField(Label, related_name='cards', blank=True)
-    due_date = models.DateTimeField(null=True, blank=True)
+    category = models.ForeignKey(ProjectCategory, on_delete=models.CASCADE, related_name='tasks')
+    assigned_users = models.ManyToManyField(User, related_name='assigned_tasks', blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_tasks')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        ordering = ['position']
-
     def __str__(self):
         return self.title
 
-class Checklist(models.Model):
-    title = models.CharField(max_length=255)
-    card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='checklists')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.title
-
-class ChecklistItem(models.Model):
-    text = models.CharField(max_length=255)
-    completed = models.BooleanField(default=False)
-    checklist = models.ForeignKey(Checklist, on_delete=models.CASCADE, related_name='items')
-    position = models.IntegerField(default=0)
+class TaskAssignment(models.Model):
+    STATUS_CHOICES = [
+        ('todo', 'To Do'),
+        ('doing', 'Doing'),
+        ('completed', 'Completed'),
+    ]
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='assignments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='task_assignments')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='todo')
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['position']
+        unique_together = ('task', 'user')
 
     def __str__(self):
-        return self.text
+        return f"{self.user.username} - {self.task.title} ({self.status})"
+
+class Activity(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='activities', null=True, blank=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='activities', null=True, blank=True)
+    action_type = models.CharField(max_length=100) # e.g. "moved", "commented", "assigned"
+    from_state = models.CharField(max_length=50, blank=True, null=True)
+    to_state = models.CharField(max_length=50, blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f"{self.user.username} {self.action_type} {self.task.title if self.task else ''}"
 
 class Invitation(models.Model):
     STATUS_CHOICES = [
@@ -105,34 +103,28 @@ class Invitation(models.Model):
         ('accepted', 'Accepted'),
         ('declined', 'Declined'),
     ]
-    
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_invitations')
     email = models.EmailField()
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name='invitations', null=True, blank=True)
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='invitations', null=True, blank=True)
-    message = models.TextField(blank=True)
     token = models.UUIDField(default=uuid.uuid4, unique=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Invite to {self.email} for {self.workspace or self.board}"
-
-
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
     message = models.TextField()
-    type = models.CharField(max_length=50) # invite_received, invite_accepted, etc.
+    type = models.CharField(max_length=50)
     read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Notification for {self.user.username}: {self.message[:20]}"
 
 class OTPVerification(models.Model):
     email = models.EmailField(unique=True)
     otp = models.CharField(max_length=6)
     created_at = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return f"{self.email} - {self.otp}"
+
+class Presence(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='presence')
+    is_online = models.BooleanField(default=False)
+    last_seen = models.DateTimeField(auto_now=True)
+    current_board = models.ForeignKey(Board, on_delete=models.SET_NULL, null=True, blank=True)

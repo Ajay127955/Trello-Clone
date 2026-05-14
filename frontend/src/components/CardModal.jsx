@@ -3,7 +3,7 @@ import api from '../services/api';
 import { useToast } from '../context/ToastContext';
 import PromptModal from './PromptModal';
 
-const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
+const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate, onTyping }) => {
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editingDesc, setEditingDesc] = useState(false);
@@ -12,10 +12,10 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
   const [showMemberSearch, setShowMemberSearch] = useState(false);
   const [showLabelMenu, setShowLabelMenu] = useState(false);
   const [boardLabels, setBoardLabels] = useState([]);
-  const [isExpandingAi, setIsExpandingAi] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = React.useRef(null);
   const { showToast } = useToast();
+  const typingTimeoutRef = React.useRef(null);
   
   // Prompt Modal State
   const [isPromptOpen, setIsPromptOpen] = useState(false);
@@ -61,19 +61,7 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
     }
   };
 
-  const handleExpandWithAi = async () => {
-    setIsExpandingAi(true);
-    try {
-      const response = await api.post(`cards/${cardId}/expand_ai/`);
-      setDesc(response.data.description);
-      fetchCard();
-      onCardUpdate();
-    } catch (err) {
-      showToast('AI expansion failed.', 'error');
-    } finally {
-      setIsExpandingAi(false);
-    }
-  };
+
 
   const handleAddChecklist = () => {
     setPromptTitle('Add Checklist');
@@ -110,7 +98,8 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
   };
 
   const handleToggleMember = async (memberId) => {
-    const currentMemberIds = card.assigned_members.map(m => m.id);
+    if (!card || !card.assigned_to) return;
+    const currentMemberIds = card.assigned_to.map(m => m.id);
     let newMemberIds;
     if (currentMemberIds.includes(memberId)) {
       newMemberIds = currentMemberIds.filter(id => id !== memberId);
@@ -127,6 +116,7 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
   };
 
   const handleToggleLabel = async (labelId) => {
+    if (!card || !card.labels) return;
     const currentLabelIds = card.labels.map(l => l.id);
     let newLabelIds;
     if (currentLabelIds.includes(labelId)) {
@@ -152,6 +142,19 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
       console.error(err);
     }
   };
+  
+  const handleDeleteCard = async () => {
+    if (!window.confirm('Are you sure you want to delete this card?')) return;
+    try {
+      await api.delete(`cards/${cardId}/`);
+      if (onCardUpdate) onCardUpdate();
+      onClose();
+    } catch (err) {
+      console.error('Delete Card Error:', err);
+      showToast('Failed to delete card.', 'error');
+    }
+  };
+
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -204,11 +207,11 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
           <div className="md:col-span-8 space-y-10">
             {/* Metadata Badges */}
             <div className="flex flex-wrap gap-8">
-              {card?.assigned_members?.length > 0 && (
+              {card?.assigned_to?.length > 0 && (
                 <div>
                   <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Members</h4>
                   <div className="flex -space-x-2">
-                    {card.assigned_members.map(m => (
+                    {card.assigned_to.map(m => (
                       <div key={m.id} className="h-8 w-8 rounded-full bg-blue-600 border-2 border-white text-white flex items-center justify-center text-[10px] font-bold" title={m.username}>
                         {m.username?.substring(0, 2).toUpperCase() || '??'}
                       </div>
@@ -255,14 +258,7 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
                   <span className="material-symbols-outlined text-slate-600">subject</span>
                   <h3 className="font-bold text-slate-900 dark:text-white">Description</h3>
                 </div>
-                <button 
-                  onClick={handleExpandWithAi}
-                  disabled={isExpandingAi}
-                  className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest ${isExpandingAi ? 'text-purple-400' : 'text-purple-600 hover:bg-purple-50'} px-3 py-1 rounded-lg transition-all border border-purple-100`}
-                >
-                  <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
-                  {isExpandingAi ? 'AI Expanding...' : 'Expand with AI'}
-                </button>
+
               </div>
               {editingDesc ? (
                 <div className="space-y-3">
@@ -270,7 +266,14 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
                     className="w-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl p-4 text-sm focus:border-blue-600 outline-none min-h-[150px] transition-all"
                     placeholder="Add a more detailed description..."
                     value={desc}
-                    onChange={(e) => setDesc(e.target.value)}
+                    onChange={(e) => {
+                      setDesc(e.target.value);
+                      if (onTyping) {
+                        onTyping(true);
+                        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+                        typingTimeoutRef.current = setTimeout(() => onTyping(false), 2000);
+                      }
+                    }}
                     autoFocus
                   />
                   <div className="flex gap-2">
@@ -382,7 +385,7 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
                       <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Board Members</h5>
                       <div className="space-y-1 max-h-60 overflow-y-auto">
                         {boardMembers.map(member => {
-                          const isAssigned = card?.assigned_members?.some(m => m.id === member.id);
+                          const isAssigned = card?.assigned_to?.some(m => m.id === member.id);
                           return (
                             <div 
                               key={member.id}
@@ -455,19 +458,21 @@ const CardModal = ({ isOpen, onClose, cardId, boardMembers, onCardUpdate }) => {
                   className="hidden" 
                   onChange={handleFileUpload}
                 />
+                
+                <div className="h-px bg-slate-100 dark:bg-slate-800 my-2"></div>
+                
+                <button 
+                  onClick={handleDeleteCard}
+                  className="flex items-center gap-3 bg-red-50 hover:bg-red-100 text-red-600 px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all group"
+                >
+                  <span className="material-symbols-outlined text-[18px] text-red-400 group-hover:scale-110 transition-transform">delete</span>
+                  Delete Card
+                </button>
+
               </div>
             </div>
 
-            <div className="p-8 bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-600 rounded-[2.5rem] text-white shadow-2xl shadow-blue-100/50 relative overflow-hidden group">
-              <div className="absolute -right-6 -bottom-6 opacity-20 group-hover:scale-110 transition-transform duration-1000">
-                  <span className="material-symbols-outlined text-[100px]">auto_awesome</span>
-              </div>
-              <div className="relative z-10">
-                <p className="text-[9px] font-black uppercase tracking-[0.3em] opacity-70 mb-3">AI Assistant</p>
-                <h5 className="font-black text-xl mb-4 leading-none tracking-tight">Gemini Pro Powered</h5>
-                <p className="text-[11px] leading-relaxed font-bold opacity-80">Use AI to generate project structures and professional card descriptions instantly.</p>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>

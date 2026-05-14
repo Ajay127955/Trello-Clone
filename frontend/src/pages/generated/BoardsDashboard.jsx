@@ -12,6 +12,7 @@ const BoardsDashboard = () => {
   const [boards, setBoards] = useState([]);
   const [workspaces, setWorkspaces] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { showToast } = useToast();
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [inviteTarget, setInviteTarget] = useState({ id: null, name: '', type: 'workspace' });
@@ -31,8 +32,10 @@ const BoardsDashboard = () => {
       ]);
       setBoards(boardsRes.data);
       setWorkspaces(workspacesRes.data);
+      setError(null);
     } catch (err) {
       console.error(err);
+      setError('Failed to load dashboard data. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -65,6 +68,22 @@ const BoardsDashboard = () => {
           <div key={i} className="h-40 rounded-[2rem] bg-slate-100 dark:bg-slate-800 animate-pulse" />
         ))}
       </div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="flex flex-col items-center justify-center h-[70vh] p-8 text-center">
+      <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-6">
+        <span className="material-symbols-outlined text-4xl">cloud_off</span>
+      </div>
+      <h2 className="text-3xl font-black text-slate-900 mb-2">Connection Lost</h2>
+      <p className="text-slate-500 font-medium mb-8 max-w-md">{error}</p>
+      <button 
+        onClick={fetchData}
+        className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-black shadow-2xl hover:opacity-90 active:scale-95 transition-all"
+      >
+        Reconnect Now
+      </button>
     </div>
   );
 
@@ -143,8 +162,8 @@ const BoardsDashboard = () => {
           {boards.map(board => (
             <div 
               key={board.id}
-              onClick={() => navigate(`/board-view/${board.id}`)}
               className="group h-48 p-8 rounded-[2.5rem] cursor-pointer shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all relative overflow-hidden"
+              onClick={() => navigate(`/board-view/${board.id}`)}
               style={{ 
                 backgroundColor: board.background_color || '#475569',
                 backgroundImage: board.background_image ? `url(${board.background_image})` : 'none',
@@ -195,8 +214,8 @@ const BoardsDashboard = () => {
               </div>
               <div className="flex-1 text-center md:text-left">
                 <div className="flex items-center justify-center md:justify-start gap-4 mb-3">
-                    <h3 className="font-headline-md text-3xl font-black text-slate-900 dark:text-white tracking-tight">{workspace.name}</h3>
-                    {workspace.owner.username === user?.username && (
+                    <h3 className="font-headline-md text-3xl font-black text-slate-900 dark:text-white tracking-tight">{workspace.name || 'Untitled Workspace'}</h3>
+                    {workspace.owner?.username === user?.username && (
                         <span className="px-4 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-black uppercase tracking-widest rounded-full border border-emerald-500/20 shadow-sm">Lead Hub</span>
                     )}
                 </div>
@@ -208,7 +227,7 @@ const BoardsDashboard = () => {
                     <div className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800"></div>
                     <div className="flex items-center gap-3">
                         <span className="material-symbols-outlined text-lg text-slate-300">database</span>
-                        <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">By @{workspace.owner.username}</span>
+                        <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">By @{workspace.owner?.username || 'unknown'}</span>
                     </div>
                 </div>
               </div>

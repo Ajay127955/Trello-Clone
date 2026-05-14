@@ -1,376 +1,276 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { useAuth } from '../context/AuthContext';
-import CardDetailModal from '../components/CardDetailModal';
 import useWebSocket from '../hooks/useWebSocket';
+import ActivityStream from '../components/ActivityStream';
+import CreateTaskModal from '../components/CreateTaskModal';
 
 const BoardView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
   const [board, setBoard] = useState(null);
+  const [activities, setActivities] = useState([]);
+  const [isLeader, setIsLeader] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [selectedCard, setSelectedCard] = useState(null);
-  const [newListTitle, setNewListTitle] = useState('');
-  const [isAddingList, setIsAddingList] = useState(false);
-  const [addingCardToList, setAddingCardToList] = useState(null); // ID of list being added to
-  const [newCardTitle, setNewCardTitle] = useState('');
+  const [error, setError] = useState(null);
+  
+  // Modals
+  const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // Phase 4: Real-time WebSocket integration
-  const { sendMessage } = useWebSocket(id, (message) => {
-    handleWebSocketMessage(message);
-  });
-
-  const handleWebSocketMessage = (msg) => {
-    if (msg.msg_type === 'card_updated' || msg.msg_type === 'card_assigned') {
-      const updatedCard = msg.data;
-      setBoard(prevBoard => {
-        const newBoard = { ...prevBoard };
-        newBoard.lists = newBoard.lists.map(list => ({
-          ...list,
-          cards: list.cards.map(card => card.id === updatedCard.id ? updatedCard : card)
-        }));
-        return newBoard;
-      });
-      
-      // Update selected card if it's the one that changed
-      if (selectedCard && selectedCard.id === updatedCard.id) {
-        setSelectedCard(updatedCard);
-      }
-    } else if (msg.msg_type === 'list_updated') {
-        fetchBoard(); // Reload full board for structural changes
-    }
-  };
-
-  useEffect(() => {
-    fetchBoard();
-  }, [id]);
-
-  const fetchBoard = async () => {
+  const fetchBoard = useCallback(async () => {
     try {
       const response = await api.get(`boards/${id}/`);
       setBoard(response.data);
+      setIsLeader(response.data.owner.id === user.id);
     } catch (err) {
-      console.error(err);
+      setError('Board not found or access denied');
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, user.id]);
+
+  const fetchActivities = useCallback(async () => {
+    try {
+      const response = await api.get(`activities/?board_id=${id}`);
+      setActivities(response.data);
+    } catch (err) {
+      console.error('Fetch activities error', err);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchBoard();
+    fetchActivities();
+  }, [fetchBoard, fetchActivities]);
+
+  // WebSocket for Real-time Sync
+  const { sendMessage } = useWebSocket(id, (msg) => {
+    if (msg.msg_type === 'board_deleted') {
+      navigate('/');
+    } else {
+      fetchBoard();
+      fetchActivities();
+    }
+  });
 
   const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
     if (!destination) return;
     if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
-    const newBoard = { ...board };
-    const sourceList = newBoard.lists.find(l => l.id.toString() === source.droppableId);
-    const destList = newBoard.lists.find(l => l.id.toString() === destination.droppableId);
-    
-    const [movedCard] = sourceList.cards.splice(source.index, 1);
-    destList.cards.splice(destination.index, 0, movedCard);
-    setBoard(newBoard);
-
-    try {
-      await api.patch(`cards/${draggableId}/`, { 
-        list: parseInt(destination.droppableId),
-        position: destination.index
-      });
-    } catch (err) {
-      console.error(err);
-      fetchBoard();
+    if (!isLeader) {
+      // Member Flow: Moving between TODO, DOING, COMPLETED
+      const assignmentId = draggableId;
+      const newStatus = destination.droppableId;
+      
+      try {
+        await api.patch(`assignments/${assignmentId}/`, { status: newStatus });
+        fetchBoard();
+      } catch (err) {
+        console.error('Move task error', err);
+      }
     }
+    // Note: Leaders don't move tasks between categories via drag-and-drop in this specific spec,
+    // but we could implement category reordering if needed.
   };
 
-  const handleAddList = async (e) => {
+  const handleCreateCategory = async (e) => {
     e.preventDefault();
-    if (!newListTitle.trim()) return;
+    const name = prompt('Category Name:');
+    if (!name) return;
     try {
-      await api.post('lists/', { 
-        title: newListTitle, 
-        board: parseInt(id),
-        position: board.lists.length 
-      });
-      setNewListTitle('');
-      setIsAddingList(false);
+      await api.post('categories/', { name, board: id, position: board.categories.length });
       fetchBoard();
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleAddCard = async (listId) => {
-    if (!newCardTitle.trim()) return;
+  const handleCreateTask = async (taskData) => {
     try {
-      const list = board.lists.find(l => l.id === listId);
-      await api.post('cards/', { 
-        title: newCardTitle, 
-        list: listId,
-        position: list.cards.length
+      await api.post('tasks/', { 
+        ...taskData, 
+        category: selectedCategory.id,
+        assigned_user_ids: taskData.assigned_member_ids
       });
-      setNewCardTitle('');
-      setAddingCardToList(null);
+      setIsCreateTaskOpen(false);
       fetchBoard();
     } catch (err) {
       console.error(err);
     }
   };
 
-  if (loading || !board) return null;
+  const handleDeleteBoard = async () => {
+    if (!window.confirm('CRITICAL: This will delete the board for ALL members. Continue?')) return;
+    try {
+      await api.delete(`boards/${id}/`);
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-50 font-black uppercase text-xs tracking-widest animate-pulse">Synchronizing Workspace...</div>;
+  if (error) return <div className="min-h-screen flex items-center justify-center bg-slate-50 text-red-500 font-black">{error}</div>;
 
   return (
-    <div className="bg-slate-50 font-sans text-slate-900 min-h-screen flex flex-col">
-      <header className="bg-white border-b border-slate-200 shadow-sm flex justify-between items-center w-full px-4 h-14 z-50 fixed top-0 left-0">
-        <div className="flex items-center gap-4">
-          <button onClick={() => navigate('/')} className="p-2 hover:bg-slate-50 transition-colors rounded-xl">
-            <span className="material-symbols-outlined text-slate-600">grid_view</span>
-          </button>
-          <h1 className="text-xl font-black tracking-tight text-slate-900 cursor-pointer" onClick={() => navigate('/')}>Productive Flow</h1>
-          <nav className="hidden md:flex items-center gap-6 ml-4">
-            <span className="text-blue-600 font-black border-b-2 border-blue-600 pb-1 cursor-pointer">Boards</span>
-            <span className="text-slate-500 font-bold hover:text-slate-900 transition-colors cursor-pointer px-2 py-1 rounded-xl">Recent</span>
-            <span className="text-slate-500 font-bold hover:text-slate-900 transition-colors cursor-pointer px-2 py-1 rounded-xl">Starred</span>
-          </nav>
+    <div className="flex flex-col h-screen bg-slate-50 overflow-hidden">
+      {/* Header */}
+      <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between z-50 shrink-0">
+        <div className="flex items-center gap-6">
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-200">
+              <span className="material-symbols-outlined text-white text-lg">grid_view</span>
+            </div>
+            <h1 className="text-xl font-black tracking-tighter text-slate-900">Subzillo</h1>
+          </Link>
+          <div className="h-6 w-px bg-slate-200 mx-2"></div>
+          <div className="flex items-center gap-3">
+             <h2 className="text-sm font-black text-slate-800">{board.title}</h2>
+             <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest ${isLeader ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}`}>
+               {isLeader ? 'Project Leader' : 'Team Member'}
+             </span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="relative hidden sm:block">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-            <input className="pl-10 pr-4 py-1.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary w-64 text-sm font-medium" placeholder="Search" type="text" />
-          </div>
-          <button className="p-2 hover:bg-slate-50 transition-colors rounded-xl">
-            <span className="material-symbols-outlined text-slate-600">notifications</span>
-          </button>
-          <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white font-black text-xs uppercase">
-            {user?.username?.substring(0, 2) || 'JD'}
-          </div>
+        <div className="flex items-center gap-4">
+           {isLeader && (
+             <button onClick={handleDeleteBoard} className="p-2 hover:bg-red-50 text-red-400 hover:text-red-600 rounded-xl transition-all">
+               <span className="material-symbols-outlined">delete</span>
+             </button>
+           )}
+           <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-black text-slate-600">
+             {user.username.substring(0, 2).toUpperCase()}
+           </div>
         </div>
       </header>
 
-      <main className="flex-1 pt-14 flex overflow-hidden">
-        <aside className="hidden lg:flex flex-col gap-1 p-3 h-full w-64 border-r border-slate-100 bg-white sticky top-14 h-[calc(100vh-3.5rem)]">
-          <div className="px-3 py-4">
-            <h2 className="text-lg font-black text-slate-900 tracking-tight">Main Menu</h2>
-          </div>
-          <Link to="/" className="flex items-center gap-3 px-3 py-2 bg-blue-50 text-blue-700 rounded-xl font-black text-sm transition-transform active:translate-x-1">
-            <span className="material-symbols-outlined">dashboard</span>
-            <span>Workspaces</span>
-          </Link>
-          <a className="flex items-center gap-3 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold text-sm" href="#">
-            <span className="material-symbols-outlined">history</span>
-            <span>Recent</span>
-          </a>
-          <a className="flex items-center gap-3 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold text-sm" href="#">
-            <span className="material-symbols-outlined">star</span>
-            <span>Starred</span>
-          </a>
-          <div className="mt-auto border-t border-slate-100 pt-4">
-            <button onClick={logout} className="flex items-center gap-3 w-full px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold text-sm">
-              <span className="material-symbols-outlined">logout</span>
-              <span>Logout</span>
-            </button>
-          </div>
-        </aside>
-
-        <section className="flex-1 flex flex-col overflow-hidden bg-white">
-          <div className="px-8 py-6 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight">{board.title}</h2>
-              {board.members.find(m => m.user.id === user.id)?.role === 'manager' ? (
-                <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-md text-[10px] font-black uppercase tracking-tighter shadow-sm border border-amber-200">Manager</span>
-              ) : (
-                <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-black uppercase tracking-tighter shadow-sm border border-slate-200">Member</span>
-              )}
-              <button className="p-1 hover:bg-slate-100 rounded-xl">
-                <span className="material-symbols-outlined text-slate-400">star</span>
-              </button>
-              <div className="h-6 w-[1px] bg-slate-200 mx-2"></div>
-              <div className="flex -space-x-2">
-                <Avatar initials="JD" color="bg-blue-100 text-blue-600" />
-                <Avatar initials="SC" color="bg-purple-100 text-purple-600" />
-                <div className="h-8 w-8 rounded-full border-2 border-white bg-slate-50 text-slate-400 flex items-center justify-center text-[10px] font-black">+4</div>
-              </div>
-              <button className="bg-primary text-white px-4 py-2 rounded-xl text-xs font-black hover:opacity-90 transition-all flex items-center gap-2 shadow-lg active:scale-95">
-                <span className="material-symbols-outlined text-lg">person_add</span>
-                Share
-              </button>
-            </div>
-            <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 text-xs font-black text-slate-500 hover:bg-slate-50 rounded-xl transition-colors">
-                <span className="material-symbols-outlined text-lg">filter_list</span>
-                Filters
-              </button>
-            </div>
-          </div>
-
-          <div className="board-container flex-1 overflow-x-auto px-8 pb-8 flex items-start gap-6">
-            <DragDropContext onDragEnd={onDragEnd}>
-              {board.lists.map((list) => (
-                <div key={list.id} className="w-80 shrink-0 flex flex-col bg-slate-50 rounded-2xl max-h-full border border-slate-100">
-                  <div className="p-4 flex items-center justify-between">
-                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">{list.title}</h3>
-                    <button className="p-1 hover:bg-slate-200 rounded-xl">
-                      <span className="material-symbols-outlined text-slate-400">more_horiz</span>
+      <div className="flex-1 flex overflow-hidden">
+        {/* Main Workspace */}
+        <main className="flex-1 flex flex-col min-w-0">
+          {isLeader ? (
+            /* LEADER DASHBOARD: Category Layout */
+            <div className="flex-1 overflow-x-auto p-8 flex items-start gap-8 custom-scrollbar">
+              {board.categories.map((category) => (
+                <div key={category.id} className="w-80 shrink-0 flex flex-col bg-white rounded-3xl border border-slate-200 shadow-sm max-h-full">
+                  <div className="p-5 flex items-center justify-between border-b border-slate-50">
+                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">{category.name}</h3>
+                    <button 
+                      onClick={() => { setSelectedCategory(category); setIsCreateTaskOpen(true); }}
+                      className="h-7 w-7 rounded-lg hover:bg-slate-50 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-all"
+                    >
+                      <span className="material-symbols-outlined text-sm">add</span>
                     </button>
                   </div>
-
-                  <Droppable droppableId={list.id.toString()}>
-                    {(provided) => (
-                      <div 
-                        {...provided.droppableProps} 
-                        ref={provided.innerRef}
-                        className="flex-1 overflow-y-auto px-3 space-y-3 py-2 min-h-[10px]"
-                      >
-                        {list.cards.map((card, index) => (
-                          <Draggable key={card.id} draggableId={card.id.toString()} index={index}>
-                            {(provided, snapshot) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                onClick={() => setSelectedCard(card)}
-                                className={`bg-white p-4 rounded-xl shadow-sm border border-slate-100 hover:shadow-xl transition-all cursor-pointer group ${snapshot.isDragging ? 'shadow-2xl scale-105 z-50' : ''}`}
-                              >
-                                <div className="flex gap-1.5 mb-3">
-                                  <span className="h-1.5 w-8 bg-blue-400 rounded-full"></span>
-                                </div>
-                                <p className="text-sm font-black text-slate-800 group-hover:text-primary transition-colors leading-snug">{card.title}</p>
-                                  <div className="mt-4 flex items-center justify-between">
-                                   <div className="flex items-center gap-3 text-slate-400 text-[10px] font-black uppercase tracking-wider">
-                                     <div className="flex items-center gap-1">
-                                       <span className="material-symbols-outlined text-sm">schedule</span>
-                                       <span>Oct 24</span>
-                                     </div>
-                                   </div>
-                                   {card.assigned_to ? (
-                                     <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-[10px] border border-white shadow-sm" title={`Assigned to ${card.assigned_to.username}`}>
-                                       {card.assigned_to.username.substring(0, 2).toUpperCase()}
-                                     </div>
-                                   ) : (
-                                     <div className="h-6 w-6 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 font-black text-[10px] border border-slate-100">?</div>
-                                   )}
-                                 </div>
+                  <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+                    {category.tasks.map((task) => (
+                      <div key={task.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 hover:border-blue-200 transition-all group">
+                        <h4 className="text-xs font-black text-slate-800 mb-3">{task.title}</h4>
+                        <div className="flex items-center justify-between">
+                          <div className="flex -space-x-1.5">
+                            {task.assigned_users.map(u => (
+                              <div key={u.id} className="h-6 w-6 rounded-full bg-slate-900 text-white border-2 border-white flex items-center justify-center text-[8px] font-black uppercase">
+                                {u.username.substring(0, 2)}
                               </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
+                            ))}
+                          </div>
+                          <div className="text-[9px] font-bold text-slate-400">
+                             {task.assignments.length} Assignees
+                          </div>
+                        </div>
                       </div>
-                    )}
-                  </Droppable>
-                  {addingCardToList === list.id ? (
-                    <div className="p-3 space-y-2">
-                      <textarea
-                        autoFocus
-                        className="w-full p-3 text-sm font-medium bg-white border border-blue-400 rounded-xl focus:ring-0 resize-none shadow-lg"
-                        placeholder="What needs to be done?"
-                        value={newCardTitle}
-                        onChange={(e) => setNewCardTitle(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            handleAddCard(list.id);
-                          }
-                          if (e.key === 'Escape') setAddingCardToList(null);
-                        }}
-                      />
-                      <div className="flex gap-2">
-                        <button 
-                          onClick={() => handleAddCard(list.id)}
-                          className="px-4 py-2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-sm"
-                        >
-                          Add Card
-                        </button>
-                        <button 
-                          onClick={() => setAddingCardToList(null)}
-                          className="p-2 text-slate-400 hover:text-slate-600"
-                        >
-                          <span className="material-symbols-outlined text-lg">close</span>
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <button 
-                      onClick={() => setAddingCardToList(list.id)}
-                      className="m-3 p-3 flex items-center gap-2 text-slate-400 hover:bg-slate-200 rounded-xl transition-colors text-xs font-black uppercase tracking-widest"
-                    >
-                      <span className="material-symbols-outlined text-lg">add</span>
-                      Add a card
-                    </button>
-                  )}
+                    ))}
+                  </div>
                 </div>
               ))}
-            </DragDropContext>
-            <div className="w-80 shrink-0">
-              {isAddingList ? (
-                <div className="bg-slate-50 p-4 rounded-2xl border border-blue-400 shadow-xl">
-                  <input
-                    autoFocus
-                    type="text"
-                    className="w-full p-3 text-sm font-black bg-white border-none rounded-xl focus:ring-0 mb-3"
-                    placeholder="Enter list title..."
-                    value={newListTitle}
-                    onChange={(e) => setNewListTitle(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleAddList(e);
-                      if (e.key === 'Escape') setIsAddingList(false);
-                    }}
-                  />
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={handleAddList}
-                      className="px-6 py-2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg"
-                    >
-                      Add List
-                    </button>
-                    <button 
-                      onClick={() => setIsAddingList(false)}
-                      className="p-2 text-slate-400 hover:text-slate-600"
-                    >
-                      <span className="material-symbols-outlined">close</span>
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <button 
-                  onClick={() => setIsAddingList(true)}
-                  className="w-full p-4 flex items-center gap-2 bg-slate-50 border-2 border-dashed border-slate-200 hover:border-primary hover:bg-white transition-all rounded-2xl font-black text-slate-400 text-xs uppercase tracking-widest"
-                >
-                  <span className="material-symbols-outlined">add</span>
-                  Add another list
-                </button>
-              )}
+              <button 
+                onClick={handleCreateCategory}
+                className="w-80 shrink-0 h-16 border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center gap-2 text-slate-400 hover:border-blue-400 hover:text-blue-600 transition-all font-black text-xs uppercase tracking-widest group"
+              >
+                <span className="material-symbols-outlined group-hover:scale-110 transition-transform">add_circle</span>
+                New Category
+              </button>
             </div>
-          </div>
-        </section>
-      </main>
+          ) : (
+            /* MEMBER DASHBOARD: Fixed Kanban Workflow */
+            <div className="flex-1 overflow-x-auto p-8 flex items-start gap-8 custom-scrollbar">
+              <DragDropContext onDragEnd={onDragEnd}>
+                {['todo', 'doing', 'completed'].map((status) => {
+                  // Find tasks assigned to this member with this status
+                  const memberTasks = [];
+                  board.categories.forEach(cat => {
+                    cat.tasks.forEach(task => {
+                      const assignment = task.assignments.find(a => a.user.id === user.id && a.status === status);
+                      if (assignment) {
+                        memberTasks.push({ ...task, assignmentId: assignment.id });
+                      }
+                    });
+                  });
 
-      {selectedCard && (
-        <CardDetailModal 
-          card={selectedCard} 
-          onClose={() => setSelectedCard(null)} 
-          listName={board.lists.find(l => l.cards.some(c => c.id === selectedCard.id))?.title}
-          boardMembers={board.members}
-          isManager={board.members.find(m => m.user.id === user.id)?.role === 'manager'}
-          onAssign={(userId) => {
-             // Handle assignment here or inside modal
-             api.post(`cards/${selectedCard.id}/assign/`, { user_id: userId })
-               .then(res => {
-                  // The handleWebSocketMessage will update the board automatically,
-                  // but we can also update local state for instant feel.
-                  handleWebSocketMessage({ msg_type: 'card_assigned', data: res.data });
-               });
-          }}
-        />
-      )}
+                  return (
+                    <div key={status} className="w-80 shrink-0 flex flex-col bg-slate-100/50 rounded-3xl border border-slate-200/40 p-2 max-h-full">
+                      <div className="px-4 py-4 flex items-center justify-between">
+                         <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{status}</h3>
+                         <span className="h-5 w-5 rounded-full bg-white text-[9px] font-black flex items-center justify-center shadow-sm text-slate-500">{memberTasks.length}</span>
+                      </div>
+                      <Droppable droppableId={status}>
+                        {(provided, snapshot) => (
+                          <div 
+                            {...provided.droppableProps} 
+                            ref={provided.innerRef} 
+                            className={`flex-1 overflow-y-auto px-2 space-y-3 py-2 min-h-[200px] rounded-2xl transition-colors ${snapshot.isDraggingOver ? 'bg-slate-200/50' : ''}`}
+                          >
+                            {memberTasks.map((task, index) => (
+                              <Draggable key={task.assignmentId} draggableId={task.assignmentId.toString()} index={index}>
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className={`bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group ${snapshot.isDragging ? 'shadow-2xl scale-105 z-50 ring-2 ring-blue-600' : ''}`}
+                                  >
+                                    <p className="text-xs font-black text-slate-800 leading-tight group-hover:text-blue-600 transition-colors">{task.title}</p>
+                                    <div className="mt-4 flex items-center justify-between text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
+                                       <div className="flex items-center gap-1">
+                                         <span className="material-symbols-outlined text-[14px]">category</span>
+                                         {board.categories.find(c => c.id === task.category)?.name}
+                                       </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </div>
+                  );
+                })}
+              </DragDropContext>
+            </div>
+          )}
+        </main>
+
+        {/* Right Panel: Activity Stream (Leader Dashboard only) */}
+        {isLeader && (
+          <aside className="w-96 shrink-0">
+             <ActivityStream activities={activities} />
+          </aside>
+        )}
+      </div>
+
+      <CreateTaskModal 
+        isOpen={isCreateTaskOpen}
+        onClose={() => setIsCreateTaskOpen(false)}
+        onCreate={handleCreateTask}
+        members={board.members.map(u => ({ user: u }))}
+      />
     </div>
   );
 };
-
-const Avatar = ({ initials, color }) => (
-  <div className={`h-8 w-8 rounded-full border-2 border-white ${color} flex items-center justify-center text-[10px] font-black`}>
-    {initials}
-  </div>
-);
 
 export default BoardView;

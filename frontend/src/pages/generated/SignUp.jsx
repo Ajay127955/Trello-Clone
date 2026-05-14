@@ -9,7 +9,7 @@ import authBranding from '../../assets/auth-branding.png';
 const SignUp = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { register, googleLogin } = useAuth();
+  const { register, googleLogin, verifyRegistration } = useAuth();
   const { showToast } = useToast();
   const [email, setEmail] = useState(searchParams.get('email') || '');
   const [username, setUsername] = useState('');
@@ -26,19 +26,36 @@ const SignUp = () => {
     setLoading(true);
     setError('');
     try {
+      const invitationToken = searchParams.get('token');
       if (step === 1) {
         // Pass the username to the backend; if empty, our RegisterSerializer will handle generation
-        await register(username || '', password, email);
+        await register(username || '', password, email, invitationToken);
         showToast('OTP sent to your email', 'success');
         setStep(2);
       } else {
-        await verifyRegistration(username || '', password, email, otp);
+        await verifyRegistration(username || '', password, email, otp, invitationToken);
         showToast('Successfully registered!', 'success');
         navigate('/onboarding-welcome');
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || 'Registration failed. Please try again.');
+      // Extract specific field errors (e.g. {"email": ["..."]})
+      const data = err.response?.data;
+      let errorMsg = 'Registration failed. Please try again.';
+      
+      if (data) {
+        if (typeof data === 'string') errorMsg = data;
+        else if (data.error) errorMsg = data.error;
+        else if (typeof data === 'object') {
+          // Flatten field errors into a single string
+          errorMsg = Object.entries(data)
+            .map(([field, errors]) => `${field}: ${errors.join(', ')}`)
+            .join(' | ');
+        }
+      }
+      
+      setError(errorMsg);
+      showToast(errorMsg, 'error');
     } finally {
       setLoading(false);
     }
@@ -49,7 +66,8 @@ const SignUp = () => {
       setSocialLoading(true);
       setError('');
       try {
-        await googleLogin(tokenResponse.access_token);
+        const invitationToken = searchParams.get('token');
+        await googleLogin(tokenResponse.access_token, invitationToken);
         showToast('Successfully registered!', 'success');
         navigate('/onboarding-welcome');
       } catch (err) {

@@ -1,534 +1,332 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import InviteModal from '../../components/InviteModal';
-import CardModal from '../../components/CardModal';
 import { useAuth } from '../../context/AuthContext';
-import PromptModal from '../../components/PromptModal';
-import ConfirmModal from '../../components/ConfirmModal';
+import useBoardSocket from '../../hooks/useBoardSocket';
+import ActivityStream from '../../components/ActivityStream';
+import CreateTaskModal from '../../components/CreateTaskModal';
+import CreateCategoryModal from '../../components/CreateCategoryModal';
+import InviteModal from '../../components/InviteModal';
+import { 
+  Users, Plus, Trash2, Layout, 
+  CheckCircle2, Clock, PlayCircle,
+  MoreVertical, ChevronRight, Settings,
+  Activity as ActivityIcon, Kanban,
+  ArrowRight, UserPlus
+} from 'lucide-react';
 
 const BoardView = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { showToast } = useToast();
+  
   const [board, setBoard] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('kanban'); // 'kanban' or 'calendar'
+  const [error, setError] = useState(null);
+  const [isLeader, setIsLeader] = useState(false);
+  const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
+  const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
-  const [isCardModalOpen, setIsCardModalOpen] = useState(false);
-  const [selectedCardId, setSelectedCardId] = useState(null);
-  const [isAiGenerating, setIsAiGenerating] = useState(false);
-  const [activeListMenu, setActiveListMenu] = useState(null); // { id, x, y }
-  
-  // Confirm Modal State
-  const [confirmConfig, setConfirmConfig] = useState({
-    isOpen: false,
-    title: '',
-    message: '',
-    onConfirm: () => {},
-    type: 'danger'
-  });
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
-  const closeConfirm = () => setConfirmConfig(prev => ({ ...prev, isOpen: false }));
-  const openConfirm = (config) => setConfirmConfig({ ...config, isOpen: true });
-
-  // Prompt Modal State
-  const [promptConfig, setPromptConfig] = useState({
-    isOpen: false,
-    title: '',
-    label: '',
-    placeholder: '',
-    defaultValue: '',
-    onSubmit: () => {},
-    type: 'text'
-  });
-
-  const closePrompt = () => setPromptConfig(prev => ({ ...prev, isOpen: false }));
-  const openPrompt = (config) => setPromptConfig({ ...config, isOpen: true });
-
-  useEffect(() => {
-    fetchBoard();
-    const interval = setInterval(fetchBoard, 3000);
-    return () => clearInterval(interval);
-  }, [id]);
-
-  const fetchBoard = async () => {
+  const fetchBoard = useCallback(async () => {
     try {
       const response = await api.get(`boards/${id}/`);
       setBoard(response.data);
+      setIsLeader(response.data.owner.id === user?.id);
+      setError(null);
     } catch (err) {
       console.error(err);
-      showToast('Failed to load board data.', 'error');
+      setError('Board not found or access denied.');
     } finally {
       setLoading(false);
     }
+  }, [id, user?.id]);
+
+  const handleSocketMessage = useCallback((data) => {
+    if (['task_assigned', 'task_moved', 'category_created', 'board_updated'].includes(data.msg_type)) {
+      fetchBoard();
+    }
+  }, [fetchBoard]);
+
+  useBoardSocket(id, handleSocketMessage);
+
+  useEffect(() => {
+    fetchBoard();
+  }, [fetchBoard]);
+
+  const handleCreateCategory = () => {
+    setIsCreateCategoryOpen(true);
   };
 
-  const onDragEnd = async (result) => {
-    const { destination, source, draggableId } = result;
-    if (!destination) return;
-    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
-
-    const newBoard = { ...board };
-    const sourceList = newBoard.lists?.find(l => l.id.toString() === source.droppableId);
-    const destList = newBoard.lists?.find(l => l.id.toString() === destination.droppableId);
-    
-    if (!sourceList || !destList) return;
-
-    const [movedCard] = sourceList.cards.splice(source.index, 1);
-    destList.cards.splice(destination.index, 0, movedCard);
-    setBoard(newBoard);
-
+  const handleDeleteCategory = async (catId) => {
+    if (!window.confirm("Delete this category?")) return;
     try {
-      await api.patch(`cards/${draggableId}/`, { 
-        list: parseInt(destination.droppableId),
-        position: destination.index
-      });
-    } catch (err) {
-      console.error(err);
-      showToast('Failed to move card.', 'error');
+      await api.delete(`categories/${catId}/`);
+      showToast('Category deleted', 'success');
       fetchBoard();
+    } catch (err) {
+      showToast('Failed to delete', 'error');
     }
   };
 
-  const handleAddCard = (listId) => {
-    openPrompt({
-      title: 'Add New Card',
-      label: 'Card Title',
-      placeholder: 'What needs to be done?',
-      onSubmit: async (title) => {
-        try {
-          await api.post('cards/', { title, list: listId, position: 999 });
-          showToast('Card added successfully!', 'success');
-          fetchBoard();
-        } catch (err) {
-          showToast('Failed to add card.', 'error');
-        }
+  const handleMoveTask = async (taskId, newStatus) => {
+    try {
+      // Find the task, then find the user's assignment within it
+      const allTasks = board.categories.flatMap(c => c.tasks);
+      const task = allTasks.find(t => t.id === taskId);
+      if (!task) return;
+      const assignment = task.assignments.find(a => a.user.id === user.id);
+      if (assignment) {
+        await api.patch(`assignments/${assignment.id}/`, { status: newStatus });
+        showToast(`Task moved to ${newStatus.toUpperCase()}!`, 'success');
+        fetchBoard();
+      } else {
+        showToast('Assignment not found.', 'error');
       }
-    });
+    } catch (err) {
+      showToast('Failed to update status', 'error');
+    }
   };
 
-  const handleAddList = () => {
-    openPrompt({
-      title: 'Add New List',
-      label: 'List Title',
-      placeholder: 'e.g. Backlog, Testing',
-      onSubmit: async (title) => {
-        try {
-          await api.post('lists/', { title, board: id, position: 999, wip_limit: 0 });
-          showToast('List added successfully!', 'success');
-          fetchBoard();
-        } catch (err) {
-          showToast('Failed to add list.', 'error');
-        }
-      }
-    });
-  };
+  if (loading) return (
+    <div className="flex h-screen items-center justify-center bg-[#F8FAFC]">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-slate-500 font-bold animate-pulse">Initializing Workspace...</p>
+      </div>
+    </div>
+  );
 
-  const handleAiSetup = () => {
-    openPrompt({
-      title: 'AI Smart Setup',
-      label: 'Project Goal',
-      placeholder: 'e.g. Build a SaaS landing page',
-      type: 'textarea',
-      onSubmit: async (promptText) => {
-        setIsAiGenerating(true);
-        showToast('AI is generating your board structure...', 'info');
-        try {
-          await api.post(`boards/${id}/generate_ai/`, { prompt: promptText });
-          showToast('Board structure generated by AI!', 'success');
-          fetchBoard();
-        } catch (err) {
-          showToast('AI Generation failed.', 'error');
-        } finally {
-          setIsAiGenerating(false);
-        }
-      }
-    });
-  };
-
-  const handleCardClick = (cardId) => {
-    setSelectedCardId(cardId);
-    setIsCardModalOpen(true);
-  };
-
-  const handleListDelete = (listId) => {
-    openConfirm({
-      title: 'Delete List',
-      message: 'Are you sure you want to delete this list and all its cards? This action cannot be undone.',
-      onConfirm: async () => {
-        try {
-          await api.delete(`lists/${listId}/`);
-          showToast('List deleted successfully!', 'success');
-          fetchBoard();
-        } catch (err) {
-          showToast('Failed to delete list.', 'error');
-        }
-      }
-    });
-    setActiveListMenu(null);
-  };
-
-  const handleListRename = (listId, currentTitle) => {
-    setActiveListMenu(null);
-    openPrompt({
-      title: 'Rename List',
-      label: 'New Title',
-      defaultValue: currentTitle,
-      onSubmit: async (newTitle) => {
-        if (!newTitle || newTitle === currentTitle) return;
-        try {
-          await api.patch(`lists/${listId}/`, { title: newTitle });
-          showToast('List renamed!', 'success');
-          fetchBoard();
-        } catch (err) {
-          showToast('Failed to rename list.', 'error');
-        }
-      }
-    });
-  };
-
-  const handleListColor = (listId) => {
-    setActiveListMenu(null);
-    openPrompt({
-      title: 'Set List Color',
-      label: 'Color (Hex or Name)',
-      placeholder: '#3b82f6 or blue',
-      onSubmit: async (color) => {
-        try {
-          await api.patch(`lists/${listId}/`, { color });
-          showToast('List color updated!', 'success');
-          fetchBoard();
-        } catch (err) {
-          showToast('Failed to update color.', 'error');
-        }
-      }
-    });
-  };
-
-  const handleDeleteBoard = () => {
-    openConfirm({
-      title: 'Delete Board',
-      message: 'Are you sure you want to permanently delete this board and all its content? This cannot be undone.',
-      onConfirm: async () => {
-        try {
-          await api.delete(`boards/${id}/`);
-          showToast('Board deleted successfully!', 'success');
-          navigate('/boards-dashboard');
-        } catch (err) {
-          showToast('Failed to delete board. Only the owner can delete it.', 'error');
-        }
-      }
-    });
-  };
-
-  if (loading || !board) return (
-    <div className="flex items-center justify-center h-full">
-      <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+  if (error || !board) return (
+    <div className="flex h-screen items-center justify-center bg-[#F8FAFC] p-8 text-center">
+      <div className="max-w-md">
+        <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Users size={40} />
+        </div>
+        <h2 className="text-2xl font-black text-slate-900 mb-2">Access Denied</h2>
+        <p className="text-slate-500 mb-8">{error || "You don't have permission to view this board."}</p>
+        <button onClick={() => navigate('/boards-dashboard')} className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold">Back to Dashboard</button>
+      </div>
     </div>
   );
 
   return (
-    <div 
-      className="flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden bg-slate-50"
-      style={{ 
-        backgroundColor: board.background_color || '#f8fafc',
-        backgroundImage: board.background_image ? `url(${board.background_image})` : 'none',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}
-    >
+    <div className="flex flex-col h-[calc(100vh-4rem)] bg-[#F8FAFC]">
       {/* Board Header */}
-      <div className="px-6 py-3 flex items-center justify-between border-b border-black/10 bg-white/80 backdrop-blur-md sticky top-0 z-20">
-        <div className="flex items-center gap-4">
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">{board.title}</h2>
-          <div className="h-6 w-[1px] bg-slate-200 mx-2"></div>
-          <div className="flex -space-x-2">
-            <div className="w-8 h-8 rounded-full border-2 border-white bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm" title={`Owner: ${board.owner?.username}`}>
-              {board.owner?.username?.substring(0, 2).toUpperCase() || 'OW'}
+      <div className="px-8 py-6 flex items-center justify-between border-b border-slate-200 bg-white shadow-sm">
+        <div className="flex items-center gap-6">
+          <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200">
+            <Layout className="text-white" size={24} />
+          </div>
+          <div>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+              {board.title}
+              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${isLeader ? 'bg-amber-100 text-amber-700 border border-amber-200' : 'bg-blue-100 text-blue-700 border border-blue-200'}`}>
+                {isLeader ? 'Team Leader' : 'Team Member'}
+              </span>
+            </h1>
+            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">
+              {isLeader ? 'Project Management Dashboard' : 'Personal Task Workspace'}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="flex -space-x-3 mr-4">
+            <div className="w-10 h-10 rounded-full border-4 border-white bg-slate-800 flex items-center justify-center text-white text-xs font-black shadow-md z-10" title={`Leader: ${board.owner.username}`}>
+              {board.owner.username.substring(0, 2).toUpperCase()}
             </div>
-            {(board.members || []).map((member) => (
-              <div key={member.id} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600 shadow-sm" title={member.username}>
-                {member.username?.substring(0, 2).toUpperCase() || '??'}
+            {board.members.map(m => (
+              <div key={m.id} className="w-10 h-10 rounded-full border-4 border-white bg-slate-100 flex items-center justify-center text-slate-500 text-xs font-black shadow-sm" title={m.username}>
+                {m.username.substring(0, 2).toUpperCase()}
               </div>
             ))}
           </div>
-          <button 
-            onClick={() => setIsInviteModalOpen(true)}
-            className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-blue-100 transition-colors ml-2"
-          >
-            <span className="material-symbols-outlined text-[18px]">person_add</span>
-            Share
-          </button>
-          
-
-          {board.owner.id === user?.id && (
-            <button 
-              onClick={handleDeleteBoard}
-              className="flex items-center gap-2 bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-red-100 transition-colors ml-2"
-              title="Delete Board"
-            >
-              <span className="material-symbols-outlined text-[18px]">delete</span>
-              Delete
-            </button>
+          {isLeader && (
+            <>
+              <button 
+                onClick={() => setIsInviteModalOpen(true)}
+                className="flex items-center gap-2 bg-blue-50 text-blue-700 px-6 py-3 rounded-xl font-bold hover:bg-blue-100 transition-all border border-blue-200"
+              >
+                <UserPlus size={18} />
+                Share
+              </button>
+              <button 
+                onClick={handleCreateCategory}
+                className="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-200"
+              >
+                <Plus size={18} />
+                Add Category
+              </button>
+            </>
           )}
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex bg-slate-100 p-1 rounded-xl mr-4">
-            <button 
-              onClick={() => setViewMode('kanban')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${viewMode === 'kanban' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-            >
-              <span className="material-symbols-outlined text-[18px]">view_kanban</span>
-              Kanban
-            </button>
-            <button 
-              onClick={() => setViewMode('calendar')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${viewMode === 'calendar' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-            >
-              <span className="material-symbols-outlined text-[18px]">calendar_today</span>
-              Calendar
-            </button>
-          </div>
-          <button 
-            onClick={() => showToast('Filtering coming soon! Use the Search bar above.', 'info')}
-            className="flex items-center gap-2 text-slate-600 hover:bg-slate-100 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors"
-          >
-            <span className="material-symbols-outlined text-[18px]">filter_list</span>
-            Filters
-          </button>
         </div>
       </div>
 
-      {viewMode === 'kanban' ? (
-      <div className="flex-1 overflow-x-auto overflow-y-hidden p-4 md:p-6 custom-scrollbar">
-        <DragDropContext onDragEnd={onDragEnd}>
-          <div className="flex gap-6 items-start h-full px-6 py-4">
-            {board.lists.map((list) => (
-              <Droppable key={list.id} droppableId={list.id.toString()}>
-                {(provided) => (
-                  <div 
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="w-[280px] bg-[#f1f2f4] dark:bg-slate-900/50 rounded-[1.5rem] flex flex-col max-h-full shadow-sm border border-slate-200/50"
-                  >
-                    <div 
-                      className="p-4 pr-3 flex items-center justify-between transition-colors relative"
-                    >
-                      {list.color && (
-                        <div 
-                          className="absolute top-0 left-0 right-0 h-2 rounded-t-full" 
-                          style={{ backgroundColor: list.color }}
-                        />
-                      )}
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-black text-[11px] uppercase tracking-[0.1em] text-slate-700 dark:text-slate-300">{list.title}</h3>
-                        {list.wip_limit > 0 && (
-                          <span className={`text-[9px] px-2 py-0.5 rounded-full font-black ${list.cards.length > list.wip_limit ? 'bg-red-500 text-white' : 'bg-slate-300 text-slate-600'}`}>
-                            {list.cards.length}/{list.wip_limit}
-                          </span>
-                        )}
-                      </div>
+      <div className="flex-1 flex overflow-hidden">
+        {/* Main Workspace Area */}
+        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          {isLeader ? (
+            /* TEAM LEADER VIEW: Category-based Organization */
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+              {board.categories.map(category => (
+                <div key={category.id} className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden flex flex-col h-fit">
+                  <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                    <div>
+                      <h3 className="font-black text-slate-900 tracking-tight">{category.name}</h3>
+                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{category.tasks.length} Tasks defined</p>
+                    </div>
+                    <div className="flex gap-2">
                       <button 
-                        onClick={(e) => {
-                          const rect = e.currentTarget.getBoundingClientRect();
-                          setActiveListMenu({ id: list.id, title: list.title, x: rect.left, y: rect.bottom });
-                        }}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+                        onClick={() => { setSelectedCategoryId(category.id); setIsCreateTaskOpen(true); }}
+                        className="p-2 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors"
                       >
-                        <span className="material-symbols-outlined text-[18px] text-slate-400">more_horiz</span>
+                        <Plus size={20} />
                       </button>
-                    </div>
-
-                    <div className="flex-1 overflow-y-auto px-3 pb-2 space-y-3">
-                      {list.cards.map((card, index) => (
-                        <Draggable key={card.id} draggableId={card.id.toString()} index={index}>
-                          {(provided) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              onClick={() => handleCardClick(card.id)}
-                              className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-md cursor-pointer transition-all active:scale-[0.98] group"
-                            >
-                              {card.labels?.length > 0 && (
-                                <div className="flex flex-wrap gap-1 mb-3">
-                                  {card.labels.map(l => (
-                                    <div key={l.id} className="h-1.5 w-10 rounded-full" style={{ backgroundColor: l.color }} />
-                                  ))}
-                                </div>
-                              )}
-                              <p className="text-[13px] font-bold text-slate-800 dark:text-slate-200 leading-snug group-hover:text-blue-600 transition-colors">{card.title}</p>
-                              
-                              <div className="flex items-center justify-between mt-5">
-                                <div className="flex items-center gap-3">
-                                  {card.description && (
-                                    <span className="material-symbols-outlined text-[16px] text-slate-300">subject</span>
-                                  )}
-                                  <div className="flex items-center gap-3">
-                                    {card.checklist_stats?.total > 0 && (
-                                      <div className={`flex items-center gap-1.5 text-[9px] font-black px-2 py-0.5 rounded-md ${card.checklist_stats.completed === card.checklist_stats.total ? 'bg-emerald-500 text-white' : 'text-slate-400'}`}>
-                                        <span className="material-symbols-outlined text-[14px]">check_box</span>
-                                        {card.checklist_stats.completed}/{card.checklist_stats.total}
-                                      </div>
-                                    )}
-                                    {card.attachments?.length > 0 && (
-                                      <div className="flex items-center gap-1 text-[9px] font-black text-slate-400">
-                                        <span className="material-symbols-outlined text-[14px]">attach_file</span>
-                                        {card.attachments.length}
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-
-                                <div className="flex -space-x-2">
-                                  {card.assigned_members?.slice(0, 3).map(m => (
-                                    <div key={m.id} className="h-7 w-7 rounded-full border-2 border-white dark:border-slate-800 bg-blue-600 flex items-center justify-center text-[9px] font-black text-white shadow-sm">
-                                      {m.username?.substring(0, 2).toUpperCase() || '??'}
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-
-                    <div className="p-3 pt-0">
                       <button 
-                        onClick={() => handleAddCard(list.id)}
-                        className="w-full flex items-center gap-3 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800 p-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all group"
+                        onClick={() => handleDeleteCategory(category.id)}
+                        className="p-2 hover:bg-red-50 text-red-500 rounded-lg transition-colors"
                       >
-                        <span className="material-symbols-outlined text-[20px] group-hover:rotate-90 transition-transform">add</span>
-                        Add a card
+                        <Trash2 size={18} />
                       </button>
                     </div>
                   </div>
-                )}
-              </Droppable>
-            ))}
-
-            <button 
-              onClick={handleAddList}
-              className="flex-shrink-0 w-[280px] bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-800/60 backdrop-blur-md text-slate-800 dark:text-white p-6 rounded-[1.5rem] flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.2em] transition-all h-fit border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-400 shadow-xl"
-            >
-              <span className="material-symbols-outlined text-blue-600">add_circle</span>
-              Synthesize List
-            </button>
-          </div>
-        </DragDropContext>
-      </div>
-      ) : (
-        <div className="flex-1 p-6 bg-slate-50 overflow-y-auto">
-          <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
-            <h3 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-2">
-              <span className="material-symbols-outlined text-blue-600">calendar_month</span>
-              Board Planner
-            </h3>
-            <div className="grid grid-cols-7 gap-4">
-              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
-                <div key={day} className="text-center text-xs font-black text-slate-400 uppercase tracking-widest pb-4 border-b border-slate-100">{day}</div>
-              ))}
-              {/* Simplified Calendar Grid for Demo */}
-              {Array.from({ length: 35 }).map((_, i) => {
-                const dayCards = (board.lists || []).flatMap(l => l.cards || []).filter(c => {
-                  if (!c.due_date) return false;
-                  const date = new Date(c.due_date);
-                  return date.getDate() === (i % 31) + 1; // Very rough mock logic
-                });
-                return (
-                  <div key={i} className="min-h-[120px] bg-slate-50/50 rounded-xl p-2 border border-slate-100 hover:bg-slate-100/50 transition-colors">
-                    <span className="text-[10px] font-bold text-slate-300">{(i % 31) + 1}</span>
-                    <div className="mt-2 space-y-1">
-                      {dayCards.map(card => (
-                        <div 
-                          key={card.id} 
-                          onClick={() => handleCardClick(card.id)}
-                          className="text-[10px] font-bold bg-white p-1.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 truncate"
-                        >
-                          {card.title}
+                  <div className="p-4 space-y-3">
+                    {category.tasks.map(task => (
+                      <div key={task.id} className="p-4 bg-[#F8FAFC] border border-slate-100 rounded-2xl group hover:border-blue-200 hover:bg-white transition-all">
+                        <h4 className="font-bold text-slate-800 mb-3">{task.title}</h4>
+                        <div className="flex items-center justify-between">
+                          <div className="flex -space-x-2">
+                            {task.assigned_users.map(u => (
+                              <div key={u.id} className="w-8 h-8 rounded-full border-2 border-white bg-blue-600 flex items-center justify-center text-[9px] font-black text-white shadow-sm" title={u.username}>
+                                {u.username.substring(0, 2).toUpperCase()}
+                              </div>
+                            ))}
+                          </div>
+                          <div className="flex gap-1">
+                            {task.assignments.map(a => (
+                              <div 
+                                key={a.id} 
+                                className={`w-2 h-2 rounded-full ${a.status === 'COMPLETED' ? 'bg-emerald-500' : a.status === 'DOING' ? 'bg-amber-500' : 'bg-slate-300'}`}
+                                title={`${a.user.username}: ${a.status}`}
+                              />
+                            ))}
+                          </div>
                         </div>
-                      ))}
+                      </div>
+                    ))}
+                    {category.tasks.length === 0 && (
+                      <div className="py-12 text-center">
+                        <p className="text-slate-300 font-black text-[10px] uppercase tracking-widest italic">No tasks in this category</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {board.categories.length === 0 && (
+                <div className="col-span-full py-32 text-center bg-white rounded-[3rem] border-4 border-dashed border-slate-100">
+                   <Layout size={48} className="mx-auto text-slate-100 mb-6" />
+                   <h2 className="text-xl font-black text-slate-300 tracking-tight">Establish Your Infrastructure</h2>
+                   <p className="text-slate-400 text-sm font-bold mt-2">Create categories to organize your team's specialized workflows.</p>
+                   <button onClick={handleCreateCategory} className="mt-8 px-8 py-3 bg-slate-900 text-white rounded-xl font-bold">Initialize Category</button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* TEAM MEMBER VIEW: Kanban-based Workflow */
+            <div className="flex gap-8 items-start h-full overflow-x-auto pb-6 custom-scrollbar">
+              {['todo', 'doing', 'completed'].map(status => {
+                const tasksInStatus = board.categories.flatMap(c => c.tasks).filter(t => 
+                  t.assignments.some(a => a.user.id === user.id && a.status === status)
+                );
+                
+                return (
+                  <div key={status} className="w-[350px] shrink-0 bg-white rounded-[2.5rem] border border-slate-200 flex flex-col shadow-sm">
+                    <div className="p-8 pb-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${status === 'todo' ? 'bg-slate-300' : status === 'doing' ? 'bg-blue-500' : 'bg-emerald-500'}`} />
+                        <h3 className="font-black text-slate-900 tracking-tight text-xl">{status.toUpperCase()}</h3>
+                      </div>
+                      <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">{tasksInStatus.length}</span>
+                    </div>
+                    
+                    <div className="p-6 space-y-4 overflow-y-auto">
+                      {tasksInStatus.map(task => {
+                        const myAssignment = task.assignments.find(a => a.user.id === user.id);
+                        return (
+                          <div key={task.id} className="p-6 bg-[#F8FAFC] border border-slate-100 rounded-[1.5rem] hover:bg-white hover:border-blue-200 transition-all group shadow-sm">
+                            <div className="flex justify-between items-start mb-4">
+                              <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-2 py-1 rounded-md uppercase tracking-widest">
+                                {board.categories.find(c => c.tasks.some(t => t.id === task.id))?.name}
+                              </span>
+                            </div>
+                            <h4 className="font-bold text-slate-800 text-lg leading-tight mb-4 group-hover:text-blue-600 transition-colors">{task.title}</h4>
+                            <p className="text-slate-400 text-xs font-medium mb-6 line-clamp-2">{task.description || "No specific details provided."}</p>
+                            
+                            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                               <div className="flex items-center gap-2">
+                                 {status !== 'completed' && (
+                                   <button 
+                                     onClick={() => handleMoveTask(task.id, status === 'todo' ? 'doing' : 'completed')}
+                                     className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-md"
+                                   >
+                                     <ArrowRight size={14} />
+                                     {status === 'todo' ? 'Start' : 'Finish'}
+                                   </button>
+                                 )}
+                               </div>
+                               <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-[9px] font-black shadow-lg">
+                                 {user.username.substring(0, 2).toUpperCase()}
+                               </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {tasksInStatus.length === 0 && (
+                        <div className="py-20 text-center border-2 border-dashed border-slate-50 rounded-[2rem]">
+                          <p className="text-slate-300 font-bold text-xs">No tasks in queue</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
               })}
             </div>
+          )}
+        </div>
+
+        {/* Right Sidebar: Activity Stream */}
+        <div className="w-[400px] border-l border-slate-200 bg-white flex flex-col hidden 2xl:flex">
+          <div className="p-6 border-b border-slate-200 flex items-center gap-3">
+            <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+              <ActivityIcon size={20} />
+            </div>
+            <h3 className="font-black text-slate-900 tracking-tight">Activity Log</h3>
+          </div>
+          <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+            <ActivityStream boardId={id} />
           </div>
         </div>
-      )}
+      </div>
 
-      <InviteModal 
-        isOpen={isInviteModalOpen}
-        onClose={() => setIsInviteModalOpen(false)}
+      <CreateTaskModal 
+        isOpen={isCreateTaskOpen}
+        onClose={() => { setIsCreateTaskOpen(false); setSelectedCategoryId(null); }}
         boardId={id}
-        targetName={board.title}
+        categoryId={selectedCategoryId}
+        members={board.members}
+        onTaskCreated={fetchBoard}
       />
 
-      <CardModal 
-        isOpen={isCardModalOpen}
-        onClose={() => setIsCardModalOpen(false)}
-        cardId={selectedCardId}
-        boardMembers={[board.owner, ...board.members]}
-        onCardUpdate={fetchBoard}
-      />
-
-      {activeListMenu && (
-        <>
-          <div 
-            className="fixed inset-0 z-[100]" 
-            onClick={() => setActiveListMenu(null)}
-          />
-          <div 
-            className="fixed z-[101] w-56 bg-white rounded-2xl shadow-2xl border border-slate-200 py-2 animate-in fade-in zoom-in-95 duration-200"
-            style={{ 
-              top: `${activeListMenu.y + 8}px`, 
-              left: `${activeListMenu.x}px` 
-            }}
-          >
-            <div className="px-4 py-2 border-b border-slate-100 mb-2">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">List Options</p>
-            </div>
-            <button 
-              onClick={() => handleListRename(activeListMenu.id, activeListMenu.title)}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors text-left"
-            >
-              <span className="material-symbols-outlined text-slate-400">edit</span>
-              Rename List
-            </button>
-            <button 
-              onClick={() => handleListColor(activeListMenu.id)}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors text-left"
-            >
-              <span className="material-symbols-outlined text-slate-400">palette</span>
-              Customize Color
-            </button>
-            <div className="my-2 border-t border-slate-100" />
-            <button 
-              onClick={() => handleListDelete(activeListMenu.id)}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors text-left"
-            >
-              <span className="material-symbols-outlined text-red-400">delete</span>
-              Delete List
-            </button>
-          </div>
-        </>
-      )}
-      
-      <PromptModal 
-        isOpen={promptConfig.isOpen}
-        onClose={closePrompt}
-        onSubmit={promptConfig.onSubmit}
-        title={promptConfig.title}
-        label={promptConfig.label}
-        placeholder={promptConfig.placeholder}
-        defaultValue={promptConfig.defaultValue}
-        type={promptConfig.type}
+      <CreateCategoryModal 
+        isOpen={isCreateCategoryOpen}
+        onClose={() => setIsCreateCategoryOpen(false)}
+        boardId={id}
+        onCategoryCreated={fetchBoard}
       />
 
       <InviteModal 
@@ -536,23 +334,6 @@ const BoardView = () => {
         onClose={() => setIsInviteModalOpen(false)}
         boardId={id}
         targetName={board.title}
-      />
-
-      <CardModal 
-        isOpen={isCardModalOpen}
-        onClose={() => setIsCardModalOpen(false)}
-        cardId={selectedCardId}
-        boardMembers={[board.owner, ...(board.members || [])]}
-        onCardUpdate={fetchBoard}
-      />
-
-      <ConfirmModal 
-        isOpen={confirmConfig.isOpen}
-        onClose={closeConfirm}
-        onConfirm={confirmConfig.onConfirm}
-        title={confirmConfig.title}
-        message={confirmConfig.message}
-        type={confirmConfig.type}
       />
     </div>
   );

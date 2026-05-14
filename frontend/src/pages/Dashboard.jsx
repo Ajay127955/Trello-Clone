@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 const Dashboard = () => {
   const [boards, setBoards] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
@@ -14,11 +15,14 @@ const Dashboard = () => {
   }, []);
 
   const fetchBoards = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await api.get('boards/');
       setBoards(response.data);
     } catch (err) {
-      console.error(err);
+      console.error('Fetch Boards Error:', err);
+      setError(err.response?.data?.error || 'Failed to load boards. Please check if the server is running.');
     } finally {
       setLoading(false);
     }
@@ -29,7 +33,37 @@ const Dashboard = () => {
     navigate('/landing');
   };
 
-  if (loading) return null;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-500 font-black text-xs uppercase tracking-widest">Loading your workspace...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center border border-slate-100">
+          <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span className="material-symbols-outlined text-4xl">error</span>
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 mb-2">Sync Error</h2>
+          <p className="text-slate-500 font-medium mb-8">{error}</p>
+          <button 
+            onClick={fetchBoards}
+            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black hover:opacity-90 transition-all shadow-lg active:scale-95"
+          >
+            Reconnect
+          </button>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div className="bg-background font-body-md text-on-background min-h-screen flex flex-col font-sans">
